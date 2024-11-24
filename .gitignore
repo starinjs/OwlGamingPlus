@@ -10,6 +10,7 @@
 /mta
 /x64
 MTA Server.exe
+MTA Server64.exe
 core.dll
 libcurl.dll
 mods/deathmatch/dbconmy.dll
@@ -34,8 +35,6 @@ banlist.xml
 # Owl Configuration
 /mods/deathmatch/resource-cache/
 /mods/deathmatch/resources/guieditor/
-/mods/deathmatch/settings.xml
-/mods/deathmatch/mtaserver.conf
 
 # Personal
 .vscode
