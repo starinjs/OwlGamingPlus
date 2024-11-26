@@ -34,8 +34,8 @@
     <script src="additionalInteriors/forrestsgarage.lua" type="client" />
     <file src="colfixes/1.col"></file>
     <file src="colfixes/2.col"></file>
-    <script src="additionalInteriors/ID151-Conference-ID152-HighCommandOffice-ID153-Hallway-ID154-Staircase.lua" type="client" />
-    <script src="additionalInteriors/ID155-OpenOffices-ID156-DarkUndergroundParkingLot-ID157-MediumSizedUndergroundParkingLot.lua" type="client" />
+    <script src="additionalInteriors/ID151-ID152-ID153-ID154.lua" type="client" />
+    <script src="additionalInteriors/ID155-ID156-ID157.lua" type="client" />
     <script src="additionalInteriors/ID4-LuxuriousLobby.lua" type="client" />
     <script src="additionalInteriors/ID7-LuxuriousHallway.lua" type="client" />
     <script src="additionalInteriors/ID117-flatInterior.lua" type="client" />
