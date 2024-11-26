@@ -114,23 +114,26 @@ addEvent("staff:getChangelogs", true)
 addEventHandler("staff:getChangelogs", root, getChangelogs)
 
 function editStaff(userid, ranks, details)
-	local error = nil
+	local thePlayer = client and client or source
 	if not userid or not tonumber(userid) then
-		outputChatBox("Internal Error!", source, 255, 0, 0)
+		outputChatBox("Internal Error!", thePlayer, 255, 0, 0)
 		return false
 	else
 		userid = tonumber(userid)
 	end
 	local target = false
-	for i, player in pairs(getElementsByType("player")) do
+	for _, player in pairs(getElementsByType("player")) do
 		if getElementData(player, "account:id") == userid then
 			target = player
 			break
 		end
 	end
 	staffTitles = exports.integration:getStaffTitles()
-	local thePlayer = source
-	dbQuery(function(qh, userid, staffTitles, target, userid, ranks, details, thePlayer)
+	if not exports.integration:isPlayerSeniorAdmin(thePlayer) or not exports.integration:isPlayerLeadScripter(thePlayer) then
+		outputChatBox("You are not authorized to change ranks!", thePlayer, 255, 0, 0)
+		return false
+	end
+	dbQuery(function(qh, userid, staffTitles, target, ranks, details, thePlayer)
 		local result = dbPoll(qh, 0)
 		if result then
 			local user = result[1]
@@ -199,7 +202,7 @@ function editStaff(userid, ranks, details)
 			end
 			triggerEvent("staff:getStaffInfo", thePlayer, user.username, "Staff rank for "..user.username.." has been set!")
 		end
-	end, {userid, staffTitles, target, userid, ranks, details, thePlayer}, exports.mysql:getConn("core"), "SELECT id, username, admin, supporter, vct, scripter, mapper, fmt FROM accounts WHERE id=?", userid)
+	end, {userid, staffTitles, target, ranks, details, thePlayer}, exports.mysql:getConn("core"), "SELECT id, username, admin, supporter, vct, scripter, mapper, fmt FROM accounts WHERE id=?", userid)
 
 end
 addEvent("staff:editStaff", true)
