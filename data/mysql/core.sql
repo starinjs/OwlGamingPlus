@@ -18,8 +18,7 @@
 CREATE TABLE IF NOT EXISTS `accounts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(64) NOT NULL,
-  `password` varchar(128) NOT NULL,
-  `salt` varchar(30) DEFAULT NULL,
+  `password` varchar(70) NOT NULL,
   `email` varchar(254) DEFAULT NULL,
   `registerdate` datetime DEFAULT CURRENT_TIMESTAMP,
   `ip` mediumtext,
