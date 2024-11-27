@@ -1,4 +1,7 @@
 <settings>
+	<!-- General -->
+	<setting name="serverName" value="OwlGamingPlus" />
+
 	<!-- Socket -->
 	<setting name="@mysql.socket" value="unix_socket=/var/run/mysqld/mysqld.sock" />
 	

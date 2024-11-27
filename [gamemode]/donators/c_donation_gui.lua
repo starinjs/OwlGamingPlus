@@ -1135,10 +1135,10 @@ function showCustomChatIconMenu(pID, pCost, removing)
 	selectedIcon = 1
 	local length = 110
 
-	local content = "You can spend "..pCost.." on getting a customized country flag to replace the default OwlGaming logo with your own typing icon above your character's head. \n\nOnce you purchased and activated the perk, you will be able to switch to other country flags anytime in 'Activated Perks' tab."
+	local content = "You can spend "..pCost.." on getting a customized country flag to replace the default logo with your own typing icon above your character's head. \n\nOnce you purchased and activated the perk, you will be able to switch to other country flags anytime in 'Activated Perks' tab."
 
 	if removing then
-		content = "Customized country flag typing icon is a special perk, allows you to to replace the default OwlGaming logo with your own icon above your character's head.\n\nPlease choose a flag to change to, it's free as you've already purchased this perk."
+		content = "Customized country flag typing icon is a special perk, allows you to to replace the default logo with your own icon above your character's head.\n\nPlease choose a flag to change to, it's free as you've already purchased this perk."
 	end
 
 	local screenWidth, screenHeight = guiGetScreenSize()
@@ -1320,7 +1320,7 @@ function getResponseFromServer(code, msg)
 
 	end
 	if wDonation and isElement(wDonation) then
-		guiSetText(wDonation, "OwlGaming Store - "..msg)
+		guiSetText(wDonation, "Store - "..msg)
 	end
 end
 addEvent("donation-system:getResponseFromServer", true)

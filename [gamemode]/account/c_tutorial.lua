@@ -40,11 +40,11 @@ function setStage(stage)
     if (stage > FINAL_STAGE) then 
         currentStage = -1
         fadeCamera(false)
-        guiSetText(tutorialWindow, "OwlGaming Tutorial - Finished Tutorial")
+        guiSetText(tutorialWindow, "Tutorial - Finished Tutorial")
         guiSetText(tutorialLabel, "You've completed the tutorial, what would you like to do next?")
         guiSetText(nextButton, "End Tutorial")
     else
-        guiSetText(tutorialWindow, "OwlGaming Tutorial - " .. TUTORIAL_STAGES[stage][1])
+        guiSetText(tutorialWindow, "Tutorial - " .. TUTORIAL_STAGES[stage][1])
         guiSetText(tutorialLabel, TUTORIAL_STAGES[stage][2])
         setCameraMatrix(TUTORIAL_STAGES[stage][3], TUTORIAL_STAGES[stage][4], TUTORIAL_STAGES[stage][5], TUTORIAL_STAGES[stage][6], TUTORIAL_STAGES[stage][7], TUTORIAL_STAGES[stage][8], 0, 90)
         

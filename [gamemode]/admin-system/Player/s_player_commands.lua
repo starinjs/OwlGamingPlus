@@ -161,18 +161,6 @@ function adminUnmask(thePlayer, commandName, targetPlayer)
 end
 addCommandHandler("aunmask", adminUnmask, false, false)
 
-function infoDisplay(thePlayer)
-	if (exports.integration:isPlayerTrialAdmin(thePlayer)) then
-		outputChatBox("---[        Useful Information        ]---", getRootElement(), 255, 194, 15)
-		outputChatBox("---[ Server: owlgaming.net Port: 22003", getRootElement(), 255, 194, 15)
-		outputChatBox("---[ Ventrilo: vent.owlgaming.net Port: 3083", getRootElement(), 255, 194, 15)
-		outputChatBox("---[ UCP: www.owlgaming.net", getRootElement(), 255, 194, 15)
-		outputChatBox("---[ Forums: www.forums.owlgaming.net", getRootElement(), 255, 194, 15)
-		outputChatBox("---[ Mantis: bugs.owlgaming.net", getRootElement(), 255, 194, 15)
-	end
-end
-addCommandHandler("info", infoDisplay)
-
 function adminUnblindfold(thePlayer, commandName, targetPlayer)
 	if (exports.integration:isPlayerTrialAdmin(thePlayer)) then
 		if not (targetPlayer) then

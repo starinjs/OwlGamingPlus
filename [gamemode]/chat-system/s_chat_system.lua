@@ -2302,7 +2302,7 @@ function togglePM(thePlayer, commandName)
 			exports.donators:updatePerkValue(thePlayer, 1, 1)
 		end
 	else
-		outputChatBox("You don't have this perk activated. Please visit OwlGaming store under F10 menu.", thePlayer)
+		outputChatBox("You don't have this perk activated. Please visit the store under F10 menu.", thePlayer)
 	end
 end
 addEvent("chat:togpm", true)
@@ -2323,7 +2323,7 @@ function toggleAds(thePlayer, commandName)
 			exports.donators:updatePerkValue(thePlayer, 2, 1)
 		end
 	else
-		outputChatBox("You don't have this perk activated. Please visit OwlGaming store under F10 menu.", thePlayer)
+		outputChatBox("You don't have this perk activated. Please visit the store under F10 menu.", thePlayer)
 	end
 end
 addEvent("chat:togad", true)

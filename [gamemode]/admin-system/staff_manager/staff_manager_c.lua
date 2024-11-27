@@ -36,7 +36,7 @@ function openStaffManager(staffInfo1, staffTeams1, globalChangelogs1) --/ MAXIME
 			local xExtend = 50
 			showCursor(true)
 			guiSetInputEnabled(true)
-	        GUIEditor.window[1] = guiCreateWindow(538, 144, 700+xExtend, 461+yExtend, "OwlGaming Staff Manager", false)
+	        GUIEditor.window[1] = guiCreateWindow(538, 144, 700+xExtend, 461+yExtend, "Staff Manager", false)
 	        guiWindowSetSizable(GUIEditor.window[1], false)
 	        exports.global:centerWindow(GUIEditor.window[1])
 	        GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 29, 700+xExtend, 386+yExtend, false, GUIEditor.window[1])

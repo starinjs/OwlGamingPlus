@@ -570,7 +570,7 @@ function displayRegisterConpleteText(username)
     guiWindowSetSizable(GUIEditor.window[1], false)
     guiSetProperty(GUIEditor.window[1], "AlwaysOnTop", "True")
     local temp = "An email contains instructions to activate your account has been dispatched, please check your email's inbox.\n\nIf for some reasons you don't receive the email, please check your junk box or try to dispatch another activation email at https://owlgaming.net/account/"
-    GUIEditor.label[1] = guiCreateLabel(8, 50, 339, 121+extend, "Your OwlGaming MTA account for '"..username.."' is almost ready for action!\n\n"..temp.."\n\nSincerely, \nOwlGaming Community OwlGaming Development Team\"", false, GUIEditor.window[1])
+    GUIEditor.label[1] = guiCreateLabel(8, 50, 339, 121+extend, "Your MTA account for '"..username.."' is almost ready for action!\n\n"..temp.."\n\nSincerely, \nOwlGaming Community OwlGaming Development Team\"", false, GUIEditor.window[1])
     guiLabelSetHorizontalAlign(GUIEditor.label[1], "left", true)
 
     GUIEditor.button[1] = guiCreateButton(10, 153+extend, 337, 26, "Copy Activation Link", false, GUIEditor.window[1])

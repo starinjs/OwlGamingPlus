@@ -18,13 +18,13 @@ function openAppsWindow(apps1, quests1)
 		quests = quests1
 	end
 	if gui1.main and isElement(gui1.main) then
-		guiSetText(gui1.main, "OwlGaming Application Manager")
+		guiSetText(gui1.main, "Application Manager")
 		guiSetEnabled(gui1.main, true)
 	else
 		triggerEvent( 'hud:blur', resourceRoot, 6, false, 0.5, nil )
 		local w, h = 740,474
 		local x, y = (screenWidth-w)/2, (screenHeight-h)/2
-		gui1.main = guiCreateWindow(x,y,w,h,"OwlGaming Application Manager | LOADING..",false)
+		gui1.main = guiCreateWindow(x,y,w,h,"Application Manager | LOADING..",false)
 		guiWindowSetSizable(gui1.main, false)
 
 		gui1.tabPanel = guiCreateTabPanel(0.0122,0.0401,0.9757,0.87,true,gui1.main)

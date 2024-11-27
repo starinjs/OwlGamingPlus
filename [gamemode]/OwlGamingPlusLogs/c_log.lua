@@ -42,7 +42,7 @@ function openFile( )
 		xmlNodeSetAttribute( charset, "charset", "utf-8" )
 
 		local title = xmlCreateChild( head, "title" )
-		xmlNodeSetValue( title, ( "OwlGaming MTA :: Client Logs :: %04d-%02d-%02d" ):format( time.year + 1900, time.month + 1, time.monthday ) )
+		xmlNodeSetValue( title, ( "MTA :: Client Logs :: %04d-%02d-%02d" ):format( time.year + 1900, time.month + 1, time.monthday ) )
 		
 		local style = xmlCreateChild( head, "style" )
 		xmlNodeSetAttribute( style, "type", "text/css" )
@@ -182,10 +182,10 @@ local GUIEditor = {
 }
 function drawInfoBox()
 	closeInfoBox()
-    GUIEditor.window[1] = guiCreateWindow(675, 318, 361, 189, "OwlGaming Client Logging", false)
+    GUIEditor.window[1] = guiCreateWindow(675, 318, 361, 189, "Client Logging", false)
     guiWindowSetSizable(GUIEditor.window[1], false)
     exports.global:centerWindow(GUIEditor.window[1])
-    GUIEditor.label[1] = guiCreateLabel(14, 22, 333, 130, "OwlGaming Client Logging is a feature that writes down everything of your chatbox and your cellphone conversations then stores them in folders on your PC.\n\nThey are located in your MTA installation folder under:\n ../mods/deathmatch/resources/OwlGamingLogs\n\nThese features can also be toggled in F10 Game Settings.", false, GUIEditor.window[1])
+    GUIEditor.label[1] = guiCreateLabel(14, 22, 333, 130, "Client Logging is a feature that writes down everything of your chatbox and your cellphone conversations then stores them in folders on your PC.\n\nThey are located in your MTA installation folder under:\n ../mods/deathmatch/resources/OwlGamingLogs\n\nThese features can also be toggled in F10 Game Settings.", false, GUIEditor.window[1])
     guiLabelSetHorizontalAlign(GUIEditor.label[1], "left", true)
     GUIEditor.button[1] = guiCreateButton(10, 149, 341, 30, "Ok, I've got it!", false, GUIEditor.window[1])  
     addEventHandler("onClientGUIClick", GUIEditor.button[1], closeInfoBox)  
