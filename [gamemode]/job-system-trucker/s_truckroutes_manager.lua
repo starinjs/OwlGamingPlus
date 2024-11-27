@@ -51,14 +51,14 @@ function fetchOrders()
 		else
 			dbFree( qh )
 		end
-	end, exports.mysql:getConn('mta'), "SELECT * FROM jobs_trucker_orders " )
+	end, exports.mysql:getConn(), "SELECT * FROM jobs_trucker_orders " )
 end
 
 function addOrder(int, supplies, x, y, z, name)
 	if int and hasOrder(int) then
 		return false, "You already had a pending order. Please wait until it's delivered to place a new one."
 	else
-		local qh = dbQuery( exports.mysql:getConn('mta'), "INSERT INTO jobs_trucker_orders SET orderX=?, orderY=?, orderZ=?, orderName=?, orderInterior=?, orderSupplies=?", x, y, z, name, int or 0, toJSON(supplies) )
+		local qh = dbQuery( exports.mysql:getConn(), "INSERT INTO jobs_trucker_orders SET orderX=?, orderY=?, orderZ=?, orderName=?, orderInterior=?, orderSupplies=?", x, y, z, name, int or 0, toJSON(supplies) )
 		local res, nums, id = dbPoll( qh, 10000 )
 		if res and nums > 0 then
 			local r = { tonumber(x), tonumber(y), tonumber(z) , supplies, false, name, id, int or 0 }
@@ -180,7 +180,7 @@ function delMarker(id)
 				outputChatBox(getPlayerName(routes[5]):gsub("_", " ").." is currently working on this route. Please wait for him to complete it.", client, 255,0,0)
 			else
 				table.remove( routes, i )
-				dbExec( exports.mysql:getConn('mta'), "DELETE FROM jobs_trucker_orders WHERE orderID=?", id )
+				dbExec( exports.mysql:getConn(), "DELETE FROM jobs_trucker_orders WHERE orderID=?", id )
 				outputChatBox("Deleted marker ID #"..id..".", client, 0,255,0)
 			end
 			break

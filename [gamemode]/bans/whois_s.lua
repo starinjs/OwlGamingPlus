@@ -214,7 +214,7 @@ local function showIPAlts(thePlayer, ip)
 					outputChatBox( "Error #9101 - Report on Forums", thePlayer, 255, 0, 0)
 				end
 			end
-		end, {thePlayer, ip}, mysql:getConn("core"), "SELECT `id`, `username` FROM `accounts` WHERE `ip`=? LIMIT 1", ip)
+		end, {thePlayer, ip}, mysql:getConn(), "SELECT `id`, `username` FROM `accounts` WHERE `ip`=? LIMIT 1", ip)
 end
 
 
@@ -242,7 +242,7 @@ function findAltAccIP(thePlayer, commandName, ...)
 						else
 							dbFree(qh)
 						end
-					end, {thePlayer}, mysql:getConn("core"), "SELECT ip FROM accounts WHERE id=? LIMIT 1", char_result["account"] )
+					end, {thePlayer}, mysql:getConn(), "SELECT ip FROM accounts WHERE id=? LIMIT 1", char_result["account"] )
 					mysql:free_result(char_result)
 				end
 				
@@ -260,7 +260,7 @@ function findAltAccIP(thePlayer, commandName, ...)
 					else
 						dbFree(qh)
 					end
-				end, {thePlayer}, mysql:getConn("core"), "SELECT ip FROM accounts WHERE username = ?", targetPlayerName )
+				end, {thePlayer}, mysql:getConn(), "SELECT ip FROM accounts WHERE username = ?", targetPlayerName )
 				
 				-- select by ip
 				dbQuery(function(qh, thePlayer)
@@ -274,7 +274,7 @@ function findAltAccIP(thePlayer, commandName, ...)
 					else
 						dbFree(qh)
 					end
-				end, {thePlayer}, mysql:getConn("core"), "SELECT ip FROM accounts WHERE ip = ?", targetPlayerName )
+				end, {thePlayer}, mysql:getConn(), "SELECT ip FROM accounts WHERE ip = ?", targetPlayerName )
 
 				outputChatBox("Done.", thePlayer, 255, 194, 14)
 			else -- select by online player
@@ -511,7 +511,7 @@ function findAltAccSerial(thePlayer, commandName, ...)
 					else
 						dbFree(qh)
 					end
-				end, {thePlayer}, mysql:getConn("core"), "SELECT `id` FROM accounts WHERE ip=?", targetPlayerName)
+				end, {thePlayer}, mysql:getConn(), "SELECT `id` FROM accounts WHERE ip=?", targetPlayerName)
 
 				
 				-- select by serial

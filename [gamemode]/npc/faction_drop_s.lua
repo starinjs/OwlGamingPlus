@@ -60,7 +60,7 @@ function factionDropCreateItem(npcID, itemID, itemValue, itemPrice, itemQuan, it
 		finalItemValue = itemValue..":"..pack.rounds..":"..serial
 	end
 
-	if not dbExec( exports.mysql:getConn('mta'),
+	if not dbExec( exports.mysql:getConn(),
 	"INSERT INTO `shop_products` SET `pItemID`=?, `pItemValue`=?, `pPrice`=?, `pQuantity`=?, `pSetQuantity`=?, `pRestockInterval`=?, `npcID`=?, `pRestockedDate`=NOW()",
 	itemID, finalItemValue, itemPrice, itemQuan, itemQuan, itemRestock, npcID) then
 		triggerClientEvent(source, "shop:factionDropResponseFromServer", source, false, "Could not create item, database error.")

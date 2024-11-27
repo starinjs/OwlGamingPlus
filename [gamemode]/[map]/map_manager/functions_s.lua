@@ -13,12 +13,12 @@ function submitExteriorMapRequest ( name, url, who, what, why, map, player, conv
 		local mysql = exports.mysql
 		res, map_id = true, mysql:query_insert_free("INSERT INTO maps SET name='"..mysql:escape_string(name).."', preview='"..mysql:escape_string(url).."', purposes='"..mysql:escape_string(what).."', used_by='"..mysql:escape_string(who).."', reasons='"..mysql:escape_string(why).."', uploader='"..mysql:escape_string(getElementData( player, 'account:id' )).."', note='' ")
 	else
-		qh = dbQuery( exports.mysql:getConn('mta'), "INSERT INTO maps SET name=?, preview=?, purposes=?, used_by=?, reasons=?, uploader=?, note='' ", name, url, what, who, why, getElementData( player, 'account:id' ) )
+		qh = dbQuery( exports.mysql:getConn(), "INSERT INTO maps SET name=?, preview=?, purposes=?, used_by=?, reasons=?, uploader=?, note='' ", name, url, what, who, why, getElementData( player, 'account:id' ) )
 		res, nums, map_id = dbPoll( qh, 10000 )
 	end
 	if res and map_id then
 		for _, obj in ipairs( map ) do
-			dbExec( exports.mysql:getConn('mta'), "INSERT INTO maps_objects SET map_id=?, id=?, interior=?, dimension=?, collisions=?, breakable=?, radius=?, model=?, lodModel=?, posX=?, posY=?, posZ=?, rotX=?, rotY=?, rotZ=?, doublesided=?, scale=?, alpha=?", map_id, obj.id, obj.interior, obj.dimension, obj.collisions, obj.breakable, obj.radius, obj.model, obj.lodModel, obj.posX, obj.posY, obj.posZ, obj.rotX, obj.rotY, obj.rotZ, obj.doublesided, obj.scale, obj.alpha )
+			dbExec( exports.mysql:getConn(), "INSERT INTO maps_objects SET map_id=?, id=?, interior=?, dimension=?, collisions=?, breakable=?, radius=?, model=?, lodModel=?, posX=?, posY=?, posZ=?, rotX=?, rotY=?, rotZ=?, doublesided=?, scale=?, alpha=?", map_id, obj.id, obj.interior, obj.dimension, obj.collisions, obj.breakable, obj.radius, obj.model, obj.lodModel, obj.posX, obj.posY, obj.posZ, obj.rotX, obj.rotY, obj.rotZ, obj.doublesided, obj.scale, obj.alpha )
 		end
 		return true
 	else
@@ -28,7 +28,7 @@ function submitExteriorMapRequest ( name, url, who, what, why, map, player, conv
 end
 
 function notifyPlayer( map_id, subject, content )
-	local qh = dbQuery( exports.mysql:getConn('mta'), "SELECT m.uploader AS id FROM maps m WHERE m.id=? LIMIT 1", map_id )
+	local qh = dbQuery( exports.mysql:getConn(), "SELECT m.uploader AS id FROM maps m WHERE m.id=? LIMIT 1", map_id )
 	local res, nums, id2 = dbPoll( qh, 10000 )
 	if res then
 		if nums > 0 then
@@ -57,7 +57,7 @@ addCommandHandler( 'exportinteriormap', function ( player, cmd, dim )
 				else
 					outputChatBox( "Errors occurred while fetching map objects for interior #"..dim..".", player, 255, 0, 0 )
 				end
-			end, { player, dim }, exports.mysql:getConn('mta'), "SELECT * FROM objects WHERE dimension=? ", dim )
+			end, { player, dim }, exports.mysql:getConn(), "SELECT * FROM objects WHERE dimension=? ", dim )
 		else
 			outputChatBox( "SYNTAX: /"..cmd.." [Interior ID]", player )
 		end
@@ -79,7 +79,7 @@ addCommandHandler( 'exportexteriormap', function ( player, cmd, mapid )
 				else
 					outputChatBox( "Errors occurred while fetching map objects for map id #"..mapid..".", player, 255, 0, 0 )
 				end
-			end, { player, mapid }, exports.mysql:getConn('mta'), "SELECT * FROM maps_objects WHERE map_id=? ", mapid )
+			end, { player, mapid }, exports.mysql:getConn(), "SELECT * FROM maps_objects WHERE map_id=? ", mapid )
 		else
 			outputChatBox( "SYNTAX: /"..cmd.." [Map ID from /maps]", player )
 		end

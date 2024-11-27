@@ -84,7 +84,7 @@ addEventHandler("uninstallKeypad", root, uninstallKeypad)
 function registerNewPasscode(theInterior, passcode)
 	if not ownsInterior(client, theInterior) then return end
 
-	dbExec(exports.mysql:getConn('mta'), "UPDATE interiors SET keypad_lock_pw = ? WHERE id = ?", passcode, getElementData(theInterior, 'dbid'))
+	dbExec(exports.mysql:getConn(), "UPDATE interiors SET keypad_lock_pw = ? WHERE id = ?", passcode, getElementData(theInterior, 'dbid'))
 
 	triggerClientEvent(source, "keypadRecieveResponseFromServer", source, "registerNewPasscode - ok")
 end

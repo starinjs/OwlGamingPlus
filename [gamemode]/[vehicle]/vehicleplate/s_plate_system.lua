@@ -153,8 +153,8 @@ function setNewReg(car)
 	end
  
 	exports.anticheat:changeProtectedElementDataEx(tvehicle, "registered", data, true)
-	dbExec(exports.mysql:getConn('mta'), "UPDATE `vehicles` SET registered= ? WHERE id = ?", data, car)
-	dbExec(exports.mysql:getConn('mta'), "INSERT INTO `mdc_dmv` SET `char`=?, `vehicle`=?, `status`=? ", getElementData(source, "dbid"), car, data)
+	dbExec(exports.mysql:getConn(), "UPDATE `vehicles` SET registered= ? WHERE id = ?", data, car)
+	dbExec(exports.mysql:getConn(), "INSERT INTO `mdc_dmv` SET `char`=?, `vehicle`=?, `status`=? ", getElementData(source, "dbid"), car, data)
 	exports.logs:dbLog( source, 6, { source, car }, "VEHICLE REGISTERATION SET TO ".. data )
 
 	triggerEvent("platePedTalk", source, 5)

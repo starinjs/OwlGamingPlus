@@ -146,7 +146,7 @@ function createPermanentVehicle(player, command, ...)
 		local var1, var2 = exports.vehicle:getRandomVariant(id)
 
 		-- build our query
-		local qh = dbQuery( exports.mysql:getConn('mta'), "INSERT INTO vehicles SET id="..exports.mysql:getSmallestID('vehicles')..", model=?, x=?, y=?, z=?, rotx='0', roty='0', rotz=?, "
+		local qh = dbQuery( exports.mysql:getConn(), "INSERT INTO vehicles SET id="..exports.mysql:getSmallestID('vehicles')..", model=?, x=?, y=?, z=?, rotx='0', roty='0', rotz=?, "
 		.. " color1=?, color2=?, color3=?, color4=?, faction=?, owner=?, plate=?, currx=?, curry=?, currz=?, currrx='0', currry='0', currrz=?, locked=1, interior=?, currinterior=?, "
 		.. "dimension=?, currdimension=?, tintedwindows=?, variant1=?, variant2=?, creationDate=NOW(), createdBy=?, `vehicle_shop_id`=? ",
 		id, x, y, z, r, color1, color2, color3, color4, factionID, owner, plate, x ,y, z, r, interior, interior, dimension, dimension, tint, var1, var2, getElementData(player, "account:id"), args[1] )
@@ -170,7 +170,7 @@ function createPermanentVehicle(player, command, ...)
 			local adminUsername = getElementData(player, "account:username")
 			local adminID = getElementData(player, "account:id")
 
-			dbExec( exports.mysql:getConn('mta'), "INSERT INTO `vehicle_logs` (`vehID`, `action`, `actor`) VALUES (?, ?, ?) ", last_insert_id, command.." "..vehicleName.." ($"..cost.." - to "..owner..")" , adminID )
+			dbExec( exports.mysql:getConn(), "INSERT INTO `vehicle_logs` (`vehID`, `action`, `actor`) VALUES (?, ?, ?) ", last_insert_id, command.." "..vehicleName.." ($"..cost.." - to "..owner..")" , adminID )
 
 			if (hiddenAdmin==0) then
 				exports.global:sendMessageToAdmins("AdmCmd: " .. tostring(adminTitle) .. " " .. getPlayerName(player) .. " ("..adminUsername..") has spawned a "..vehicleName .. " (ID #" .. last_insert_id .. ") to "..owner.." for $"..cost..".")
@@ -748,7 +748,7 @@ function sellVehicle(thePlayer, commandName, targetPlayerName, itemValue)
 												if exports.global:isResourceRunning("insurance") then
 													exports.insurance:cancelPolicy(vehicleID, thePlayer) --Due to cache, it is better to call this function than to do it directly in DB. /Exciter
 												else
-													dbExec(exports.mysql:getConn('mta'), "DELETE FROM `insurance_data` WHERE `vehicleid` = ?", vehicleID)
+													dbExec(exports.mysql:getConn(), "DELETE FROM `insurance_data` WHERE `vehicleid` = ?", vehicleID)
 												end
 
 												if eventName == "sellVehiclePapers" then
@@ -1052,7 +1052,7 @@ local function parkVeh( thePlayer, veh, commandName )
 				local interior = getElementInterior(thePlayer)
 				local dimension = getElementDimension(thePlayer)
 
-				dbExec( exports.mysql:getConn('mta'), "UPDATE vehicles SET x=?, y=?, z=?, rotx=?, roty=?, rotz=?, currx=?, curry=?, currz=?, currrx=?, currry=?, currrz=?, interior=?, currinterior=?, dimension=?, currdimension=? WHERE id=?", x, y, z, rx, ry, rz, x, y, z, rx, ry, rz, interior, interior, dimension, dimension, dbid )
+				dbExec( exports.mysql:getConn(), "UPDATE vehicles SET x=?, y=?, z=?, rotx=?, roty=?, rotz=?, currx=?, curry=?, currz=?, currrx=?, currry=?, currrz=?, interior=?, currinterior=?, dimension=?, currdimension=? WHERE id=?", x, y, z, rx, ry, rz, x, y, z, rx, ry, rz, interior, interior, dimension, dimension, dbid )
 				setVehicleRespawnPosition(veh, x, y, z, rx, ry, rz)
 				exports.anticheat:changeProtectedElementDataEx(veh, "respawnposition", {x, y, z, rx, ry, rz}, false)
 				exports.anticheat:changeProtectedElementDataEx(veh, "interior", interior)

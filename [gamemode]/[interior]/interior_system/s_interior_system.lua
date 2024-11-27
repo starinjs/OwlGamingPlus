@@ -194,7 +194,7 @@ local function moveCharactersOutside(interiorId, onlyOffline)
 
 		if #offlineCharacterIds > 0 then
 			dbExec(
-				exports.mysql:getConn('mta'),
+				exports.mysql:getConn(),
 				"UPDATE characters SET x = ?, y = ?, z = ?, interior_id = ?, dimension_id = ? WHERE id IN (" .. table.concat(offlineCharacterIds, ', ') .. ")",
 				entrance.x,
 				entrance.y,
@@ -204,7 +204,7 @@ local function moveCharactersOutside(interiorId, onlyOffline)
 			)
 		end
 
-	end, exports.mysql:getConn('mta'), "SELECT id, charactername FROM characters WHERE dimension_id = ?", interiorId)
+	end, exports.mysql:getConn(), "SELECT id, charactername FROM characters WHERE dimension_id = ?", interiorId)
 end
 
 function publicSellProperty(thePlayer, dbid, showmessages, givemoney, CLEANUP)

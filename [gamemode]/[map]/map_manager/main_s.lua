@@ -18,7 +18,7 @@ addEventHandler( 'maps:managerTabSync', resourceRoot, function( tabID, dontShowP
 				dbFree( qh )
 				triggerClientEvent( client, 'maps:populateTab', resourceRoot, tabID, 'Error code 21 occurred while synchronizing data.', nil, dontShowPopUp )
 			end
-		end , { client, tabID }, exports.mysql:getConn('mta'), "SELECT m.*, m.reviewer AS reviewer FROM maps m WHERE uploader=? ORDER BY m.approved, m.enabled, m.id DESC", getElementData( client, 'account:id' ) )
+		end , { client, tabID }, exports.mysql:getConn(), "SELECT m.*, m.reviewer AS reviewer FROM maps m WHERE uploader=? ORDER BY m.approved, m.enabled, m.id DESC", getElementData( client, 'account:id' ) )
 	elseif tabID == 3 then --mgmt
 		dbQuery( function( qh, client, tabID )
 			local res, nums, id = dbPoll( qh, 0 )
@@ -28,14 +28,14 @@ addEventHandler( 'maps:managerTabSync', resourceRoot, function( tabID, dontShowP
 				dbFree( qh )
 				triggerClientEvent( client, 'maps:populateTab', resourceRoot, tabID, 'Error code 21 occurred while synchronizing data.', nil, dontShowPopUp )
 			end
-		end , { client, tabID }, exports.mysql:getConn('mta'), "SELECT m.*, m.reviewer AS reviewer_name, m.uploader AS uploader_name FROM maps m ORDER BY m.approved, m.enabled, m.id DESC" )
+		end , { client, tabID }, exports.mysql:getConn(), "SELECT m.*, m.reviewer AS reviewer_name, m.uploader AS uploader_name FROM maps m ORDER BY m.approved, m.enabled, m.id DESC" )
 	end
 end)
 
 addEvent( 'maps:submitExteriorMapRequest', true )
 addEventHandler( 'maps:submitExteriorMapRequest', resourceRoot, function( name, url, who, what, why, map ) 
 	if not canAdminMaps( client ) then
-		local check = dbQuery( exports.mysql:getConn('mta'), "SELECT COUNT(id) AS count FROM maps WHERE approved=0 AND type='exterior' AND uploader=?", getElementData( client, 'account:id' ) )
+		local check = dbQuery( exports.mysql:getConn(), "SELECT COUNT(id) AS count FROM maps WHERE approved=0 AND type='exterior' AND uploader=?", getElementData( client, 'account:id' ) )
 		local res1, nums1, id1 = dbPoll( check, 10000 )
 		if res1 and nums1 > 0 then	
 			if res1[1].count >= settings.external_map_max_concurrent_requests then
@@ -60,7 +60,7 @@ addEventHandler( 'maps:updateReq', resourceRoot, function ( tabid, name, url, wh
 		else
 			triggerClientEvent( client, 'maps:updateMyReqResponse', resourceRoot, 'Errors occurred while updating map data. Code 64.' )
 		end
-	end , { client, tabid }, exports.mysql:getConn('mta'), "UPDATE maps SET name=?, preview=?, used_by=?, purposes=?, reasons=? WHERE id=?", name, url, who, what, why, id )
+	end , { client, tabid }, exports.mysql:getConn(), "UPDATE maps SET name=?, preview=?, used_by=?, purposes=?, reasons=? WHERE id=?", name, url, who, what, why, id )
 end )
 
 addEvent( 'maps:delReq', true )
@@ -69,11 +69,11 @@ addEventHandler( 'maps:delReq', resourceRoot, function ( tabID, id )
 		local res, nums, id1 = dbPoll( qh, 0 )
 		if res and nums > 0 then
 			triggerClientEvent( client, 'maps:updateMyReqResponse', resourceRoot, 'ok', tabID )
-			dbExec( exports.mysql:getConn('mta'), "DELETE FROM maps_objects WHERE map_id=?", id )
+			dbExec( exports.mysql:getConn(), "DELETE FROM maps_objects WHERE map_id=?", id )
 		else
 			triggerClientEvent( client, 'maps:updateMyReqResponse', resourceRoot, 'Errors occurred while deleting map data. Code 73.' )
 		end
-	end , { client, tabID, id }, exports.mysql:getConn('mta'), "DELETE FROM maps WHERE id=?", id )
+	end , { client, tabID, id }, exports.mysql:getConn(), "DELETE FROM maps WHERE id=?", id )
 end )
 
 addEvent( 'maps:testMap', true )
@@ -98,7 +98,7 @@ addEventHandler( 'maps:approveRequest', resourceRoot, function( map_id, note, ac
 			dbFree( qh )
 			triggerClientEvent( client, 'maps:approveRequest', resourceRoot, 'Errors occurred while processing request. Code 110.' )
 		end
-	end , { client, map_id, note }, exports.mysql:getConn('mta'), "UPDATE maps SET approved=?, note=CONCAT(note, ?), reviewer=? WHERE id=?", accepting and 1 or 2, note, getElementData( client, 'account:id' ), map_id  )
+	end , { client, map_id, note }, exports.mysql:getConn(), "UPDATE maps SET approved=?, note=CONCAT(note, ?), reviewer=? WHERE id=?", accepting and 1 or 2, note, getElementData( client, 'account:id' ), map_id  )
 end)
 
 addEvent( 'maps:implement', true )
@@ -117,5 +117,5 @@ addEventHandler( 'maps:implement', resourceRoot, function( map_id, implementing 
 			dbFree( qh )
 			triggerClientEvent( client, 'maps:implement', resourceRoot, 'Errors occurred while '..(implementing and 'implementing' or 'disabling')..' the map. Code 124.' )
 		end
-	end , { client, map_id, note }, exports.mysql:getConn('mta'), "UPDATE maps SET enabled=?, approved=1, note=CONCAT(note, ?) WHERE id=?", implementing and 1 or 0, note, map_id )
+	end , { client, map_id, note }, exports.mysql:getConn(), "UPDATE maps SET enabled=?, approved=1, note=CONCAT(note, ?) WHERE id=?", implementing and 1 or 0, note, map_id )
 end )

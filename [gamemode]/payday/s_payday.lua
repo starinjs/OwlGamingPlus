@@ -44,7 +44,7 @@ function payWage(player, pay, faction, tax)
 	end
 
 	if interest ~= 0 then
-		dbExec( exports.mysql:getConn('mta'), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (-17, ?, ?, 'BANKINTEREST', 12)", dbid, interest )
+		dbExec( exports.mysql:getConn(), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (-17, ?, ?, 'BANKINTEREST', 12)", dbid, interest )
 	end
 
 	bankmoney = bankmoney + math.max( 0, pay ) + interest + donatormoney
@@ -55,7 +55,7 @@ function payWage(player, pay, faction, tax)
 			pay = 0
 		elseif pay > 0 then
 			governmentIncome = governmentIncome - pay
-			dbExec( exports.mysql:getConn('mta'), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (-3, ?, ?, 'STATEBENEFITS', 6)", dbid, pay )
+			dbExec( exports.mysql:getConn(), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (-3, ?, ?, 'STATEBENEFITS', 6)", dbid, pay )
 		else
 			pay = 0
 		end
@@ -70,7 +70,7 @@ function payWage(player, pay, faction, tax)
 
 			local freeWageAmount = getElementData(exports.factions:getFactionFromID(faction), "before_wage_charge")
 			if pay > freeWageAmount then
-				dbExec(exports.mysql:getConn('mta'), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (?, ?, ?, 'WAGE', 6)", teamid, dbid, pay - freeWageAmount)
+				dbExec(exports.mysql:getConn(), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (?, ?, ?, 'WAGE', 6)", teamid, dbid, pay - freeWageAmount)
 			end
 		else
 			pay = 0
@@ -81,7 +81,7 @@ function payWage(player, pay, faction, tax)
 		pay = pay - tax
 		bankmoney = bankmoney - tax
 		governmentIncome = governmentIncome + tax
-		dbExec( exports.mysql:getConn('mta'), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (?, -3, ?, 'INCOMETAX', 11)", dbid, tax )
+		dbExec( exports.mysql:getConn(), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (?, -3, ?, 'INCOMETAX', 11)", dbid, tax )
 	end
 
 	local vtax = taxVehicles[ dbid ] or 0
@@ -89,7 +89,7 @@ function payWage(player, pay, faction, tax)
 		vtax = math.min( vtax, bankmoney )
 		bankmoney = bankmoney - vtax
 		governmentIncome = governmentIncome + vtax
-		dbExec( exports.mysql:getConn('mta'), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (?, -3, ?, 'VEHICLETAX', 11)", dbid, vtax )
+		dbExec( exports.mysql:getConn(), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (?, -3, ?, 'VEHICLETAX', 11)", dbid, vtax )
 	end
 
 	--vehicle insurance
@@ -130,7 +130,7 @@ function payWage(player, pay, faction, tax)
 		ptax = math.min( ptax, bankmoney )
 		bankmoney = bankmoney - ptax
 		governmentIncome = governmentIncome + ptax
-		dbExec( exports.mysql:getConn('mta'), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (?, -3, ?, 'PROPERTYTAX', 11)", dbid, ptax )
+		dbExec( exports.mysql:getConn(), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (?, -3, ?, 'PROPERTYTAX', 11)", dbid, ptax )
 	end
 
 	-- solve interior rentals
@@ -140,7 +140,7 @@ function payWage(player, pay, faction, tax)
 			if bankmoney >= cost then
 				bankmoney = bankmoney - cost
 				total_int_rentals = total_int_rentals + cost
-				dbExec( exports.mysql:getConn('mta'), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (?, 0, ?, 'HOUSERENT', 6)", dbid, cost )
+				dbExec( exports.mysql:getConn(), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (?, 0, ?, 'HOUSERENT', 6)", dbid, cost )
 			else
 				if exports.global:isResourceRunning("interior_system") then
 					exports.interior_system:publicSellProperty( player, int_id, false, true )
@@ -534,12 +534,12 @@ function doPayDayPlayer(value, isForcePayday)
 		local hoursplayed = getElementData(value, "hoursplayed") or 0
 		setPlayerAnnounceValue ( value, "score", hoursplayed+1 )
 		exports.anticheat:setEld(value, "hoursplayed", hoursplayed+1, 'all')
-		dbExec( exports.mysql:getConn('mta'), "UPDATE characters SET hoursplayed = hoursplayed + 1, bankmoney=? "..sqlupdate.." WHERE id=? ", getElementData( value, "bankmoney" ), dbid )
+		dbExec( exports.mysql:getConn(), "UPDATE characters SET hoursplayed = hoursplayed + 1, bankmoney=? "..sqlupdate.." WHERE id=? ", getElementData( value, "bankmoney" ), dbid )
 		--Referring
 		if getElementData(value, "referrer") and getElementData(value, "hoursplayed") == 50 then
 			local gc2Award = 150
-			dbExec( exports.mysql:getConn('core'), "UPDATE `accounts` SET `credits`=`credits`+? WHERE `id`=? ", gc2Award, getElementData(value, "referrer") )
-			dbExec( exports.mysql:getConn('mta'), "INSERT INTO `don_purchases` SET `name`=?, `cost`=?, `account`=? ", "Referring reward - Your friend '"..getElementData(value, "account:username").."' who has reached 50 hoursplayed on character '"..exports.global:getPlayerName(value).."'", gc2Award, getElementData(value, "referrer") )
+			dbExec( exports.mysql:getConn(), "UPDATE `accounts` SET `credits`=`credits`+? WHERE `id`=? ", gc2Award, getElementData(value, "referrer") )
+			dbExec( exports.mysql:getConn(), "INSERT INTO `don_purchases` SET `name`=?, `cost`=?, `account`=? ", "Referring reward - Your friend '"..getElementData(value, "account:username").."' who has reached 50 hoursplayed on character '"..exports.global:getPlayerName(value).."'", gc2Award, getElementData(value, "referrer") )
 			exports.global:sendMessageToAdmins("[ACHIEVEMENT] Player '"..exports.cache:getUsernameFromId(getElementData(value, "referrer")).."' has been rewarded with "..gc2Award.." GC(s) for referring his friend '"..getElementData(value, "account:username").."' who has reached 50 hoursplayed on character '"..exports.global:getPlayerName(value).."'! ")
 			exports.announcement:makePlayerNotification(getElementData(value, "referrer"), "Congratulations! You were rewarded with "..gc2Award.." GC(s) for referring your friend", getElementData(value, "account:username").." has reached 50 hoursplayed on character "..exports.global:getPlayerName(value)..".")
 			exports.announcement:makePlayerNotification(getElementData(value, "account:id"), exports.cache:getUsernameFromId(getElementData(value, "referrer")).." was rewarded with "..gc2Award.." GC(s) for referring you", "You have reached 50 hoursplayed on character "..exports.global:getPlayerName(value).."! Congratulations and thank you for playing.")

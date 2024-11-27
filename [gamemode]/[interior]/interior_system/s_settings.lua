@@ -50,7 +50,7 @@ function saveInteriorSettings(element, interiorID, isVehicleInterior, data)
 				element = exports.pool:getElement("vehicle", vehicleID)
 			end
 			if element then
-				dbExec(exports.mysql:getConn("mta"), "UPDATE `vehicles` SET `settings` = ? WHERE `id` = ? LIMIT 1;", toJSON(data), vehicleID)
+				dbExec(exports.mysql:getConn(), "UPDATE `vehicles` SET `settings` = ? WHERE `id` = ? LIMIT 1;", toJSON(data), vehicleID)
 				exports.anticheat:changeProtectedElementData(element, "settings", data)
 			end
 		else
@@ -58,7 +58,7 @@ function saveInteriorSettings(element, interiorID, isVehicleInterior, data)
 				element = exports.pool:getElement("interior", interiorID)
 			end
 			if element then
-				dbExec(exports.mysql:getConn("mta"), "UPDATE `interiors` SET `settings` = ? WHERE `id` = ?", toJSON(data), interiorID)
+				dbExec(exports.mysql:getConn(), "UPDATE `interiors` SET `settings` = ? WHERE `id` = ?", toJSON(data), interiorID)
 				exports.anticheat:changeProtectedElementData(element, "settings", data)
 			end
 		end

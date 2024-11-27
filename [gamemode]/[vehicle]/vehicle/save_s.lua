@@ -44,7 +44,7 @@ function saveVehicle(source)
 			local door5 = getVehicleDoorState(source, 5)
 			local doorState = toJSON( { door0, door1, door2, door3, door4, door5 } )
 			
-			dbExec( exports.mysql:getConn('mta'), "UPDATE vehicles SET fuel=?, engine=?, locked=?, lights=?, hp=?, sirens=?, Impounded=?, handbrake=?, currx=?, curry=?, currz=?, currrx=?, currry=?, currrz=?, currdimension=?, currinterior=?, " 
+			dbExec( exports.mysql:getConn(), "UPDATE vehicles SET fuel=?, engine=?, locked=?, lights=?, hp=?, sirens=?, Impounded=?, handbrake=?, currx=?, curry=?, currz=?, currrx=?, currry=?, currrz=?, currdimension=?, currinterior=?, " 
 				.. "panelStates=?, wheelStates=?, doorStates=?, odometer=? WHERE id=? ", fuel, engine, locked, lights, health, sirens, Impounded, handbrake, x, y, z, rx, ry, rz, dimension, interior, panelState, wheelState, doorState, odometer, dbid ) 
 	end
 end
@@ -103,6 +103,6 @@ function saveVehicleMods(source)
 		local variant1, variant2 = getVehicleVariant(source)
 		
 		local upgrades = toJSON( { upgrade0, upgrade1, upgrade2, upgrade3, upgrade4, upgrade5, upgrade6, upgrade7, upgrade8, upgrade9, upgrade10, upgrade11, upgrade12, upgrade13, upgrade14, upgrade15, upgrade16 } )
-		dbExec( exports.mysql:getConn('mta'), "UPDATE vehicles SET `upgrades`=?, paintjob=?, color1=?, color2=?, color3=?, color4=?, `headlights`=?, variant1=? ,variant2=? WHERE id=? ", upgrades, paintjob, color1, color2, color3, color4, headLightColors, variant1, variant2, dbid )
+		dbExec( exports.mysql:getConn(), "UPDATE vehicles SET `upgrades`=?, paintjob=?, color1=?, color2=?, color3=?, color4=?, `headlights`=?, variant1=? ,variant2=? WHERE id=? ", upgrades, paintjob, color1, color2, color3, color4, headLightColors, variant1, variant2, dbid )
 	end 
 end

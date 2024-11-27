@@ -7,7 +7,7 @@ addEventHandler("onResourceStart", resourceRoot, function ()
 		for _, row in ipairs(results) do
 			loadDimension(row.dimension)
 		end
-	end, exports.mysql:getConn('mta'), "SELECT distinct(`dimension`) FROM `objects` ORDER BY `dimension` ASC")
+	end, exports.mysql:getConn(), "SELECT distinct(`dimension`) FROM `objects` ORDER BY `dimension` ASC")
 end)
 
 --[[
@@ -44,7 +44,7 @@ function loadDimension(dimension, onComplete)
         if type(onComplete) == 'function' then
             onComplete(#objects[dimension])
         end
-	end, exports.mysql:getConn('mta'), "SELECT * FROM objects WHERE dimension = ?", dimension)
+	end, exports.mysql:getConn(), "SELECT * FROM objects WHERE dimension = ?", dimension)
 end
 
 --[[
@@ -74,7 +74,7 @@ end
 -- an interior to clear out any objects from a previous custom int.
 --]]
 function removeInteriorObjects(dimension)
-	dbExec(exports.mysql:getConn('mta'), "DELETE FROM objects WHERE dimension = ?", dimension)
+	dbExec(exports.mysql:getConn(), "DELETE FROM objects WHERE dimension = ?", dimension)
 	objects[dimension] = nil
 	triggerClientEvent("object:clear", root, dimension)
 end

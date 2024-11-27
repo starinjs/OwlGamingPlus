@@ -32,7 +32,7 @@ addEventHandler('onResourceStart', resourceRoot, function()
 			end
 			outputDebugString('[CLOTHES] Server / Loaded ' .. count .. ' clothing items')
 		end
-	end, {}, exports.mysql:getConn('mta') , "SELECT cl.sold, cl.id, cl.skin, url, cl.description, cl.price, cl.creator_char, cl.distribution, "..
+	end, {}, exports.mysql:getConn() , "SELECT cl.sold, cl.id, cl.skin, url, cl.description, cl.price, cl.creator_char, cl.distribution, "..
 	"DATE_FORMAT(cl.date,'%b %d, %Y at %h:%i %p') AS fdate, "..
 	"TO_SECONDS(cl.date) AS date, "..
 	"DATE_FORMAT(cl.manufactured_date,'%b %d, %Y at %h:%i %p') AS fmdate, "..

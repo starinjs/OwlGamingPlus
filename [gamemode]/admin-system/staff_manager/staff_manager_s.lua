@@ -32,7 +32,7 @@ function getStaffInfo(username, error)
 			staffInfo.error = error1
 			triggerClientEvent(thePlayer, "openStaffManager", thePlayer, staffInfo)
 		end
-	end, {username, error, source}, exports.mysql:getConn("core"), "SELECT id, username, admin, supporter, vct, scripter, mapper, fmt FROM accounts WHERE username=?", username)
+	end, {username, error, source}, exports.mysql:getConn(), "SELECT id, username, admin, supporter, vct, scripter, mapper, fmt FROM accounts WHERE username=?", username)
 end
 addEvent("staff:getStaffInfo", true)
 addEventHandler("staff:getStaffInfo", root, getStaffInfo)
@@ -49,7 +49,7 @@ function getTeamsData()
 					for i, k in ipairs(staffTitles) do
 						if not users[i] then users[i] = {} end
 						-- fetch report count
-						local reportsQuery = dbQuery(exports.mysql:getConn("mta"), "SELECT adminreports FROM account_details WHERE account_id = ?", row.id)
+						local reportsQuery = dbQuery(exports.mysql:getConn(), "SELECT adminreports FROM account_details WHERE account_id = ?", row.id)
 						local reportsResult = dbPoll(reportsQuery, -1)
 						row.adminreports = (reportsResult[1] and reportsResult[1].adminreports) or 0
 						dbFree(reportsQuery)
@@ -91,7 +91,7 @@ function getTeamsData()
 				dbFree(qh)
 			end
 		end
-	, {staffTitles, users}, exports.mysql:getConn("core"), "SELECT id, username, admin, supporter, vct, scripter, mapper, fmt FROM accounts  WHERE admin > 0 OR supporter > 0 OR vct > 0 OR scripter>0 OR mapper>0 OR fmt>0 GROUP BY id ORDER BY admin DESC, supporter DESC, vct DESC, scripter DESC, mapper DESC")
+	, {staffTitles, users}, exports.mysql:getConn(), "SELECT id, username, admin, supporter, vct, scripter, mapper, fmt FROM accounts  WHERE admin > 0 OR supporter > 0 OR vct > 0 OR scripter>0 OR mapper>0 OR fmt>0 GROUP BY id ORDER BY admin DESC, supporter DESC, vct DESC, scripter DESC, mapper DESC")
 end
 addEvent("staff:getTeamsData", true)
 addEventHandler("staff:getTeamsData", root, getTeamsData)
@@ -150,7 +150,7 @@ function editStaff(userid, ranks, details)
 				exports.announcement:makePlayerNotification(target or user.id, "Staff Rank Updated", exports.global:getPlayerFullIdentity(thePlayer, 1, true).." has "..(ranks[1] > tonumber(user.admin) and "promoted" or "demoted").." you from "..staffTitles[1][tonumber(user.admin)].." to "..staffTitles[1][ranks[1]]..". \n" .. (ranks[1] > tonumber(user.admin) and "Congratulations!" or "Sorry!"))
 				if target then exports.anticheat:changeProtectedElementDataEx(target, "admin_level", ranks[1], true) end
 				if ranks[1] == 0 then -- Remove all tickets if they get removed from admin
-					dbExec(exports.mysql:getConn("core"), "UPDATE `tc_tickets` SET `assign_to`=NULL WHERE `assign_to`=?", userid)
+					dbExec(exports.mysql:getConn(), "UPDATE `tc_tickets` SET `assign_to`=NULL WHERE `assign_to`=?", userid)
 				end
 			end
 			if ranks[2] and ranks[2] ~= tonumber(user.supporter) then
@@ -195,14 +195,14 @@ function editStaff(userid, ranks, details)
 			end
 			if tail ~= '' then
 				tail = string.sub(tail, 1, string.len(tail)-1)
-				if not dbExec(mysql:getConn("core"), dbPrepareString(mysql:getConn("core"), "UPDATE accounts SET " .. tail .. " WHERE id=" .. userid)) then
+				if not dbExec(mysql:getConn(), dbPrepareString(mysql:getConn(), "UPDATE accounts SET " .. tail .. " WHERE id=" .. userid)) then
 					outputChatBox("Internal Error!", thePlayer, 255, 0, 0)
 					return false
 				end
 			end
 			triggerEvent("staff:getStaffInfo", thePlayer, user.username, "Staff rank for "..user.username.." has been set!")
 		end
-	end, {userid, staffTitles, target, ranks, details, thePlayer}, exports.mysql:getConn("core"), "SELECT id, username, admin, supporter, vct, scripter, mapper, fmt FROM accounts WHERE id=?", userid)
+	end, {userid, staffTitles, target, ranks, details, thePlayer}, exports.mysql:getConn(), "SELECT id, username, admin, supporter, vct, scripter, mapper, fmt FROM accounts WHERE id=?", userid)
 
 end
 addEvent("staff:editStaff", true)

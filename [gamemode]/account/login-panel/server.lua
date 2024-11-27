@@ -32,13 +32,13 @@ addEventHandler("onRequestLogin",getRootElement(),validateCredentials)
 
 function getAccountDetails(id)
 	data = false
-	local qb = dbQuery(exports.mysql:getConn("mta"), "SELECT * FROM account_details WHERE account_id=?", id)
+	local qb = dbQuery(exports.mysql:getConn(), "SELECT * FROM account_details WHERE account_id=?", id)
 	local result_mta = dbPoll(qb, -1)
 	if not result_mta then
 		outputDebugString("Magic Data connection failed!")
 	elseif #result_mta == 0 then
 		if dbExec(exports.mysql:getConn("mta", "INSERT INTO account_details SET `account_id`=?", id)) then
-			local qb = dbQuery(exports.mysql:getConn("mta"), "SELECT * FROM account_details WHERE account_id=?", id)
+			local qb = dbQuery(exports.mysql:getConn(), "SELECT * FROM account_details WHERE account_id=?", id)
 			local result_mta = dbPoll(qb, -1)
 			if result_mta and #result_mta == 1 then
 				data = result_mta[1]
@@ -103,14 +103,14 @@ function playerLogin(username,password,checksave)
 						end
 					end
 
-					local qb = dbQuery(exports.mysql:getConn("mta"), "SELECT * FROM account_details WHERE account_id=?", accountData.id)
+					local qb = dbQuery(exports.mysql:getConn(), "SELECT * FROM account_details WHERE account_id=?", accountData.id)
 					local result_mta = dbPoll(qb, -1)
 					if not result_mta then
 						triggerClientEvent(client,"set_authen_text",client,"Login","Magic Data connection failed!")
 						return
 					elseif #result_mta == 0 then
-						if dbExec(exports.mysql:getConn("mta"), "INSERT INTO account_details SET `account_id`=?", accountData.id) then
-							local qb = dbQuery(exports.mysql:getConn("mta"), "SELECT * FROM account_details WHERE account_id=?", accountData.id)
+						if dbExec(exports.mysql:getConn(), "INSERT INTO account_details SET `account_id`=?", accountData.id) then
+							local qb = dbQuery(exports.mysql:getConn(), "SELECT * FROM account_details WHERE account_id=?", accountData.id)
 							local result_mta = dbPoll(qb, -1)
 
 						else
@@ -212,7 +212,7 @@ function playerLogin(username,password,checksave)
 				
 					exports.logs:dbLog("ac"..tostring(accountData["id"]), 27, "ac"..tostring(accountData["id"]), "Connected from "..getPlayerIP(client) .. " - "..getPlayerSerial(client) )
 					mysql:query_free("UPDATE `account_details` SET `mtaserial`='" .. mysql:escape_string(getPlayerSerial(client)) .. "' WHERE `account_id`='".. mysql:escape_string(tostring(accountData["id"])) .."'")
-					dbExec(exports.mysql:getConn("core"), "UPDATE `accounts` SET `ip`=? WHERE id=?", getPlayerIP(client), accountData.id)
+					dbExec(exports.mysql:getConn(), "UPDATE `accounts` SET `ip`=? WHERE id=?", getPlayerIP(client), accountData.id)
 					--[[
 					local dataTable = { }
 					table.insert(dataTable, { "account:characters", characterList( client ) } )
@@ -258,7 +258,7 @@ function playerLogin(username,password,checksave)
 				triggerClientEvent(client,"set_warning_text",client,"Login","Failed to connect to game server. Database error!")
 				dbFree(qh)
 			end
-		end, {username, password, checksave, client}, exports.mysql:getConn("core"), preparedQuery, username)
+		end, {username, password, checksave, client}, exports.mysql:getConn(), preparedQuery, username)
 end
 addEvent("accounts:login:attempt",true)
 addEventHandler("accounts:login:attempt",getRootElement(),playerLogin)
@@ -279,7 +279,7 @@ function goFromLoginToSelectionScreen(player)
 	-- Check if player passed application
 	if (getElementData(player, "appstate") or 0) < 3 then
 		if exports.integration:isPlayerTrialAdmin(player) or exports.integration:isPlayerSupporter(player) then
-			dbExec( exports.mysql:getConn('mta'), "UPDATE account_details SET appstate=3, appreason=NULL WHERE account_id=? ", getElementData(player,"account:id") )
+			dbExec( exports.mysql:getConn(), "UPDATE account_details SET appstate=3, appreason=NULL WHERE account_id=? ", getElementData(player,"account:id") )
 		else
 			triggerClientEvent(player,"account:showRules",player, (getElementData(player, "appstate") or 0) )
 			return false
@@ -290,7 +290,7 @@ function goFromLoginToSelectionScreen(player)
 	if tonumber(getElementData(player, "punishment:points")) > 0 then triggerEvent("points:checkexpiration", player, player) end
 
 	-- TUTORIAL
-	local qh = dbQuery(exports.mysql:getConn("mta"), "SELECT COUNT(*) as chars FROM characters WHERE account = ?", getElementData(player,"account:id"))
+	local qh = dbQuery(exports.mysql:getConn(), "SELECT COUNT(*) as chars FROM characters WHERE account = ?", getElementData(player,"account:id"))
 	local result = dbPoll(qh, 10000)
 
 	if (result and result[1]['chars'] < 1) then
@@ -353,13 +353,13 @@ function playerRegister(username,password,confirmPassword, email)
 				local encryptedPW = passwordHash(password, "bcrypt", {cost = 12})
 				local ipAddress = getPlayerIP(client)
 				preparedQuery3 = "INSERT INTO `accounts` SET `username`=?, `password`=?, `email`=?, `registerdate`=NOW(), `ip`=?, `activated`='0' "
-				local userid = dbExec(exports.mysql:getConn("core"), preparedQuery3, username, encryptedPW, email, ipAddress)
+				local userid = dbExec(exports.mysql:getConn(), preparedQuery3, username, encryptedPW, email, ipAddress)
 				if userid then
 					triggerClientEvent(client,"accounts:register:complete",client, username, password)
 					dbQuery(function(qh, client)
 						local result = dbPoll(qh, 0)
 						if result and #result == 1 then
-							if dbExec(exports.mysql:getConn("mta"), "INSERT INTO account_details SET `account_id`=?, `mtaserial`=?", result[1].id, mtaSerial) then
+							if dbExec(exports.mysql:getConn(), "INSERT INTO account_details SET `account_id`=?, `mtaserial`=?", result[1].id, mtaSerial) then
 								callRemote("http://127.0.0.1:8000/api/send-activation-mail/",
 									function(returns)
 										if not returns.success then
@@ -374,7 +374,7 @@ function playerRegister(username,password,confirmPassword, email)
 							triggerClientEvent(client,"set_warning_text",client,"Register","Error code 0004 occurred.")
 							dbFree(qh)
 						end
-					end, {client}, exports.mysql:getConn("core"), "SELECT id FROM accounts WHERE username=?", username)
+					end, {client}, exports.mysql:getConn(), "SELECT id FROM accounts WHERE username=?", username)
 				else
 					triggerClientEvent(client,"set_warning_text",client,"Register","Could not create new account.")
 					return false
@@ -386,7 +386,7 @@ function playerRegister(username,password,confirmPassword, email)
 			triggerClientEvent(client,"set_warning_text",client,"Register","Error code 0002 occurred.")
 			dbFree(qh)
 		end
-	end, {username, password, confirmPassword, email, client}, exports.mysql:getConn("core"), preparedQuery1, username, email)
+	end, {username, password, confirmPassword, email, client}, exports.mysql:getConn(), preparedQuery1, username, email)
 end
 addEvent("accounts:register:attempt",true)
 addEventHandler("accounts:register:attempt",getRootElement(),playerRegister)

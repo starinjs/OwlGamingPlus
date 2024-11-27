@@ -76,7 +76,7 @@ addEventHandler("onPlayerQuit", root, function( reason )
 		freeSpot(source)
 		local truckingRuns = getElementData(source, "job-system-trucker:truckruns") or false
 		if truckingRuns and truckingRuns ~= 0 then
-			dbExec( exports.mysql:getConn('mta'), "UPDATE jobs SET jobTruckingRuns=? WHERE jobCharID=? AND jobID=1 ", truckingRuns, getElementData(source, "dbid") )
+			dbExec( exports.mysql:getConn(), "UPDATE jobs SET jobTruckingRuns=? WHERE jobCharID=? AND jobID=1 ", truckingRuns, getElementData(source, "dbid") )
 		end
 	end
 end)
@@ -112,7 +112,7 @@ function giveTruckingMoney(vehicle)
 					local truckrunCarry = (currentProgress + truckruns) - truckrunsTilNextLevel
 					if truckrunCarry >= 0 then -- level up
 						local currentJobLevel = getElementData(source, "jobLevel") or 1
-						dbExec( exports.mysql:getConn('mta'), "UPDATE jobs SET jobLevel=?, jobProgress=?, jobTruckingRuns=0 WHERE jobID=1 AND jobCharID=? ", currentJobLevel + 1, truckrunCarry, charID )
+						dbExec( exports.mysql:getConn(), "UPDATE jobs SET jobLevel=?, jobProgress=?, jobTruckingRuns=0 WHERE jobID=1 AND jobCharID=? ", currentJobLevel + 1, truckrunCarry, charID )
 						local info = {
 							{string.upper("Delivery Job New Achievement!"), 255,194,14,255,1,"default-bold"},
 							{""},
@@ -121,10 +121,10 @@ function giveTruckingMoney(vehicle)
 						triggerClientEvent(source, "hudOverlay:drawOverlayBottomCenter", source, info )
 						notified = true
 					else
-						dbExec( exports.mysql:getConn('mta'), "UPDATE jobs SET jobProgress=?, jobTruckingRuns=0 WHERE jobID=1 AND jobCharID=? ", currentProgress+truckruns, charID )
+						dbExec( exports.mysql:getConn(), "UPDATE jobs SET jobProgress=?, jobTruckingRuns=0 WHERE jobID=1 AND jobCharID=? ", currentProgress+truckruns, charID )
 					end
 				else
-					dbExec( exports.mysql:getConn('mta'), "UPDATE jobs SET jobProgress=?, jobTruckingRuns=0 WHERE jobID=1 AND jobCharID=? ", currentProgress+truckruns, charID )
+					dbExec( exports.mysql:getConn(), "UPDATE jobs SET jobProgress=?, jobTruckingRuns=0 WHERE jobID=1 AND jobCharID=? ", currentProgress+truckruns, charID )
 				end
 
 				exports["job-system"]:fetchJobInfoForOnePlayer(source)
@@ -395,13 +395,13 @@ function updateActualOrder( marker, supplies_dropped )
 		end
 		status.supplies = toJSON(supplies)
 		exports.anticheat:setEld( interior, 'status', status, 'all' )
-		dbExec( exports.mysql:getConn('mta'), "UPDATE interiors SET supplies=? WHERE id=?", toJSON(supplies), marker[8] )
+		dbExec( exports.mysql:getConn(), "UPDATE interiors SET supplies=? WHERE id=?", toJSON(supplies), marker[8] )
 	end
 	-- now determine whether or not the marker will be removed.
 	for i, route in pairs( routes ) do
 		if route[7] == marker[7] then
 			table.remove( routes, i )
-			dbExec( exports.mysql:getConn('mta'), "DELETE FROM jobs_trucker_orders WHERE orderID=?", marker[7] )
+			dbExec( exports.mysql:getConn(), "DELETE FROM jobs_trucker_orders WHERE orderID=?", marker[7] )
 			break
 		end
 	end

@@ -393,7 +393,7 @@ function updateItemValue(element, slot, itemValue)
 				local itemIndex = saveditems[element][slot][3]
 				saveditems[element][slot][2] = itemValue
 				notify( element )
-				dbExec( exports.mysql:getConn('mta'), "UPDATE items SET itemValue=? WHERE `index`=? ", itemValue, itemIndex )
+				dbExec( exports.mysql:getConn(), "UPDATE items SET itemValue=? WHERE `index`=? ", itemValue, itemIndex )
 				return true
 			else
 				return false, "Invalid ItemValue"
@@ -460,9 +460,9 @@ function updateMetadata(element, slot, key, value)
 			saveditems[element][slot][5] = metadata
 			notify( element )
 			if metadata == nil then
-				dbExec( exports.mysql:getConn('mta'), "UPDATE items SET metadata=NULL WHERE `index`=? ", itemIndex )
+				dbExec( exports.mysql:getConn(), "UPDATE items SET metadata=NULL WHERE `index`=? ", itemIndex )
 			else
-				dbExec( exports.mysql:getConn('mta'), "UPDATE items SET metadata=? WHERE `index`=? ", toJSON(metadata), itemIndex )
+				dbExec( exports.mysql:getConn(), "UPDATE items SET metadata=? WHERE `index`=? ", toJSON(metadata), itemIndex )
 			end
 			return true
 		else
@@ -706,7 +706,7 @@ function deleteAll( itemID, itemValue )
 		itemValue = tonumber(itemValue) or itemValue
 
 		-- make sure it's erased from the db
-		dbExec( exports.mysql:getConn('mta'), "DELETE FROM items WHERE itemID=? "..( itemValue and "AND itemValue=? " or "" ), itemID, itemValue or nil )
+		dbExec( exports.mysql:getConn(), "DELETE FROM items WHERE itemID=? "..( itemValue and "AND itemValue=? " or "" ), itemID, itemValue or nil )
 
 		-- delete from all storages
 		if saveditems then
@@ -807,7 +807,7 @@ function convertGenerics(world)
 						metadata['url'] = "http://" .. itemValue[4]
 						metadata['texture'] = itemValue[5]
 					end
-					dbExec(mysql:getConn('mta'), updateStr, toJSON(metadata), row[idValue])
+					dbExec(mysql:getConn(), updateStr, toJSON(metadata), row[idValue])
 				end
 			end
 			
@@ -823,7 +823,7 @@ function convertGenerics(world)
 			end
 			addEventHandler("onResourceStart", getRootElement(), outputItemWorldStart)
 		end
-	end, mysql:getConn('mta'), queryStr)
+	end, mysql:getConn(), queryStr)
 end
 
 function commandConvertGenerics(player, cmd)

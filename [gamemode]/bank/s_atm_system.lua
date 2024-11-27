@@ -506,7 +506,7 @@ function withdrawATMMoneyPersonal(amount, theATM)
 		end
 		if takeBankMoney(cardOwnerElement, (amount + atmFee )) then
 			exports.global:giveMoney(client, amount)
-			dbExec(exports.mysql:getConn('mta'), "UPDATE `factions` SET `bankbalance` = `bankbalance` + ? WHERE `id` = ?", atmFee, factionToDeposit )
+			dbExec(exports.mysql:getConn(), "UPDATE `factions` SET `bankbalance` = `bankbalance` + ? WHERE `id` = ?", atmFee, factionToDeposit )
 			moneyTransferred = true
 		else
 			exports.hud:sendBottomNotification(client, "ATM Machine", "ATM Card Number '"..cardNumber.."' (Owner: '"..no_(cardOwner).."') doesn't have enough funds.")
@@ -517,7 +517,7 @@ function withdrawATMMoneyPersonal(amount, theATM)
 		if money >= 0 then
 			if updateBankMoney(client, charID, ( amount + atmFee ), "minus") then--Update the card Owner's bankmoney (ElementData and SQL)
 				exports.global:giveMoney(client, amount)
-				dbExec(exports.mysql:getConn('mta'), "UPDATE `factions` SET `bankbalance` = `bankbalance` + ? WHERE `id` = ?", atmFee, factionToDeposit )
+				dbExec(exports.mysql:getConn(), "UPDATE `factions` SET `bankbalance` = `bankbalance` + ? WHERE `id` = ?", atmFee, factionToDeposit )
 				moneyTransferred = true
 			end
 		else

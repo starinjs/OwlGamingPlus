@@ -31,7 +31,7 @@ local function checkForExpiredAdvertisements()
 
     lastExpiryCheck = now()
 
-    exports.mysql:getConn('mta'):exec('DELETE FROM advertisements WHERE expiry < ?', now())
+    exports.mysql:getConn():exec('DELETE FROM advertisements WHERE expiry < ?', now())
 end
 
 local function canManageAdvertisement(player, advertisement)
@@ -49,7 +49,7 @@ local function canManageAdvertisement(player, advertisement)
 end
 
 function createAdvertisement(sender, advertisement, onComplete)
-    local handle = exports.mysql:getConn('mta'):query(
+    local handle = exports.mysql:getConn():query(
         function (handle, sender)
             local _, _, lastInsertId = handle:poll(0)
 
@@ -70,14 +70,14 @@ function createAdvertisement(sender, advertisement, onComplete)
 end
 
 local function updateAdvertisement(sender, advertisement, onComplete)
-    exports.mysql:getConn('mta'):query(function (handle, sender)
+    exports.mysql:getConn():query(function (handle, sender)
         local result = handle:poll(0)
 
         if not canManageAdvertisement(sender, result[1]) then
             return
         end
 
-        exports.mysql:getConn('mta'):exec(
+        exports.mysql:getConn():exec(
             "UPDATE advertisements SET advertisement = ?, name = ?, section = ?, phone = ?, address = ?, start = ?, expiry = ?, faction = ? WHERE id = ?",
             advertisement.advertisement,
             advertisement.name,
@@ -123,7 +123,7 @@ end)
 addEvent('advertisements:fetch-single', true)
 addEventHandler('advertisements:fetch-single', root, function (id)
     local receiver = client or source
-    exports.mysql:getConn('mta'):query(function (handle, receiver)
+    exports.mysql:getConn():query(function (handle, receiver)
         local result = handle:poll(0)
 
         triggerClientEvent(receiver, 'advertisements:receive-single', receiver, result[1]) -- todo: handle not found id.
@@ -204,7 +204,7 @@ addEventHandler('advertisements:push', root, function (id)
         return
     end
 
-    exports.mysql:getConn('mta'):query(
+    exports.mysql:getConn():query(
         function (handle, sender)
             local result = handle:poll(0)
             if not result or not result[1] then return end
@@ -233,14 +233,14 @@ end)
 
 addEvent('advertisements:delete', true)
 addEventHandler('advertisements:delete', root, function (id)
-    exports.mysql:getConn('mta'):query(function (handle, sender)
+    exports.mysql:getConn():query(function (handle, sender)
         local result = handle:poll(0)
 
         if not canManageAdvertisement(sender, result[1]) then
             return
         end
 
-        exports.mysql:getConn('mta'):exec('DELETE FROM advertisements WHERE id = ?', result[1].id)
+        exports.mysql:getConn():exec('DELETE FROM advertisements WHERE id = ?', result[1].id)
 
         triggerEvent('advertisements:fetch-page', sender) -- return user to home page.
 

@@ -68,8 +68,8 @@ function savePlayer(reason, player)
 				zone = "Unknown"
 			end
 		
-			dbExec(exports.mysql:getConn("mta"), "UPDATE characters SET x = ?, y = ?, z = ?, rotation = ?, health = ?, armor = ?, dimension_id = ?, interior_id = ?, lastlogin=NOW(), lastarea = ?, timeinserver = ?, alcohollevel = ? WHERE id = ?", x, y, z, rot, health, armor, dimension, interior, zone, timeinserver, tostring(alcohollevel), getElementData(player, "dbid"))
-			dbExec(exports.mysql:getConn("mta"), "UPDATE account_details SET lastlogin=NOW() WHERE account_id = ?", getElementData(player,"account:id"))
+			dbExec(exports.mysql:getConn(), "UPDATE characters SET x = ?, y = ?, z = ?, rotation = ?, health = ?, armor = ?, dimension_id = ?, interior_id = ?, lastlogin=NOW(), lastarea = ?, timeinserver = ?, alcohollevel = ? WHERE id = ?", x, y, z, rot, health, armor, dimension, interior, zone, timeinserver, tostring(alcohollevel), getElementData(player, "dbid"))
+			dbExec(exports.mysql:getConn(), "UPDATE account_details SET lastlogin=NOW() WHERE account_id = ?", getElementData(player,"account:id"))
 		end
 	end
 end

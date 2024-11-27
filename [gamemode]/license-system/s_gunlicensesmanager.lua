@@ -102,7 +102,7 @@ function mysqlIssue(name, licensetype)
 	local onlinePlayer = getPlayerFromName(name)
 
 	if name and (licensetype == "gun" or licensetype == "gun2") then
-		dbExec(exports.mysql:getConn('mta'), "UPDATE characters SET ?? = 1 WHERE charactername = ?", licensetype .. '_license', name)
+		dbExec(exports.mysql:getConn(), "UPDATE characters SET ?? = 1 WHERE charactername = ?", licensetype .. '_license', name)
 		if onlinePlayer then
 			outputChatBox("You have been issued a weapon license.", onlinePlayer)
 		end

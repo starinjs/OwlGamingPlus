@@ -1989,7 +1989,7 @@ addCommandHandler("setage", asetPlayerAge)
              if (race>2) or (race<0) then
                 outputChatBox("Error: Please chose either 0 for black, 1 for white, or 2 for asian.", thePlayer, 255, 0, 0)
              else
-             	dbExec( exports.mysql:getConn('mta'), "UPDATE characters SET skincolor=? WHERE id=? ", race, dbid )
+             	dbExec( exports.mysql:getConn(), "UPDATE characters SET skincolor=? WHERE id=? ", race, dbid )
 				if (race==0) then
 				    outputChatBox("You changed " .. targetPlayerName .. "'s race to black.", thePlayer, 0, 255, 0)
 				    outputChatBox("Your race was changed to black.", targetPlayer, 0, 255, 0)
@@ -2020,7 +2020,7 @@ addCommandHandler("setage", asetPlayerAge)
              if (gender>1) or (gender<0) then
                 outputChatBox("Error: Please choose either 0 for male, or 1 for female.", thePlayer, 255, 0, 0)
              else
-             dbExec( exports.mysql:getConn('mta'), "UPDATE characters SET gender=? WHERE id=? ", gender, dbid )
+             dbExec( exports.mysql:getConn(), "UPDATE characters SET gender=? WHERE id=? ", gender, dbid )
 			 exports.anticheat:setEld(targetPlayer, "gender", gender, 'all')
 				if (gender==0) then
 				    outputChatBox("You changed " .. targetPlayerName .. "'s gender to Male.", thePlayer, 0, 255, 0)
@@ -2315,7 +2315,7 @@ function getTwoFactorKey(thePlayer, cmd, fname) -- Maxime / 2015.3.7
 			outputChatBox("SYNTAX: /" .. cmd .. " [Forums Username] - Reveal Recovery Key for Two-Factor Authentication.", thePlayer, 255, 194, 14)
 			return false
 		end
-		local qh = dbQuery( exports.mysql:getConn('mta'), "SELECT userid, username, dbtech_twofactor_recovery FROM user WHERE username=? ", fname )
+		local qh = dbQuery( exports.mysql:getConn(), "SELECT userid, username, dbtech_twofactor_recovery FROM user WHERE username=? ", fname )
 		local res, nums, id = dbPoll( qh, 10000 )
 		if res and nums > 0 then
 			local f = res[1]
@@ -2349,7 +2349,7 @@ function charityGC(thePlayer, cmd, amount)
 						return
 					end
 			
-					if dbExec(exports.mysql:getConn("core"), "UPDATE `accounts` SET `credits`=`credits`-? WHERE `id`=? ", amount, id) then
+					if dbExec(exports.mysql:getConn(), "UPDATE `accounts` SET `credits`=`credits`-? WHERE `id`=? ", amount, id) then
 						setElementData(thePlayer, "credits", currentGC-amount, true)
 						exports.global:sendMessageToAdmins("AdmWrn: "..getElementData(thePlayer, "account:username").." charitied "..amount.." GCs.")
 						outputChatBox("You have charitied "..amount.." GCs.", thePlayer, 0, 255, 0)
@@ -2358,7 +2358,7 @@ function charityGC(thePlayer, cmd, amount)
 						outputChatBox("ERROR: TAKEGC #001", thePlayer, 255, 0, 0)
 					end
 				end
-			end, {thePlayer, amount, id}, exports.mysql:getConn("core"), "SELECT `credits` FROM `accounts` WHERE `id`=?  LIMIT 1", id)
+			end, {thePlayer, amount, id}, exports.mysql:getConn(), "SELECT `credits` FROM `accounts` WHERE `id`=?  LIMIT 1", id)
 	end
 end
 addCommandHandler("charitygc", charityGC)
@@ -2395,7 +2395,7 @@ addCommandHandler( 'extendmaxchar', function( player, cmd, target )
 						if res and #res==1 then
 							local to = math.max( res[1].cur, res[1].cap ) + 1
 							if to <= limit then
-								dbExec( exports.mysql:getConn('mta'), "UPDATE account_details SET max_characters=? WHERE account_id=? ", to, id )
+								dbExec( exports.mysql:getConn(), "UPDATE account_details SET max_characters=? WHERE account_id=? ", to, id )
 								exports.logs:dbLog( player, 4, targetPlayer, cmd.." to "..to )
 								outputChatBox( "You have successfully extended "..exports.global:getPlayerFullIdentity( targetPlayer ).."'s character cap to "..res[1].cur.."/"..to..".", player, 0, 255, 0 )
 								outputChatBox( exports.global:getPlayerFullIdentity( player ).." has extended your character cap to "..res[1].cur.."/"..to..".", targetPlayer, 0, 255, 0 )
@@ -2405,7 +2405,7 @@ addCommandHandler( 'extendmaxchar', function( player, cmd, target )
 						else
 							outputChatBox( "Errors occurred while checking characters quota.", player, 255, 0, 0 )
 						end
-					end, { player, cmd, targetPlayer, targetPlayerName, id }, exports.mysql:getConn('mta'), "SELECT COUNT(id) AS cur, (SELECT max_characters FROM account_details WHERE account_details.account_id=?) AS cap FROM characters WHERE account=?", id, id )
+					end, { player, cmd, targetPlayer, targetPlayerName, id }, exports.mysql:getConn(), "SELECT COUNT(id) AS cur, (SELECT max_characters FROM account_details WHERE account_details.account_id=?) AS cap FROM characters WHERE account=?", id, id )
 				else
 					outputChatBox( "Player is not logged in.", player, 255, 0, 0 )
 				end
@@ -2416,8 +2416,8 @@ end, false )
 
 function clearWhois(thePlayer, command)
 	if exports.integration:isPlayerHeadAdmin(thePlayer) or exports.integration:isPlayerLeadAdmin(thePlayer) then
-		dbExec(exports.mysql:getConn("mta"), "UPDATE account_details SET mtaserial=NULL WHERE mtaserial=?", getPlayerSerial(thePlayer))
-		dbExec(exports.mysql:getConn("core"), "UPDATE accounts SET ip=NULL WHERE ip=?", getPlayerIP(thePlayer))
+		dbExec(exports.mysql:getConn(), "UPDATE account_details SET mtaserial=NULL WHERE mtaserial=?", getPlayerSerial(thePlayer))
+		dbExec(exports.mysql:getConn(), "UPDATE accounts SET ip=NULL WHERE ip=?", getPlayerIP(thePlayer))
 
 		exports.logs:dbLog(thePlayer, 4, thePlayer, command)
 

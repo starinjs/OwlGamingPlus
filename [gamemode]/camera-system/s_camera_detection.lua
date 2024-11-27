@@ -177,7 +177,7 @@ function sendWarningToCops(theVehicle, thePlayer, speed, x, y, z)
 				playerseen = getElementData(thePlayer, "dbid") or -1
 			end
 			
-			dbExec(exports.mysql:getConn("mta"), "INSERT INTO `speedingviolations` (`carID`, `time`, `speed`, `area`, `personVisible`) VALUES (?, NOW(), ?, ?, ?)", vehicleID, tostring(math.ceil(speed)), areaName .. " " ..direction, playerseen)
+			dbExec(exports.mysql:getConn(), "INSERT INTO `speedingviolations` (`carID`, `time`, `speed`, `area`, `personVisible`) VALUES (?, NOW(), ?, ?, ?)", vehicleID, tostring(math.ceil(speed)), areaName .. " " ..direction, playerseen)
 		end
 	end
 end

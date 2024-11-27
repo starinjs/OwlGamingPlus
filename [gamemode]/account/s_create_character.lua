@@ -126,7 +126,7 @@ function charactersQuotaCheck()
 		else
 			triggerClientEvent( client, 'account:charactersQuotaCheck', resourceRoot, false, "Errors occurred while checking characters quota." )
 		end
-	end, { client }, exports.mysql:getConn('mta'), "SELECT COUNT(id) AS cur, (SELECT max_characters FROM account_details WHERE account_details.account_id=?) AS cap FROM characters WHERE account=?", id, id )
+	end, { client }, exports.mysql:getConn(), "SELECT COUNT(id) AS cur, (SELECT max_characters FROM account_details WHERE account_details.account_id=?) AS cap FROM characters WHERE account=?", id, id )
 end
 addEvent('account:charactersQuotaCheck', true)
 addEventHandler('account:charactersQuotaCheck', resourceRoot, charactersQuotaCheck)

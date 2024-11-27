@@ -32,12 +32,12 @@ addEventHandler( 'factions:fetchFactionList', resourceRoot, function ( )
 			end
 		end
 		triggerClientEvent( client, "showFactionList", resourceRoot, factions )
-	end , { client }, exports.mysql:getConn('mta'), "SELECT	id, name, type, (SELECT COUNT(*) FROM characters_faction c WHERE c.faction_id = f.id) AS members, (SELECT COUNT(*) FROM interiors i WHERE i.faction = f.id AND i.deleted=0) AS ints, (SELECT COUNT(*) FROM vehicles v WHERE v.faction = f.id AND v.deleted=0) AS vehs, max_interiors, max_vehicles, free_custom_ints, free_custom_skins, before_tax_value, before_wage_charge FROM factions f ORDER BY id ASC" )
+	end , { client }, exports.mysql:getConn(), "SELECT	id, name, type, (SELECT COUNT(*) FROM characters_faction c WHERE c.faction_id = f.id) AS members, (SELECT COUNT(*) FROM interiors i WHERE i.faction = f.id AND i.deleted=0) AS ints, (SELECT COUNT(*) FROM vehicles v WHERE v.faction = f.id AND v.deleted=0) AS vehs, max_interiors, max_vehicles, free_custom_ints, free_custom_skins, before_tax_value, before_wage_charge FROM factions f ORDER BY id ASC" )
 end )
 
 addEvent( 'factions:editFaction', true )
 addEventHandler( 'factions:editFaction', resourceRoot, function( data, old_id )
-	local qh = dbQuery( exports.mysql:getConn('mta'), "SELECT id, name FROM factions WHERE id!=? AND name=? LIMIT 1", old_id or 0, data.name )
+	local qh = dbQuery( exports.mysql:getConn(), "SELECT id, name FROM factions WHERE id!=? AND name=? LIMIT 1", old_id or 0, data.name )
 	local res, nums, id = dbPoll( qh, 10000 )
 	if res then
 		if nums > 0 and res[1].name == data.name then
@@ -45,7 +45,7 @@ addEventHandler( 'factions:editFaction', resourceRoot, function( data, old_id )
 		end
 		-- if editing an existed faction.
 		if old_id then
-			local qh2 = dbQuery( exports.mysql:getConn('mta'), "UPDATE factions SET name=?, type=?, max_interiors=?, max_vehicles=?, free_custom_ints=?, free_custom_skins=?, before_tax_value=?, before_wage_charge=? WHERE id=?", data.name, data.type, data.max_interiors, data.max_vehicles, data.free_custom_ints, data.free_custom_skins, data.before_tax_value, data.free_wage_amount, old_id )
+			local qh2 = dbQuery( exports.mysql:getConn(), "UPDATE factions SET name=?, type=?, max_interiors=?, max_vehicles=?, free_custom_ints=?, free_custom_skins=?, before_tax_value=?, before_wage_charge=? WHERE id=?", data.name, data.type, data.max_interiors, data.max_vehicles, data.free_custom_ints, data.free_custom_skins, data.before_tax_value, data.free_wage_amount, old_id )
 			local res, nums, id = dbPoll( qh2, 10000 )
 			if nums and nums > 0 then
 				local team = exports.pool:getElement( 'team', old_id )
@@ -70,7 +70,7 @@ addEventHandler( 'factions:editFaction', resourceRoot, function( data, old_id )
 			end
 		-- if creating new faction.
 		else
-			local qh2 = dbQuery( exports.mysql:getConn('mta'), "INSERT INTO factions SET bankbalance='0', motd='Welcome to the faction.', note = '', name=?, type=?, max_interiors=?, max_vehicles=?, free_custom_ints=?, free_custom_skins=?, before_tax_value=?, before_wage_charge=? ", data.name, data.type, data.max_interiors, data.max_vehicles, data.free_custom_ints, data.free_custom_skins, data.before_tax_value, data.free_wage_amount )
+			local qh2 = dbQuery( exports.mysql:getConn(), "INSERT INTO factions SET bankbalance='0', motd='Welcome to the faction.', note = '', name=?, type=?, max_interiors=?, max_vehicles=?, free_custom_ints=?, free_custom_skins=?, before_tax_value=?, before_wage_charge=? ", data.name, data.type, data.max_interiors, data.max_vehicles, data.free_custom_ints, data.free_custom_skins, data.before_tax_value, data.free_wage_amount )
 			local res, nums, id = dbPoll( qh2, 10000 )
 			if id and tonumber(id) then
 				data.id = id
@@ -91,7 +91,7 @@ addEventHandler( 'factions:editFaction', resourceRoot, function( data, old_id )
 				local permissions = table.concat(perms, ",")
 				for i=1,2 do
 					if i == 1 then
-						local qh3 = dbQuery( exports.mysql:getConn('mta'), "INSERT INTO faction_ranks SET faction_id=?, name='Leader Rank', permissions=?, isDefault='0', isLeader='1', wage='0'", data.id, permissions)
+						local qh3 = dbQuery( exports.mysql:getConn(), "INSERT INTO faction_ranks SET faction_id=?, name='Leader Rank', permissions=?, isDefault='0', isLeader='1', wage='0'", data.id, permissions)
 						local res, nums, rid1 = dbPoll( qh3, 10000 )
 						local rankID = tonumber(rid1)
 						FactionRanks[rankID] = {}
@@ -107,7 +107,7 @@ addEventHandler( 'factions:editFaction', resourceRoot, function( data, old_id )
 						dbFree( qh3 )
 
 					elseif i == 2 then	
-						local qh4 = dbQuery( exports.mysql:getConn('mta'), "INSERT INTO faction_ranks SET faction_id=?, name='Default Rank', permissions='', isDefault='1', isLeader='0', wage='0'", data.id)
+						local qh4 = dbQuery( exports.mysql:getConn(), "INSERT INTO faction_ranks SET faction_id=?, name='Default Rank', permissions='', isDefault='1', isLeader='0', wage='0'", data.id)
 						local res, nums, rid2 = dbPoll( qh4, 10000 )
 						local rankID = tonumber(rid2)
 						FactionRanks[rankID] = {}
@@ -123,11 +123,11 @@ addEventHandler( 'factions:editFaction', resourceRoot, function( data, old_id )
 						dbFree( qh4 )
 					end
 				end		
-				--local orderQuery = dbQuery( exports.mysql:getConn('mta'), "UPDATE factions as f, (SELECT * FROM faction_ranks WHERE faction_id=?) as temp SET rank_order=temp.id WHERE id=?", data.id, data.id)
+				--local orderQuery = dbQuery( exports.mysql:getConn(), "UPDATE factions as f, (SELECT * FROM faction_ranks WHERE faction_id=?) as temp SET rank_order=temp.id WHERE id=?", data.id, data.id)
 				
 				
 				
-				dbExec(exports.mysql:getConn("mta"), "UPDATE `factions` SET `rank_order` = '"..rank_order.."' WHERE `id` = "..data.id)
+				dbExec(exports.mysql:getConn(), "UPDATE `factions` SET `rank_order` = '"..rank_order.."' WHERE `id` = "..data.id)
 				exports.anticheat:setEld(theTeam, "rank_order", rank_order, 'all')
 				exports.anticheat:setEld(theTeam, "ranks", factionRanks, 'all')
 				exports.anticheat:setEld(theTeam, "wages", factionWages, 'all') 
@@ -153,8 +153,8 @@ end )
 addEvent( 'factions:delete', true )
 addEventHandler( 'factions:delete', resourceRoot, function( factionID )
 	factionID = tonumber( factionID )
-	dbExec(exports.mysql:getConn("mta"), "DELETE FROM factions WHERE id=?", factionID )
-	dbExec(exports.mysql:getConn("mta"), "DELETE FROM faction_ranks WHERE faction_id=?", factionID )
+	dbExec(exports.mysql:getConn(), "DELETE FROM factions WHERE id=?", factionID )
+	dbExec(exports.mysql:getConn(), "DELETE FROM faction_ranks WHERE faction_id=?", factionID )
 	--Clean all players in the faction
 	for key, value in pairs( getPlayersInFaction( factionID ) ) do
 		local factionInfo = getElementData(value, "faction")
@@ -183,7 +183,7 @@ addEventHandler( 'factions:delete', resourceRoot, function( factionID )
 			exports.anticheat:changeProtectedElementDataEx(value, "duty", 0, true)
 		end
 	end
-	dbExec(exports.mysql:getConn("mta"), "DELETE FROM characters_faction WHERE faction_id=?", factionID)
+	dbExec(exports.mysql:getConn(), "DELETE FROM characters_faction WHERE faction_id=?", factionID)
 
 	local theTeam = exports.pool:getElement( 'team', factionID )
 
@@ -253,7 +253,7 @@ addEventHandler( 'factions:listMember', resourceRoot, function ( fact_id )
 		local res, nums, id = dbPoll( qh, 0 )
 		if nums and tonumber( nums ) then
 			if nums > 0 then
-				local qh2 = dbQuery( exports.mysql:getConn('mta'), "SELECT * FROM factions WHERE id=?", fact_id )
+				local qh2 = dbQuery( exports.mysql:getConn(), "SELECT * FROM factions WHERE id=?", fact_id )
 				local res2, nums2, id2 = dbPoll( qh2, 10000 )
 				if res2 and nums2 > 0 then
 					local members = {}
@@ -289,5 +289,5 @@ addEventHandler( 'factions:listMember', resourceRoot, function ( fact_id )
 			dbFree( qh )
 			return not triggerClientEvent( client, 'factions:listMember', resourceRoot, fact_id, 'Errors occurred while fetching information from server.' )
 		end
-	end , { client, fact_id }, exports.mysql:getConn('mta'), "SELECT c.charactername, c.account, cf.faction_leader, cf.faction_rank FROM characters_faction cf LEFT JOIN characters c ON c.id=cf.character_id WHERE cf.faction_id=? ORDER BY c.charactername", fact_id )
+	end , { client, fact_id }, exports.mysql:getConn(), "SELECT c.charactername, c.account, cf.faction_leader, cf.faction_rank FROM characters_faction cf LEFT JOIN characters c ON c.id=cf.character_id WHERE cf.faction_id=? ORDER BY c.charactername", fact_id )
 end)

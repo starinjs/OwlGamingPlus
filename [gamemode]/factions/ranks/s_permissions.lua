@@ -127,7 +127,7 @@ function setAllRankPermissions(rankID, permTable, newWage, factionID)
 	table.sort(permTable)
 	permTable = table.concat(permTable, ",")
 	
-	dbExec(exports.mysql:getConn("mta"), "UPDATE `faction_ranks` SET `permissions` = ?, `wage` = ? WHERE `id` = ?", permTable, newWage, rankID)
+	dbExec(exports.mysql:getConn(), "UPDATE `faction_ranks` SET `permissions` = ?, `wage` = ? WHERE `id` = ?", permTable, newWage, rankID)
 	FactionRanks[rankID]["permissions"] = permTable
 	FactionRanks[rankID]["wage"] = newWage
 	factionWages[rankID] = newWage

@@ -31,7 +31,7 @@ function load( res )
 	end
 	threads = { }
 	-- ok
-	local qh = dbQuery( exports.mysql:getConn('mta'), query_load.." WHERE v.deleted=0" )
+	local qh = dbQuery( exports.mysql:getConn(), query_load.." WHERE v.deleted=0" )
 	local result , num_affected_rows, last_insert_id = dbPoll ( qh, load_timeout )
 	if result and num_affected_rows > 0 then
 		total = num_affected_rows
@@ -87,7 +87,7 @@ function loadOneVehicle(data, loadDeletedOne)
 		local var1, var2 = data.variant1, data.variant2
 		if not exports.vehicle:isValidVariant( data.model, var1, var2 ) then
 			var1, var2 = exports.vehicle:getRandomVariant( data.model )
-			dbExec( exports.mysql:getConn('mta'), "UPDATE vehicles SET variant1 = " .. var1 .. ", variant2 = " .. var2 .. " WHERE id='" .. mysql:escape_string(data.id) .. "'")
+			dbExec( exports.mysql:getConn(), "UPDATE vehicles SET variant1 = " .. var1 .. ", variant2 = " .. var2 .. " WHERE id='" .. mysql:escape_string(data.id) .. "'")
 		end
 
 		-- Spawn the vehicle
@@ -303,6 +303,6 @@ function loadOneVehicle(data, loadDeletedOne)
 			if result then
 				loadOneVehicle( result[1] )
 			end
-		end, { }, exports.mysql:getConn('mta'), query_load.." WHERE v.id=? "..( loadDeletedOne and "" or " AND deleted=0 " ), data )
+		end, { }, exports.mysql:getConn(), query_load.." WHERE v.id=? "..( loadDeletedOne and "" or " AND deleted=0 " ), data )
 	end
 end

@@ -104,7 +104,7 @@ function givePlayerPerk(targetPlayer, perkID, perkValue, days, points, ...)
 				if (characterID and tonumber(characterID) > 0) then
 					local nextMaxInts = tonumber( getElementData(targetPlayer, "maxinteriors") )+1
 					exports.anticheat:changeProtectedElementDataEx(targetPlayer, "maxinteriors", nextMaxInts)
-					dbExec(exports.mysql:getConn("core"), "UPDATE `accounts` SET `credits`=credits-? WHERE `id`=?", points, gameAccountID)
+					dbExec(exports.mysql:getConn(), "UPDATE `accounts` SET `credits`=credits-? WHERE `id`=?", points, gameAccountID)
 					exports.mysql:query_free("UPDATE `characters` SET `maxinteriors`='"..tostring(nextMaxInts).."' WHERE `id`='".. tostring(characterID) .."'")
 					setElementData(targetPlayer, "credits", curGC-points)
 					loadAllPerks(targetPlayer)
@@ -116,7 +116,7 @@ function givePlayerPerk(targetPlayer, perkID, perkValue, days, points, ...)
 				if (characterID and tonumber(characterID) > 0) then
 					local currentMaxVehicles = tonumber( getElementData(targetPlayer, "maxvehicles") )+1
 					exports.anticheat:changeProtectedElementDataEx(targetPlayer, "maxvehicles", currentMaxVehicles)
-					dbExec(exports.mysql:getConn("core"), "UPDATE `accounts` SET `credits`=credits-? WHERE `id`=?", points, gameAccountID)
+					dbExec(exports.mysql:getConn(), "UPDATE `accounts` SET `credits`=credits-? WHERE `id`=?", points, gameAccountID)
 					exports.mysql:query_free("UPDATE `characters` SET `maxvehicles`='"..tostring(currentMaxVehicles).."' WHERE `id`='".. tostring(characterID) .."'")
 					setElementData(targetPlayer, "credits", curGC-points)
 					loadAllPerks(targetPlayer)
@@ -126,8 +126,8 @@ function givePlayerPerk(targetPlayer, perkID, perkValue, days, points, ...)
 				end
 			elseif (tonumber(perkID) == 42) then -- Extra char slot
 				if (characterID and tonumber(characterID) > 0) then
-					dbExec( exports.mysql:getConn('mta'), "UPDATE account_details SET max_characters=max_characters+1 WHERE account_id=? ", gameAccountID )
-					dbExec( exports.mysql:getConn('core'), "UPDATE accounts SET credits=credits-? WHERE id=? ", points, gameAccountID )
+					dbExec( exports.mysql:getConn(), "UPDATE account_details SET max_characters=max_characters+1 WHERE account_id=? ", gameAccountID )
+					dbExec( exports.mysql:getConn(), "UPDATE accounts SET credits=credits-? WHERE id=? ", points, gameAccountID )
 					setElementData(targetPlayer, "credits", curGC-points)
 					loadAllPerks(targetPlayer)
 					addPurchaseHistory(targetPlayer, (donationPerks[tonumber(perkID)][1] or "").."", -points)
@@ -142,14 +142,14 @@ function givePlayerPerk(targetPlayer, perkID, perkValue, days, points, ...)
 						return false, reason
 					end
 					
-					local mysqlQ = dbQuery(exports.mysql:getConn("core"), "SELECT `username` FROM `accounts` WHERE `username` = ?", username)
+					local mysqlQ = dbQuery(exports.mysql:getConn(), "SELECT `username` FROM `accounts` WHERE `username` = ?", username)
 					local mysqlQ = dbPoll(mysqlQ, 10000)
 					if #mysqlQ ~= 0 then
 						return false, "This name is already taken"
 					end
 					exports['admin-system']:addAdminHistory(gameAccountID, 0, "Username renamed from "..getElementData(targetPlayer, "account:username").." to "..(username), 6)
 
-					dbExec(exports.mysql:getConn("core"), "UPDATE `accounts` SET `username`=?, `credits`=credits-? WHERE `id`=?", username, points, gameAccountID)
+					dbExec(exports.mysql:getConn(), "UPDATE `accounts` SET `username`=?, `credits`=credits-? WHERE `id`=?", username, points, gameAccountID)
 					setElementData(targetPlayer, "credits", curGC-points)
 					loadAllPerks(targetPlayer)
 					
@@ -221,7 +221,7 @@ function givePlayerPerk(targetPlayer, perkID, perkValue, days, points, ...)
 					
 					if exports.global:giveItem(targetPlayer, 2, number) then
 						exports.mysql:query_free("INSERT INTO `phones` (`phonenumber`, `boughtby`) VALUES ('"..tostring(number).."', '".. tostring(characterID) .."')")
-						dbExec( exports.mysql:getConn('core'), "UPDATE accounts SET credits=credits-? WHERE id=? ", points, gameAccountID )
+						dbExec( exports.mysql:getConn(), "UPDATE accounts SET credits=credits-? WHERE id=? ", points, gameAccountID )
 						setElementData(targetPlayer, "credits", curGC-points)
 						loadAllPerks(targetPlayer)
 						triggerClientEvent(targetPlayer, "donation-system:phone:close", targetPlayer)
@@ -233,13 +233,13 @@ function givePlayerPerk(targetPlayer, perkID, perkValue, days, points, ...)
 				end
 			elseif tonumber(perkID) == 24 or tonumber(perkID) == 25 or tonumber(perkID) == 26 then --Unique selection screen
 				exports.mysql:query_free("INSERT INTO `donators` (accountID, perkID, perkValue) VALUES ('".. tostring(gameAccountID)  .."', '".. exports.mysql:escape_string(perkID) .."', '".. exports.mysql:escape_string(perkValue) .."' )")
-				dbExec( exports.mysql:getConn('core'), "UPDATE accounts SET credits=credits-? WHERE id=? ", points, gameAccountID )
+				dbExec( exports.mysql:getConn(), "UPDATE accounts SET credits=credits-? WHERE id=? ", points, gameAccountID )
 				setElementData(targetPlayer, "credits", curGC-points)
 				loadAllPerks(targetPlayer)
 				addPurchaseHistory(targetPlayer, (donationPerks[tonumber(perkID)][1] or "").."", -points)
 				return true, "Perk activated"
 			elseif tonumber(perkID) == 9 then -- Dupont extra slot
-				dbExec( exports.mysql:getConn('core'), "UPDATE accounts SET credits=credits-? WHERE id=? ", points, gameAccountID )
+				dbExec( exports.mysql:getConn(), "UPDATE accounts SET credits=credits-? WHERE id=? ", points, gameAccountID )
 				exports.mysql:query_free("UPDATE characters SET max_clothes=max_clothes+1 WHERE `id`='".. tostring(characterID) .."'")
 				setElementData(targetPlayer, "credits", curGC-points)
 				loadAllPerks(targetPlayer)
@@ -248,7 +248,7 @@ function givePlayerPerk(targetPlayer, perkID, perkValue, days, points, ...)
 			else -- Handle the regular perks
 				exports.mysql:query_free("INSERT INTO `donators` (accountID, perkID, perkValue, expirationDate) VALUES ('".. tostring(gameAccountID)  .."', '".. exports.mysql:escape_string(perkID) .."', '".. exports.mysql:escape_string(perkValue) .."', NOW() + interval " .. tostring(days).." day)")
 				
-				dbExec( exports.mysql:getConn('core'), "UPDATE accounts SET credits=credits-? WHERE id=? ", points, gameAccountID )
+				dbExec( exports.mysql:getConn(), "UPDATE accounts SET credits=credits-? WHERE id=? ", points, gameAccountID )
 				setElementData(targetPlayer, "credits", curGC-points)
 				loadAllPerks(targetPlayer)
 				exports.global:updateNametagColor(targetPlayer)
@@ -312,7 +312,7 @@ function takeGC(thePlayer, amount)
 			end
 		end
 
-		local currentGC = dbQuery(exports.mysql:getConn("core"), "SELECT `credits` FROM `accounts` WHERE `id`=?  LIMIT 1", id)
+		local currentGC = dbQuery(exports.mysql:getConn(), "SELECT `credits` FROM `accounts` WHERE `id`=?  LIMIT 1", id)
 		local currentGC = dbPoll(currentGC, 10000)
 		if currentGC and #currentGC == 1 then
 			currentGC = tonumber(currentGC[1].credits)
@@ -320,7 +320,7 @@ function takeGC(thePlayer, amount)
 				return false, "Player lacks of game coins"
 			end
 		
-			if dbExec(exports.mysql:getConn("core"), "UPDATE `accounts` SET `credits`=`credits`-? WHERE `id`=? ", amount, id) then
+			if dbExec(exports.mysql:getConn(), "UPDATE `accounts` SET `credits`=`credits`-? WHERE `id`=? ", amount, id) then
 				setElementData(thePlayer, "credits", currentGC-amount)
 				return true
 			else
@@ -336,9 +336,9 @@ function giveAccountGC(account, amount, historyNote)
 	elseif not account or not tonumber(account) or tonumber(account) <= 0 then
 		return false, "Invalid account"
 	else
-		dbExec( exports.mysql:getConn('core'), "UPDATE accounts SET credits=credits+? WHERE id=? ", amount, account )
+		dbExec( exports.mysql:getConn(), "UPDATE accounts SET credits=credits+? WHERE id=? ", amount, account )
 		if historyNote then
-			dbExec( exports.mysql:getConn('mta'), "INSERT INTO don_purchases SET name=?, cost=?, account=? ", historyNote, amount, account )
+			dbExec( exports.mysql:getConn(), "INSERT INTO don_purchases SET name=?, cost=?, account=? ", historyNote, amount, account )
 		end
 		return true
 	end

@@ -10,7 +10,7 @@
 function addInteriorLogs(intID, action, actor, clearPreviousLogs)
 	if intID and action then
 		if clearPreviousLogs then
-			dbExec( exports.mysql:getConn('mta'), "DELETE FROM `interior_logs` WHERE `intID`=?", intID)
+			dbExec( exports.mysql:getConn(), "DELETE FROM `interior_logs` WHERE `intID`=?", intID)
 		end
 
 		local adminID = nil
@@ -20,7 +20,7 @@ function addInteriorLogs(intID, action, actor, clearPreviousLogs)
 			adminID = tonumber(actor)
 		end
 		
-		return dbExec( exports.mysql:getConn('mta'), "INSERT INTO `interior_logs` SET `intID`=?, `action`=? "..(adminID and (", `actor`="..adminID) or ""), intID, action )
+		return dbExec( exports.mysql:getConn(), "INSERT INTO `interior_logs` SET `intID`=?, `action`=? "..(adminID and (", `actor`="..adminID) or ""), intID, action )
 	else
 		outputDebugString("[INTERIOR MANAGER] Lack of agruments #1 or #2 for the function addInteriorLogs().")
 		return false

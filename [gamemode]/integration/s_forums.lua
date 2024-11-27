@@ -17,7 +17,7 @@ local functions = {
 			exports.global:sendMessageToAdmins("[BAN] Ban topic created: "..url)
 		end
 		if id and banRecordID then
-			dbExec( exports.mysql:getConn('core'), "UPDATE `bans` SET `threadid`=? WHERE `id`=?", id, banRecordID )
+			dbExec( exports.mysql:getConn(), "UPDATE `bans` SET `threadid`=? WHERE `id`=?", id, banRecordID )
 		end
 	end),
 }

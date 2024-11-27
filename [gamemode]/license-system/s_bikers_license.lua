@@ -22,7 +22,7 @@ function giveBikeLicense(usingGC)
 	end
 	
 	exports.anticheat:changeProtectedElementDataEx(client, "license.bike", 1)
-	dbExec(exports.mysql:getConn('mta'), "UPDATE characters SET bike_license='1' WHERE id = ?", getElementData(client, 'dbid'))
+	dbExec(exports.mysql:getConn(), "UPDATE characters SET bike_license='1' WHERE id = ?", getElementData(client, 'dbid'))
 	exports.hud:sendBottomNotification(client, "Department of Motor Vehicles", "Congratulations! You've passed your motorcycle examination!" )
 	exports.global:giveItem(client, 153, getPlayerName(client):gsub("_"," "))
 	executeCommandHandler("stats", client, getPlayerName(client))
@@ -36,7 +36,7 @@ addEventHandler("theoryBikeComplete", getRootElement(), function( skipSQL )
 	exports.anticheat:changeProtectedElementDataEx(client,"license.bike",3) -- Set data to "theory passed"
 
 	if not skipSQL then
-		dbExec( exports.mysql:getConn('mta'), "UPDATE characters SET bike_license='3' WHERE id=? ", getElementData( client, 'dbid' ) )
+		dbExec( exports.mysql:getConn(), "UPDATE characters SET bike_license='3' WHERE id=? ", getElementData( client, 'dbid' ) )
 		if exports.global:giveItem(client, 90, 1) then
 			outputChatBox( "You've received a helmet from DMV for the practical test.", client )
 		end

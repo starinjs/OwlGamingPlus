@@ -128,7 +128,7 @@ function saveClothes(values, player, no_output)
 
 	if not values.id then
 		-- new clothing stuff
-		local qh = dbQuery( exports.mysql:getConn('mta') , "INSERT INTO clothing SET skin=?, url=?, description=?, price=?, creator_char=?, distribution=?, for_sale_until="..fs_until,
+		local qh = dbQuery( exports.mysql:getConn() , "INSERT INTO clothing SET skin=?, url=?, description=?, price=?, creator_char=?, distribution=?, for_sale_until="..fs_until,
 		values.skin, values.url, values.description or "A clean set of clothes", values.price or 50, values.creator_char or 0, values.distribution or 0 )
 		local result, num_affected_rows, last_insert_id = dbPoll ( qh, 10000 )
 		if result then
@@ -152,7 +152,7 @@ function saveClothes(values, player, no_output)
 		-- old clothing stuff
 		local existing = savedClothing[values.id]
 		if existing then
-			local qh = dbQuery(exports.mysql:getConn('mta') , "UPDATE clothing SET skin=?, url=?, description=?, price=?, creator_char=?, distribution=?, for_sale_until="..fs_until.." WHERE id=?",
+			local qh = dbQuery(exports.mysql:getConn() , "UPDATE clothing SET skin=?, url=?, description=?, price=?, creator_char=?, distribution=?, for_sale_until="..fs_until.." WHERE id=?",
 			values.skin, values.url, values.description or "A clean set of clothes", values.price or 50, values.creator_char or 0, values.distribution or 0, values.id )
 			local result, num_affected_rows, last_insert_id = dbPoll ( qh, 10000 )
 			if result then
@@ -194,7 +194,7 @@ addEventHandler('clothing:delete', resourceRoot, function(id, event)
 		if client and event == "deleteMyClothes" then
 			outputChatBox('Your design has been deleted.', client, 0, 255, 0)
 		end
-		dbExec(exports.mysql:getConn('mta'), 'DELETE FROM clothing WHERE id=?',id)
+		dbExec(exports.mysql:getConn(), 'DELETE FROM clothing WHERE id=?',id)
 		--triggerClientEvent("clothes:deleteFile", resourceRoot, id)
 	end
 end, false)

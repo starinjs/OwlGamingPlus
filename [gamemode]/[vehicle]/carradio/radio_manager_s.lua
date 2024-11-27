@@ -37,7 +37,7 @@ local function canAlterStation(player, id)
 		return true
 	end
 
-	local handle = dbQuery(exports.mysql:getConn('mta'), "SELECT id FROM radio_stations WHERE id = ? and owner = ?", id, getElementData(player, 'account:id'))
+	local handle = dbQuery(exports.mysql:getConn(), "SELECT id FROM radio_stations WHERE id = ? and owner = ?", id, getElementData(player, 'account:id'))
 	local result = dbPoll(handle, 10000)
 
 	return #result > 0

@@ -11,8 +11,35 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
-
-
+-- Dumping structure for table mta.accounts
+CREATE TABLE IF NOT EXISTS `accounts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(64) NOT NULL,
+  `password` varchar(70) NOT NULL,
+  `email` varchar(254) DEFAULT NULL,
+  `registerdate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ip` mediumtext,
+  `admin` float NOT NULL DEFAULT '0',
+  `supporter` float NOT NULL DEFAULT '0',
+  `vct` float NOT NULL DEFAULT '0',
+  `mapper` float NOT NULL DEFAULT '0',
+  `scripter` float NOT NULL DEFAULT '0',
+  `fmt` float NOT NULL DEFAULT '0',
+  `credits` int(11) NOT NULL DEFAULT '0',
+  `referrer` int(11) DEFAULT NULL,
+  `activated` tinyint(1) NOT NULL DEFAULT '0',
+  `forumid` int(11) DEFAULT NULL,
+  `require_password_change` tinyint(1) NOT NULL DEFAULT '0',
+  `ucp_lastlogin` datetime(6) DEFAULT NULL,
+  `punishpoints` int(11) NOT NULL DEFAULT '0',
+  `punishdate` datetime DEFAULT NULL,
+  `avatar` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `accounts_username_5a6e02bd_uniq` (`username`),
+  UNIQUE KEY `forumid_UNIQUE` (`forumid`),
+  UNIQUE KEY `email` (`email`),
+  KEY `account_admin` (`admin`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- Dumping structure for table mta.account_details
 CREATE TABLE IF NOT EXISTS `account_details` (
@@ -215,6 +242,21 @@ CREATE TABLE IF NOT EXISTS `atm_cards` (
   PRIMARY KEY (`card_id`),
   UNIQUE KEY `card_id_UNIQUE` (`card_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- Data exporting was unselected.
+-- Dumping structure for table mta.bans
+CREATE TABLE IF NOT EXISTS `bans` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mta_serial` varchar(32) DEFAULT NULL,
+  `ip` varchar(15) DEFAULT NULL,
+  `account` int(11) DEFAULT NULL,
+  `admin` int(11) DEFAULT NULL,
+  `reason` mediumtext NOT NULL,
+  `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `until` datetime DEFAULT NULL,
+  `threadid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Handle serial bans instead of using MTA built-in / Maxime';
 
 -- Data exporting was unselected.
 -- Dumping structure for table mta.books
@@ -1343,6 +1385,22 @@ CREATE TABLE IF NOT EXISTS `publicphones` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
 -- Data exporting was unselected.
+-- Dumping structure for table mta.purchases
+CREATE TABLE IF NOT EXISTS `purchases` (
+  `order_id` int(11) NOT NULL AUTO_INCREMENT,
+  `txn_id` varchar(50) NOT NULL,
+  `payer_email` varchar(75) NOT NULL,
+  `mc_gross` float(9,2) NOT NULL,
+  `donor` int(11) DEFAULT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `donated_for` int(11) DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  `method` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`order_id`),
+  UNIQUE KEY `txn_id` (`txn_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- Data exporting was unselected.
 -- Dumping structure for table mta.radio_stations
 CREATE TABLE IF NOT EXISTS `radio_stations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1566,6 +1624,27 @@ CREATE TABLE IF NOT EXISTS `tags` (
   `creator` int(11) NOT NULL DEFAULT '-1',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+-- Data exporting was unselected.
+-- Dumping structure for table mta.tc_tickets
+CREATE TABLE IF NOT EXISTS `tc_tickets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `creator` int(11) NOT NULL,
+  `type` int(11) NOT NULL DEFAULT '0',
+  `status` tinyint(4) NOT NULL DEFAULT '0',
+  `assign_to` int(11) DEFAULT NULL,
+  `subscribers` varchar(500) DEFAULT ',',
+  `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `subject` mediumtext NOT NULL,
+  `content` mediumtext NOT NULL,
+  `private` tinyint(1) NOT NULL DEFAULT '0',
+  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `reference` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ticket_creator` (`creator`),
+  KEY `ticket_assignee` (`assign_to`),
+  KEY `ticket_status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table mta.tempinteriors
