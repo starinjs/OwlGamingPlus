@@ -74,31 +74,12 @@ function playerLogin(username,password,checksave)
 					end
 
 					--Now check if passwords are matched or the account is activated, this is to prevent user with fake emails.
-					triggerClientEvent(client,"set_authen_text",client,"Login","Password Accepted! Authenticating..")
-					-- Check if old method
-					if not string.find(accountData["password"], "$", 1, true) then -- Plain search, not regex
-						local encryptionRule = accountData["salt"]
-						local encryptedPW = string.lower(md5(string.lower(md5(password))..encryptionRule))
+					triggerClientEvent(client,"set_authen_text",client,"Login","Password Accepted! Authenticating..")				
+					local verified = passwordVerify(password, accountData["password"])
 
-						if accountData["password"] ~= encryptedPW then
-							triggerClientEvent(client,"set_warning_text",client,"Login","Password(legacy) is incorrect for account name '".. username .."'!")
-							return false
-						end
-
-						triggerClientEvent(client,"set_authen_text",client,"Login","Converting Legacy Password..")
-						-- Run conversions // https://docs.djangoproject.com/en/1.10/topics/auth/passwords/#increasing-the-work-factor // Since Django prefixes it's passwords with the type we do this for compatibility
-						local new_pass = "bcrypt_sha256$" .. bcrypt_hashpw(sha256(password):lower(), bcrypt_gensalt(12)) -- 12 work factor // https://github.com/django/django/blob/master/django/contrib/auth/hashers.py#L404
-						if not dbExec(exports.mysql:getConn("core"), "UPDATE `accounts` SET `password`=?, `salt`=NULL WHERE id=?", new_pass, accountData["id"]) then
-							triggerClientEvent(client,"set_warning_text",client,"Login","Password conversion failed for account name '".. username .."'!")
-							return false
-						end
-					else -- Else if new
-						local verified = bcrypt_checkpw(sha256(password):lower(), accountData["password"]:gsub("bcrypt_sha256%$", "")) -- Take out Django's junk to verify
-
-						if not verified then
-							triggerClientEvent(client,"set_warning_text",client,"Login","Password is incorrect for account name '".. username .."'!")
-							return false
-						end
+					if not verified then
+						triggerClientEvent(client,"set_warning_text",client,"Login","Password is incorrect for account name '".. username .."'!")
+						return false
 					end
 
 					if tonumber(accountData["activated"]) == 0 then
@@ -369,7 +350,7 @@ function playerRegister(username,password,confirmPassword, email)
 				mysql:free_result(Q2)
 
 				--START CREATING ACCOUNT.
-				local encryptedPW = "bcrypt_sha256$" .. bcrypt_hashpw(sha256(password):lower(), bcrypt_gensalt(12)) -- 12 work factor // https://github.com/django/django/blob/master/django/contrib/auth/hashers.py#L404
+				local encryptedPW = passwordHash(password, "bcrypt", {cost = 12})
 				local ipAddress = getPlayerIP(client)
 				preparedQuery3 = "INSERT INTO `accounts` SET `username`=?, `password`=?, `email`=?, `registerdate`=NOW(), `ip`=?, `activated`='0' "
 				local userid = dbExec(exports.mysql:getConn("core"), preparedQuery3, username, encryptedPW, email, ipAddress)
