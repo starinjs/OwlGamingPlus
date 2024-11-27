@@ -152,6 +152,7 @@ function arrestPlayer(thePlayer, commandName, targetPlayerNick, fine, jailtime, 
 								outputChatBox("Crimes Committed: " .. reason .. ".", value, 0, 102, 255)
 							end
 							timerPDUnjailPlayer(targetPlayer)
+						end
 					end
 				end
 			end

@@ -362,7 +362,7 @@ local function moveToElement( element, slot, ammo, event )
 				else
 					local getCurrentMaxAmmo = exports.global:getWeaponCount(source, slot)
 					if ammo > getCurrentMaxAmmo then
-						exports.global:sendMessageToAdmins("[items\moveToElement] Possible duplication of gun from '"..getPlayerName(source).."' // " .. getItemName( -slot ) )
+						exports.global:sendMessageToAdmins("[items/moveToElement] Possible duplication of gun from '"..getPlayerName(source).."' // " .. getItemName( -slot ) )
 						exports.logs:dbLog(source, 39, source, getPlayerName(source) .. " moved " .. getItemName(-slot) " -  #" .. getElementID(element) .. " - BLOCKED DUE POSSIBLE DUPING" )
 						triggerClientEvent( source, event or "finishItemMove", source )
 						return
