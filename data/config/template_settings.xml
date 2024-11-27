@@ -12,13 +12,6 @@
 	<setting name="@mysql.hostname" value="MTA_DATABASE_HOST" />
 	<setting name="@mysql.port" value="MTA_DATABASE_PORT" />
 	
-	<!-- Core database -->
-	<setting name="@mysql.core_database" value="CORE_DATABASE_NAME" />
-	<setting name="@mysql.core_username" value="CORE_DATABASE_USERNAME" />
-	<setting name="@mysql.core_password" value="CORE_DATABASE_PASSWORD" />
-	<setting name="@mysql.core_hostname" value="CORE_DATABASE_HOST" />
-	<setting name="@mysql.core_port" value="CORE_DATABASE_PORT" />
-	
 	<!-- No need to fill in -->
 	<setting name="@usercontrolpanel.website_pass" value="WEBSITE_PASSWORD" />
 	<setting name="@integration.forumsAPIKey" value="FORUMS_API_KEY" />
