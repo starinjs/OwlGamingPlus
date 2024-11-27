@@ -24,7 +24,7 @@ function createSpray(thePlayer, commandName)
 		
 				outputChatBox("Pay 'N Spray spawned with ID #" .. insertId .. ".", thePlayer, 0, 255, 0)
 			end,
-		exports.mysql:getConn("mta"), "INSERT INTO paynspray SET x=?, y=?, z=?, interior=?, dimension=?", x, y, z, interior, dimension)
+		exports.mysql:getConn(), "INSERT INTO paynspray SET x=?, y=?, z=?, interior=?, dimension=?", x, y, z, interior, dimension)
 
 	end
 end
@@ -61,7 +61,7 @@ function loadAllSprays(res)
 				exports.anticheat:changeProtectedElementDataEx(shape, "dbid", id, false)		
 			end
 		end, 
-	exports.mysql:getConn("mta"), "SELECT id, x, y, z, interior, dimension FROM paynspray")
+	exports.mysql:getConn(), "SELECT id, x, y, z, interior, dimension FROM paynspray")
 end
 addEventHandler("onResourceStart", getResourceRootElement(), loadAllSprays)
 
@@ -100,7 +100,7 @@ function delSpray(thePlayer, commandName)
 
 		if (colShape) then
 			local id = getElementData(colShape, "dbid")
-			dbExec(exports.mysql:getConn("mta"), "DELETE FROM paynspray WHERE id=?", id)
+			dbExec(exports.mysql:getConn(), "DELETE FROM paynspray WHERE id=?", id)
 
 			outputChatBox("Pay 'N Spray #" .. id .. " deleted.", thePlayer)
 			destroyElement(colShape)
@@ -202,7 +202,7 @@ function sprayEffect(vehicle, thePlayer, shape)
 				
 				--bank transaction log
 				local vin = getElementData(vehicle, "dbid")
-				dbExec(exports.mysql:getConn("mta"), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (?, ?, ?, 'Insurance claim (?)', 14)", -getElementData(insurerElement, "id"), -getElementData(rapidTowingElement, "id"), estimatedCosts, vin)
+				dbExec(exports.mysql:getConn(), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (?, ?, ?, 'Insurance claim (?)', 14)", -getElementData(insurerElement, "id"), -getElementData(rapidTowingElement, "id"), estimatedCosts, vin)
 			else
 				triggerClientEvent(thePlayer, "paynspray:Invoice", thePlayer, estimatedCosts)
 				setElementData(thePlayer, "paynspray:bill", estimatedCosts, true)
@@ -215,7 +215,7 @@ function sprayEffect(vehicle, thePlayer, shape)
 				completefix = true
 				setElementFrozen(vehicle, true)
 				outputChatBox("The bill will be sent to your employer, please wait while we repair.", thePlayer, 0, 255, 0)
-				dbExec(exports.mysql:getConn("mta"), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (?,?,?,?,?)", -getElementData(theTeam, "id"), -getElementData(exports.pool:getElement("team", RECEIVING_FACTION), "id"), estimatedCosts, 'Repair', 10)
+				dbExec(exports.mysql:getConn(), "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (?,?,?,?,?)", -getElementData(theTeam, "id"), -getElementData(exports.pool:getElement("team", RECEIVING_FACTION), "id"), estimatedCosts, 'Repair', 10)
 			end
 		end
 

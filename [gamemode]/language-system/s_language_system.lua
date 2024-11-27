@@ -9,7 +9,7 @@ function increaseLanguageSkill(player, language)
 			if chance == 1 then
 				triggerClientEvent(player, "increaseInSkill", player, language)
 				exports.anticheat:changeProtectedElementDataEx(player, "languages.lang" .. slot .. "skill", currSkill+1, false)
-				dbExec(exports.mysql:getConn("mta"), "UPDATE characters SET lang" .. slot .. "skill = ? WHERE id = ?", currSkill + 1, getElementData(player, "dbid"))
+				dbExec(exports.mysql:getConn(), "UPDATE characters SET lang" .. slot .. "skill = ? WHERE id = ?", currSkill + 1, getElementData(player, "dbid"))
 			end
 		end
 	end
@@ -41,7 +41,7 @@ function removeLanguage(player, language)
 		-- unbindKey(player, tostring(slot), "down", "chatbox")
 		exports.anticheat:changeProtectedElementDataEx(player, "languages.lang" .. slot, 0, false)
 		exports.anticheat:changeProtectedElementDataEx(player, "languages.lang" .. slot .. "skill", 0, false)
-		dbExec(exports.mysql:getConn("mta"), "UPDATE characters SET lang"..slot.." = 0, lang"..slot.."skill = 0 WHERE id = ?", getElementData(player, "dbid"))
+		dbExec(exports.mysql:getConn(), "UPDATE characters SET lang"..slot.." = 0, lang"..slot.."skill = 0 WHERE id = ?", getElementData(player, "dbid"))
 		return true
 	else
 		return false
@@ -156,7 +156,7 @@ function learnLanguage(player, lang, showmessages, skill)
 		
 		if skill then
 			exports.anticheat:changeProtectedElementDataEx(player, "languages.lang" .. slot .. "skill", skill, false)
-			dbExec(exports.mysql:getConn("mta"), "UPDATE characters SET lang"..slot.." = ?, lang"..slot.."skill = ? WHERE id = ?", lang, skill or 0, getElementData(player, "dbid"))
+			dbExec(exports.mysql:getConn(), "UPDATE characters SET lang"..slot.." = ?, lang"..slot.."skill = ? WHERE id = ?", lang, skill or 0, getElementData(player, "dbid"))
 			return true
 		end
 		return false, "Already knows " .. languages[lang]
@@ -172,7 +172,7 @@ function learnLanguage(player, lang, showmessages, skill)
 			
 			exports.anticheat:changeProtectedElementDataEx(player, "languages.lang" .. freeslot, lang, false)
 			exports.anticheat:changeProtectedElementDataEx(player, "languages.lang" .. freeslot .. "skill", skill or 0, false)
-			dbExec(exports.mysql:getConn("mta"), "UPDATE characters SET lang"..freeslot.." = ?, lang"..freeslot.."skill = ? WHERE id = ?", lang, skill or 0, getElementData( player, "dbid" ))
+			dbExec(exports.mysql:getConn(), "UPDATE characters SET lang"..freeslot.." = ?, lang"..freeslot.."skill = ? WHERE id = ?", lang, skill or 0, getElementData( player, "dbid" ))
 			
 			-- bindKey(player, tostring( freeslot ), "down", "chatbox", getLanguageName( lang ))
 
@@ -204,7 +204,7 @@ function useLanguage(lang)
 	if (hasLanguage) then
 		outputChatBox("You are now using " .. getLanguageName(lang) .. " as your language.", source, 255, 194, 14)
 		exports.anticheat:changeProtectedElementDataEx(source, "languages.current", slot, false)
-		dbExec(exports.mysql:getConn("mta"), "UPDATE characters SET currLang = ? WHERE id = ?", slot, getElementData(source, "dbid"))
+		dbExec(exports.mysql:getConn(), "UPDATE characters SET currLang = ? WHERE id = ?", slot, getElementData(source, "dbid"))
 		
 		showLanguages(source)
 	end
@@ -221,7 +221,7 @@ function unlearnLanguage(lang)
 		
 		local nextSlot = getNextLanguageSlot(source)
 		exports.anticheat:changeProtectedElementDataEx(source, "languages.current", nextSlot, false)
-		dbExec(exports.mysql:getConn("mta"), "UPDATE characters SET currLang = ? WHERE id = ?", nextSlot, getElementData(source, "dbid"))
+		dbExec(exports.mysql:getConn(), "UPDATE characters SET currLang = ? WHERE id = ?", nextSlot, getElementData(source, "dbid"))
 		showLanguages(source)
 	end
 end

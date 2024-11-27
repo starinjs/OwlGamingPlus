@@ -37,12 +37,12 @@ end
 function saveReportCount( player )
 	local adminreports = getElementData( player, "adminreports")
 	if tonumber(adminreports) then
-		dbExec( exports.mysql:getConn('mta'), "UPDATE `account_details` SET `adminreports`=? WHERE `account_id`=? ", adminreports, getElementData( player, "account:id" ) )
+		dbExec( exports.mysql:getConn(), "UPDATE `account_details` SET `adminreports`=? WHERE `account_id`=? ", adminreports, getElementData( player, "account:id" ) )
 	end
 
 	local adminreports_saved = getElementData( player, "adminreports_saved")
 	if tonumber(adminreports_saved) then
-		dbExec( exports.mysql:getConn('mta'), "UPDATE `account_details` SET `adminreports_saved`=? WHERE `account_id`=? ", adminreports_saved, getElementData( player, "account:id" ) )
+		dbExec( exports.mysql:getConn(), "UPDATE `account_details` SET `adminreports_saved`=? WHERE `account_id`=? ", adminreports_saved, getElementData( player, "account:id" ) )
 	end
 end
 
@@ -50,7 +50,7 @@ function collectReportData( report, admin )
 	local reporter = isElement( report[1] ) and getElementData( report[1], 'account:id' )
 	local handler = report[5] == admin and getElementData( admin, 'account:id' )
 	if handler and reporter then
-		dbExec( exports.mysql:getConn('mta'), "INSERT INTO reports SET type=?, handler=?, reporter=?, details=? ", report[7] or 1, handler, reporter, report[3] or "N/A" )
+		dbExec( exports.mysql:getConn(), "INSERT INTO reports SET type=?, handler=?, reporter=?, details=? ", report[7] or 1, handler, reporter, report[3] or "N/A" )
 	else
 		outputDebugString( "[REPORT] Failed to collect report statistics for "..exports.global:getPlayerFullIdentity( admin ) )
 	end
@@ -58,5 +58,5 @@ end
 
 addEvent( 'report:syncStats', true )
 addEventHandler( 'report:syncStats', resourceRoot, function( online, duty )
-	dbExec( exports.mysql:getConn('mta'), "INSERT INTO online_sessions SET staff=?, minutes_online=?, minutes_duty=? ", getElementData( client, 'account:id' ), online, duty )
+	dbExec( exports.mysql:getConn(), "INSERT INTO online_sessions SET staff=?, minutes_online=?, minutes_duty=? ", getElementData( client, 'account:id' ), online, duty )
 end )

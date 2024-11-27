@@ -7,7 +7,7 @@ local author = "anumaz"
 
 -- If the frequency is within that newly created table (from sql), then return true
 function getChannelRestrictions(freq)
-	local qh = dbQuery(mysql:getConn('mta'), "SELECT `limitedto` FROM `restricted_freqs` WHERE `frequency`= ?", freq)
+	local qh = dbQuery(mysql:getConn(), "SELECT `limitedto` FROM `restricted_freqs` WHERE `frequency`= ?", freq)
 	local results = dbPoll(qh, 10000)
 
 	return results

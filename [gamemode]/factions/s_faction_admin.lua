@@ -37,7 +37,7 @@ function adminSetPlayerFaction(thePlayer, commandName, partialNick, factionID)
 				end
 
 
-				if dbExec(exports.mysql:getConn("mta"), "INSERT INTO characters_faction SET faction_leader = 0, faction_id = ?, faction_rank = ?, faction_phone = NULL, character_id=?", factionID, defaultRank, getElementData(targetPlayer, "dbid")) then
+				if dbExec(exports.mysql:getConn(), "INSERT INTO characters_faction SET faction_leader = 0, faction_id = ?, faction_rank = ?, faction_phone = NULL, character_id=?", factionID, defaultRank, getElementData(targetPlayer, "dbid")) then
 					local max = 0
 					for id, _ in pairs(factionInfo) do
 						if not max then max = _.count end
@@ -76,7 +76,7 @@ function adminRemovePlayerFaction(thePlayer, commandName, partialNick, factionID
 					return
 				end
 
-				if dbExec(exports.mysql:getConn("mta"), "DELETE FROM characters_faction WHERE faction_id=? AND character_id=?", factionID, getElementData(targetPlayer, "dbid")) then
+				if dbExec(exports.mysql:getConn(), "DELETE FROM characters_faction WHERE faction_id=? AND character_id=?", factionID, getElementData(targetPlayer, "dbid")) then
 					local factionInfo = getElementData(targetPlayer, "faction")
 					local organizedTable = {}
 
@@ -140,7 +140,7 @@ function adminSetFactionLeader(thePlayer, commandName, partialNick, factionID)
 					return
 				end
 
-				if dbExec(exports.mysql:getConn("mta"), "INSERT INTO characters_faction SET faction_leader = 1, faction_id = ?, faction_rank = ?, faction_phone = NULL, character_id=?", factionID, theRank, getElementData(targetPlayer, "dbid")) then
+				if dbExec(exports.mysql:getConn(), "INSERT INTO characters_faction SET faction_leader = 1, faction_id = ?, faction_rank = ?, faction_phone = NULL, character_id=?", factionID, theRank, getElementData(targetPlayer, "dbid")) then
 
 					local max = 0
 					for id, _ in pairs(factionInfo) do
@@ -186,7 +186,7 @@ function adminSetFactionRank(thePlayer, commandName, partialNick, factionID, ...
 					return
 				end
 
-				if dbExec(exports.mysql:getConn("mta"), "UPDATE characters_faction SET faction_rank =? WHERE character_id = ? AND faction_id=?", rankID, getElementData(targetPlayer, "dbid"), factionID) then
+				if dbExec(exports.mysql:getConn(), "UPDATE characters_faction SET faction_rank =? WHERE character_id = ? AND faction_id=?", rankID, getElementData(targetPlayer, "dbid"), factionID) then
 					local factionInfo = getElementData(targetPlayer, "faction")
 					factionInfo[factionID].rank = rankID
 					exports.anticheat:changeProtectedElementDataEx(targetPlayer, "faction", factionInfo, true)
@@ -496,11 +496,11 @@ function convert(player)
 			if result then
 				for k,row in pairs(result) do
 					if row.faction_id ~= -1 then
-						dbExec(exports.mysql:getConn("mta"), "INSERT INTO characters_faction SET character_id=?, faction_id=?, faction_rank=?, faction_leader=?, faction_phone=?, faction_perks=?", row.id, row.faction_id, row.faction_rank, row.faction_leader, row.faction_phone, row.faction_perks, row.id)
+						dbExec(exports.mysql:getConn(), "INSERT INTO characters_faction SET character_id=?, faction_id=?, faction_rank=?, faction_leader=?, faction_phone=?, faction_perks=?", row.id, row.faction_id, row.faction_rank, row.faction_leader, row.faction_phone, row.faction_perks, row.id)
 					end
 				end
 			end
-	end, exports.mysql:getConn("mta"), "SELECT faction_id, faction_rank, faction_leader, faction_phone, faction_perks, id FROM characters")
+	end, exports.mysql:getConn(), "SELECT faction_id, faction_rank, faction_leader, faction_phone, faction_perks, id FROM characters")
 end
 addCommandHandler( "convertFactions", convert )
 
@@ -512,14 +512,14 @@ function startDeleteProcess(start)
 		if result then
 			for k,row in pairs(result) do
 				if not start[row.faction] then
-					dbExec(exports.mysql:getConn("mta"), "DELETE FROM duty_allowed WHERE id=?", row.id)
+					dbExec(exports.mysql:getConn(), "DELETE FROM duty_allowed WHERE id=?", row.id)
 					outputDebugString("DELETE FROM duty_allowed FACTION "..row.faction)
 					allowedCount = allowedCount + 1
 				end
 			end
 			outputDebugString("DONE! Removed from duty_allowed "..allowedCount.." rows.")
 		end
-	end, exports.mysql:getConn("mta"), "SELECT * FROM duty_allowed")
+	end, exports.mysql:getConn(), "SELECT * FROM duty_allowed")
 
 	customCount = 0
 	local qh = dbQuery(
@@ -528,14 +528,14 @@ function startDeleteProcess(start)
 		if result then
 			for k,row in pairs(result) do
 				if not start[row.factionid] then
-					dbExec(exports.mysql:getConn("mta"), "DELETE FROM duty_custom WHERE id=?", row.id)
+					dbExec(exports.mysql:getConn(), "DELETE FROM duty_custom WHERE id=?", row.id)
 					outputDebugString("DELETE FROM duty_custom FACTION "..row.factionid)
 					customCount = customCount + 1
 				end
 			end
 			outputDebugString("DONE! Removed from duty_custom "..customCount.." rows.")
 		end
-	end, exports.mysql:getConn("mta"), "SELECT * FROM duty_custom")
+	end, exports.mysql:getConn(), "SELECT * FROM duty_custom")
 
 	customLocation = 0
 	local qh = dbQuery(
@@ -544,14 +544,14 @@ function startDeleteProcess(start)
 		if result then
 			for k,row in pairs(result) do
 				if not start[row.factionid] then
-					dbExec(exports.mysql:getConn("mta"), "DELETE FROM duty_locations WHERE id=?", row.id)
+					dbExec(exports.mysql:getConn(), "DELETE FROM duty_locations WHERE id=?", row.id)
 					outputDebugString("DELETE FROM duty_locations FACTION "..row.factionid)
 					customLocation = customLocation + 1
 				end
 			end
 			outputDebugString("DONE! Removed from duty_locations "..customLocation.." rows.")
 		end
-	end, exports.mysql:getConn("mta"), "SELECT * FROM duty_locations")
+	end, exports.mysql:getConn(), "SELECT * FROM duty_locations")
 end
 
 function cleanupDuty(player)
@@ -566,7 +566,7 @@ function cleanupDuty(player)
 			end
 			startDeleteProcess(start)
 		end
-	end, exports.mysql:getConn("mta"), "SELECT * FROM factions")
+	end, exports.mysql:getConn(), "SELECT * FROM factions")
 end
 addCommandHandler("cleanupDuty", cleanupDuty)
 
@@ -620,7 +620,7 @@ addCommandHandler("cleanupDuty", cleanupDuty)
 
 					if rankID ~= 0 then
 						counter = counter + 1
-						dbExec(mysql:getConn('mta'), updateStr, rankID, row["id"])
+						dbExec(mysql:getConn(), updateStr, rankID, row["id"])
 					end	
 				end
 			end
@@ -628,7 +628,7 @@ addCommandHandler("cleanupDuty", cleanupDuty)
 			outputDebugString("[Factions] " .. counter .. " ranks have been converted.")
 			setTimer(restartResource, 30000, 1, getResourceFromName("factions"))
 		end
-	end, mysql:getConn('mta'), queryStr)
+	end, mysql:getConn(), queryStr)
 end
 
 function commandConvertFactionRanks(player, cmd)
@@ -636,7 +636,7 @@ function commandConvertFactionRanks(player, cmd)
 		local seconds = 30
 		outputChatBox(" WARNING: Large script execution will take place in " .. seconds .. " seconds, it will cause major delays for a few minutes.", root, 255, 0, 0)
 		setElementData(getResourceRootElement(getThisResource()), "debug_enabled", true, true)
-		setTimer(function() dbQuery(convertFactionRanks, mysql:getConn("mta"), "SELECT `id`, `rank_1`, `rank_2`, `rank_3`, `rank_4`, `rank_5`, `rank_6`, `rank_7`, `rank_8`, `rank_9`, `rank_10`, `rank_11`, `rank_12`, `rank_13`, `rank_14`, `rank_15`, `rank_16`, `rank_17`, `rank_18`, `rank_19`, `rank_20` FROM `factions`") end, seconds*1000, 1)
+		setTimer(function() dbQuery(convertFactionRanks, mysql:getConn(), "SELECT `id`, `rank_1`, `rank_2`, `rank_3`, `rank_4`, `rank_5`, `rank_6`, `rank_7`, `rank_8`, `rank_9`, `rank_10`, `rank_11`, `rank_12`, `rank_13`, `rank_14`, `rank_15`, `rank_16`, `rank_17`, `rank_18`, `rank_19`, `rank_20` FROM `factions`") end, seconds*1000, 1)
 	end
 end
 addCommandHandler("convertfactionranks", commandConvertFactionRanks)--]]
@@ -650,7 +650,7 @@ addCommandHandler("convertfactionranks", commandConvertFactionRanks)--]]
 	outputChatBox(" WARNING: Large script execution will take place in " .. seconds .. " seconds, it will cause major delays for a few minutes.", root, 255, 0, 0)
 	setElementData(getResourceRootElement(getThisResource()), "debug_enabled", true, true)
 	setTimer(function()
-		dbQuery(processBrokenRanks, exports.mysql:getConn("mta"), "SELECT * FROM faction_ranks")
+		dbQuery(processBrokenRanks, exports.mysql:getConn(), "SELECT * FROM faction_ranks")
 	end, seconds * 1000, 1)
 end)
 
@@ -666,12 +666,12 @@ function processBrokenRanks(qh)
 			local res = dbPoll(query, 0)
 			for _, rows in ipairs(res) do 
 				if not ranks[rows['faction_rank'] ] then 
-					dbExec(exports.mysql:getConn("mta"), "UPDATE characters_faction SET faction_rank = ? WHERE faction_rank = ? AND faction_id = ? AND character_id = ?", getDefaultRank(rows['faction_id']), rows['faction_rank'], rows['faction_id'], rows['character_id'])
+					dbExec(exports.mysql:getConn(), "UPDATE characters_faction SET faction_rank = ? WHERE faction_rank = ? AND faction_id = ? AND character_id = ?", getDefaultRank(rows['faction_id']), rows['faction_rank'], rows['faction_id'], rows['character_id'])
 				end
 			end
 
 			outputDebugString("[Factions] Rank fixer has completed its journey.")
 			setTimer(restartResource, 30000, 1, getResourceFromName("factions"))
 		end, 
-	exports.mysql:getConn("mta"), "SELECT * FROM characters_faction")
+	exports.mysql:getConn(), "SELECT * FROM characters_faction")
 end--]]

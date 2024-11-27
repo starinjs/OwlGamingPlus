@@ -48,7 +48,7 @@ function sendLibraryToClient(receiver, ped)
 	preparedQ = preparedQ.." ORDER BY `updatedate` DESC LIMIT ?"
 
 
-	local qh = dbQuery(mysql:getConn("mta"), preparedQ, RESULT_LIMIT)
+	local qh = dbQuery(mysql:getConn(), preparedQ, RESULT_LIMIT)
 	local vehs = dbPoll(qh, 10000)
 
 	triggerClientEvent(receiver, "vehlib:showLibrary", receiver, vehs, ped)
@@ -63,7 +63,7 @@ addEventHandler("vehlib:fetchMoreLibraryData", root, function(page)
 	end
 
 	local offset = RESULT_LIMIT * page
-	local qh = dbQuery(mysql:getConn("mta"), "SELECT `spawnto`, `id`, `vehmtamodel`, `vehbrand`, `vehmodel`, `vehyear`, `vehprice`, `vehtax`, `vehicles_shop`.`createdby` AS 'createdby', `createdate`, `vehicles_shop`.`updatedby` AS 'updatedby', `updatedate`, `notes`, `enabled` FROM `vehicles_shop` ORDER BY `updatedate` DESC LIMIT ?,?", offset, RESULT_LIMIT)
+	local qh = dbQuery(mysql:getConn(), "SELECT `spawnto`, `id`, `vehmtamodel`, `vehbrand`, `vehmodel`, `vehyear`, `vehprice`, `vehtax`, `vehicles_shop`.`createdby` AS 'createdby', `createdate`, `vehicles_shop`.`updatedby` AS 'updatedby', `updatedate`, `notes`, `enabled` FROM `vehicles_shop` ORDER BY `updatedate` DESC LIMIT ?,?", offset, RESULT_LIMIT)
 	local vehs = dbPoll(qh, 10000)
 
 	if vehs and #vehs >= 1 then 
@@ -96,7 +96,7 @@ addEventHandler("vehlib:searchLibrary", root, function(keyword)
 		preparedQuery = preparedQuery .. "WHERE ? IN (id, vehyear, vehbrand, vehmodel) ORDER BY updatedate DESC LIMIT ?"
 	end
 
-	local qh = dbQuery(mysql:getConn("mta"), preparedQuery, keyword, RESULT_LIMIT)
+	local qh = dbQuery(mysql:getConn(), preparedQuery, keyword, RESULT_LIMIT)
 	local vehs = dbPoll(qh, 10000)
 	if vehs then 
 		triggerClientEvent(client, "vehlib:loadPage", client, vehs, true)
@@ -306,10 +306,10 @@ function loadCustomVehProperties( theVehicle )
 								removeElementData( theVehicle, 'unique' )
 							end
 						end
-					end, { sid, theVehicle }, exports.mysql:getConn('mta'), "SELECT * FROM vehicles_shop WHERE enabled=1 AND id=? ", sid )
+					end, { sid, theVehicle }, exports.mysql:getConn(), "SELECT * FROM vehicles_shop WHERE enabled=1 AND id=? ", sid )
 				end
 			end
-		end, { theVehicle }, exports.mysql:getConn('mta'), "SELECT * FROM vehicles_custom WHERE id=? ", getElementData( theVehicle, 'dbid') )
+		end, { theVehicle }, exports.mysql:getConn(), "SELECT * FROM vehicles_custom WHERE id=? ", getElementData( theVehicle, 'dbid') )
 		return true
 	end
 end

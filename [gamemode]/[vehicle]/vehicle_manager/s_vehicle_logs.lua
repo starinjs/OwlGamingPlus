@@ -10,7 +10,7 @@
 function addVehicleLogs(vehID, action, actor, clearPreviousLogs)
 	if vehID and action then
 		if clearPreviousLogs then
-			dbExec( exports.mysql:getConn('mta'), "DELETE FROM `vehicle_logs` WHERE `vehID`=?", vehID)
+			dbExec( exports.mysql:getConn(), "DELETE FROM `vehicle_logs` WHERE `vehID`=?", vehID)
 		end
 
 		local adminID = nil
@@ -20,7 +20,7 @@ function addVehicleLogs(vehID, action, actor, clearPreviousLogs)
 			adminID = tonumber(actor)
 		end
 
-		return dbExec( exports.mysql:getConn('mta'), "INSERT INTO `vehicle_logs` SET `vehID`=?, `action`=? "..(adminID and (", `actor`="..adminID) or ""), vehID, action )
+		return dbExec( exports.mysql:getConn(), "INSERT INTO `vehicle_logs` SET `vehID`=?, `action`=? "..(adminID and (", `actor`="..adminID) or ""), vehID, action )
 	else
 		outputDebugString("[VEHICLE MANAGER] Lack of agruments #1 or #2 for the function addVEHICLELogs().")
 		return false

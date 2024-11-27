@@ -96,7 +96,7 @@ function adminLoginToPlayerCharacter(thePlayer, commandName, ...)
                 outputChatBox("No character name found.", thePlayer, 255,0,0)
                 return false
             end
-            local qh = dbQuery(exports.mysql:getConn("core"), "SELECT username, admin FROM accounts WHERE id=?", fetchData["targetUserID"])
+            local qh = dbQuery(exports.mysql:getConn(), "SELECT username, admin FROM accounts WHERE id=?", fetchData["targetUserID"])
             local result = dbPoll(qh, -1)
             if result and #result == 1 then
                 local targetCharID = tonumber(fetchData["targetCharID"]) or false
@@ -273,7 +273,7 @@ function spawnCharacter(characterID, remoteAccountID, theAdmin, targetAccountNam
         setPedArmor(client, tonumber(characterData["armor"]))
 
         -- Handle all faction info
-        local qh = dbQuery(mysql:getConn("mta"), "SELECT * FROM characters_faction WHERE character_id=? ORDER BY id ASC", tonumber(characterData["id"]))
+        local qh = dbQuery(mysql:getConn(), "SELECT * FROM characters_faction WHERE character_id=? ORDER BY id ASC", tonumber(characterData["id"]))
         local result, num_affected_rows = dbPoll ( qh, 10000 )
 
         if result and num_affected_rows > 0 then

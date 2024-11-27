@@ -247,11 +247,11 @@ function systemDeleteVehicle(vehid, reason) --This function is meant to be used 
 	call( getResourceFromName( "item-system" ), "deleteAll", 3 , vehid )
 
 	-- Updated to use MTA's Native MySQL. Here is where the database stuff is processed.
-	local query = dbQuery(exports.mysql:getConn("mta"), "SELECT id FROM vehicles WHERE id=? LIMIT 1", vehid)
+	local query = dbQuery(exports.mysql:getConn(), "SELECT id FROM vehicles WHERE id=? LIMIT 1", vehid)
 	local veh = dbPoll(query, 1000)
 	
 	if veh and veh.id ~= mysql_null() then
-		dbExec(exports.mysql:getConn("mta"), "UPDATE vehicles SET deleted=-1, deletedDate=NOW() WHERE id=?", vehid)
+		dbExec(exports.mysql:getConn(), "UPDATE vehicles SET deleted=-1, deletedDate=NOW() WHERE id=?", vehid)
 	else
 		return false, "veh does not existed in database."
 	end

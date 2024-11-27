@@ -131,7 +131,7 @@ function offlinePunishPlayer(thePlayer, commandName, target, points, repetitive,
 		end
 
 		-- Otherwise actually offline
-		local qh = dbQuery(exports.mysql:getConn('core'), "SELECT id, username, ip, punishdate, punishpoints FROM accounts WHERE `username`=? LIMIT 1", target)
+		local qh = dbQuery(exports.mysql:getConn(), "SELECT id, username, ip, punishdate, punishpoints FROM accounts WHERE `username`=? LIMIT 1", target)
 		local result = dbPoll(qh, 10000)
 		if result and #result > 0 then
 			accID = result[1].id
@@ -140,7 +140,7 @@ function offlinePunishPlayer(thePlayer, commandName, target, points, repetitive,
 			target = result[1].username
 			ip = result[1].ip
 
-			local qh2 = dbQuery(exports.mysql:getConn('mta'), "SELECT mtaserial FROM account_details WHERE `account_id`=? LIMIT 1", accID)
+			local qh2 = dbQuery(exports.mysql:getConn(), "SELECT mtaserial FROM account_details WHERE `account_id`=? LIMIT 1", accID)
 			local result2 = dbPoll(qh2, 1000)
 			if result2 and #result2 > 0 then
 				serial = result2[1].mtaserial
@@ -197,7 +197,7 @@ addCommandHandler("sopunish", offlinePunishPlayer)
 
 function sqlAddPoints(player, accountID, newpoints)
 	if tonumber(accountID) and tonumber(newpoints) and player then
-		if dbExec( exports.mysql:getConn('core'), "UPDATE `accounts` SET `punishpoints`=? WHERE `id`=?", newpoints, accountID ) then
+		if dbExec( exports.mysql:getConn(), "UPDATE `accounts` SET `punishpoints`=? WHERE `id`=?", newpoints, accountID ) then
 			return true
 		end
 	else
@@ -208,7 +208,7 @@ end
 
 function sqlSetDate(accountID)
 	if accountID then
-		if dbExec( exports.mysql:getConn('core'), "UPDATE `accounts` SET `punishdate`=NOW() WHERE `id`=?", accountID ) then
+		if dbExec( exports.mysql:getConn(), "UPDATE `accounts` SET `punishdate`=NOW() WHERE `id`=?", accountID ) then
 			return true
 		end
 	else
@@ -298,8 +298,8 @@ function checkExpiration(thePlayer, accountID)
 		accountID = getElementData(thePlayer, "account:id")
 	end
 
-	--local qh = dbQuery(exports.mysql:getConn('mta'), "SELECT id, punishpoints, punishdate, TIMESTAMPDIFF(DAY,punishdate,NOW()) AS date FROM accounts WHERE `id`=? AND TIMESTAMPDIFF(DAY,punishdate,NOW()) > 45 LIMIT 1", accountID)
-	local qh = dbQuery(exports.mysql:getConn('core'), "SELECT id, punishpoints, punishdate, TIMESTAMPDIFF(DAY,punishdate,NOW()) AS date FROM accounts WHERE `id`=? LIMIT 1", accountID)
+	--local qh = dbQuery(exports.mysql:getConn(), "SELECT id, punishpoints, punishdate, TIMESTAMPDIFF(DAY,punishdate,NOW()) AS date FROM accounts WHERE `id`=? AND TIMESTAMPDIFF(DAY,punishdate,NOW()) > 45 LIMIT 1", accountID)
+	local qh = dbQuery(exports.mysql:getConn(), "SELECT id, punishpoints, punishdate, TIMESTAMPDIFF(DAY,punishdate,NOW()) AS date FROM accounts WHERE `id`=? LIMIT 1", accountID)
 	local sqlHandler = dbPoll(qh, 10000)
 
 	if sqlHandler and #sqlHandler > 0 and sqlHandler[1]['id'] then
@@ -309,7 +309,7 @@ function checkExpiration(thePlayer, accountID)
 			local currentPoints = tonumber(sqlHandler[1].punishpoints)
 			local newPointTotal = currentPoints - toBeRemoved
 			if newPointTotal <= 0 then newPointTotal = 0 end
-			dbExec( exports.mysql:getConn('core'), "UPDATE `accounts` SET `punishpoints`=?, `punishdate`=DATE_ADD(punishdate, INTERVAL ? DAY) WHERE `id`=?", newPointTotal, tonumber(45*toBeRemoved), accountID )
+			dbExec( exports.mysql:getConn(), "UPDATE `accounts` SET `punishpoints`=?, `punishdate`=DATE_ADD(punishdate, INTERVAL ? DAY) WHERE `id`=?", newPointTotal, tonumber(45*toBeRemoved), accountID )
 			if thePlayer then
 				exports.anticheat:changeProtectedElementDataEx(thePlayer, "punishment:points", tonumber(newPointTotal), true)
 			end

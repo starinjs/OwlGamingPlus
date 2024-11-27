@@ -10,7 +10,7 @@
 local cmds_cache = nil
 
 local function reCacheCmds()
-	local qh = dbQuery( exports.mysql:getConn('mta'), "SELECT * FROM `commands` ORDER BY `command` " )
+	local qh = dbQuery( exports.mysql:getConn(), "SELECT * FROM `commands` ORDER BY `command` " )
 	local res, nums, id = dbPoll( qh, 10000 )
 	if res then 
 		cmds_cache = res
@@ -57,11 +57,11 @@ function saveCommand( cmd )
 	end
 
 	if cmd[1] then 
-		dbExec( exports.mysql:getConn('mta'), "UPDATE commands SET category=?, permission=?, command=?, hotkey=?, explanation=? WHERE id=? ", cmd[2], cmd[3], cmd[4], cmd[5], cmd[6], cmd[1] )
+		dbExec( exports.mysql:getConn(), "UPDATE commands SET category=?, permission=?, command=?, hotkey=?, explanation=? WHERE id=? ", cmd[2], cmd[3], cmd[4], cmd[5], cmd[6], cmd[1] )
 		updateCmdCache( 'update', cmd )
 		sendCmdsHelpToClient() -- send to all players.
 	else
-		local qh = dbQuery( exports.mysql:getConn('mta'), "INSERT INTO commands SET category=?, permission=?, command=?, hotkey=?, explanation=? ", cmd[2], cmd[3], cmd[4], cmd[5], cmd[6] )
+		local qh = dbQuery( exports.mysql:getConn(), "INSERT INTO commands SET category=?, permission=?, command=?, hotkey=?, explanation=? ", cmd[2], cmd[3], cmd[4], cmd[5], cmd[6] )
 		local res, nums, id = dbPoll( qh, 10000 )
 		if res and nums > 0 then
 			updateCmdCache( 'add', { id = id, category=cmd[2], permission=cmd[3], command=cmd[4], hotkey=cmd[5], explanation=cmd[6] } )
@@ -77,7 +77,7 @@ function deleteCommand(id)
 		return
 	end
 
-	dbExec( exports.mysql:getConn('mta'), "DELETE FROM commands WHERE id=? ", id )
+	dbExec( exports.mysql:getConn(), "DELETE FROM commands WHERE id=? ", id )
 	updateCmdCache( 'delete', { id } )
 	sendCmdsHelpToClient() -- send to all players.
 end

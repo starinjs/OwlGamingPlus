@@ -63,7 +63,7 @@ function moveVehicleToPickupAvailableLot(vehicle, slot)
         return
     end
 
-    exports.mysql:getConn('mta'):query(
+    exports.mysql:getConn():query(
         function (handle, vehicle)
             local results = handle:poll(0)
             if #results ~= 1 then return end
@@ -105,7 +105,7 @@ function moveVehicleToPickupLot(vehicle)
 end
 
 addEventHandler("onResourceStart", resourceRoot, function ()
-    exports.mysql:getConn('mta'):query(
+    exports.mysql:getConn():query(
         function (handle)
             local results = handle:poll(0)
 
@@ -128,7 +128,7 @@ end)
 
 addEvent("keymaster:get-available-keys", true)
 addEventHandler("keymaster:get-available-keys", resourceRoot, function ()
-    exports.mysql:getConn('mta'):query(
+    exports.mysql:getConn():query(
         function (handle, player)
             local results = handle:poll(0)
 
@@ -147,7 +147,7 @@ end)
 
 addEvent("keymaster:get-key", true)
 addEventHandler("keymaster:get-key", resourceRoot, function (auction)
-    exports.mysql:getConn('mta'):query(
+    exports.mysql:getConn():query(
         function (handle, player)
             local results = handle:poll(0)
             if #results ~= 1 then return end
@@ -157,7 +157,7 @@ addEventHandler("keymaster:get-key", resourceRoot, function (auction)
             exports.global:giveItem(player, 3, auction.vehicle_id)
             moveVehicleToPickupLot(vehicle)
             vehicle:removeData("auction_vehicle:awaiting_pickup")
-            exports.mysql:getConn('mta'):exec('DELETE FROM vehicle_auctions WHERE id = ?', auction.id)
+            exports.mysql:getConn():exec('DELETE FROM vehicle_auctions WHERE id = ?', auction.id)
             outputChatBox("You've been given the key to your " .. getVehicleFullName(vehicle) .. ".", player, 100, 255, 100)
             outputChatBox("Please pick it up at the north side of the lot.", player, 100, 255, 100)
             outputChatBox("Don't forget to /park your vehicle after picking it up!", player, 100, 255, 100)

@@ -22,7 +22,7 @@ function doCheck(sourcePlayer, command, ...)
 						local transfers = "?"
 						
 
-						local qh = dbQuery(exports.mysql:getConn("mta"), "SELECT adminnote, warns FROM account_details WHERE account_id =?", getElementData(checkTarget, "account:id"))
+						local qh = dbQuery(exports.mysql:getConn(), "SELECT adminnote, warns FROM account_details WHERE account_id =?", getElementData(checkTarget, "account:id"))
 						local result = dbPoll( qh, 10000 )
 						if result then 
 							note = result[1]["adminnote"] or ""
@@ -31,7 +31,7 @@ function doCheck(sourcePlayer, command, ...)
 							dbFree(qh)
 						end
 
-						local qh = dbQuery(exports.mysql:getConn("core"), "SELECT punishpoints, credits FROM accounts WHERE id=?", getElementData(checkTarget, "account:id"))
+						local qh = dbQuery(exports.mysql:getConn(), "SELECT punishpoints, credits FROM accounts WHERE id=?", getElementData(checkTarget, "account:id"))
 						local result = dbPoll( qh, 10000 )
 						if result and #result > 0 then
 							points = result[1]["punishpoints"] or "?" 
@@ -40,7 +40,7 @@ function doCheck(sourcePlayer, command, ...)
 							dbFree(qh)
 						end
 
-						local query = dbQuery(exports.mysql:getConn("mta"), "SELECT action, COUNT(*) as numbr FROM adminhistory WHERE user = ?", getElementData(checkTarget, "account:id"))
+						local query = dbQuery(exports.mysql:getConn(), "SELECT action, COUNT(*) as numbr FROM adminhistory WHERE user = ?", getElementData(checkTarget, "account:id"))
 						local result = dbPoll(query, 10000)
 						local history = {}
 
@@ -55,7 +55,7 @@ function doCheck(sourcePlayer, command, ...)
 						end
 						
 						local hoursAcc = 0
-						local query = dbQuery(exports.mysql:getConn("mta"), "SELECT SUM(hoursPlayed) AS hours FROM `characters` WHERE account = ?", getElementData(checkTarget, "account:id"))
+						local query = dbQuery(exports.mysql:getConn(), "SELECT SUM(hoursPlayed) AS hours FROM `characters` WHERE account = ?", getElementData(checkTarget, "account:id"))
 						local result = dbPoll(query, 10000)
 						if result[1] then
 							hoursAcc = tonumber(result[1]["hours"])
@@ -102,7 +102,7 @@ function doCheck(sourcePlayer, command, ...)
 							end
 						end
 
-						local query = dbQuery(exports.mysql:getConn("mta"), "SELECT action, COUNT(*) as numbr FROM adminhistory WHERE user = ? GROUP BY action", accountid)
+						local query = dbQuery(exports.mysql:getConn(), "SELECT action, COUNT(*) as numbr FROM adminhistory WHERE user = ? GROUP BY action", accountid)
 						local result = dbPoll(query, 10000)
 						local history = {}
 
@@ -115,7 +115,7 @@ function doCheck(sourcePlayer, command, ...)
 						end
 
 						local hoursAcc = 0
-						local query = dbQuery(exports.mysql:getConn("mta"), "SELECT SUM(hoursPlayed) AS hours FROM `characters` WHERE account = ?", accountid)
+						local query = dbQuery(exports.mysql:getConn(), "SELECT SUM(hoursPlayed) AS hours FROM `characters` WHERE account = ?", accountid)
 						local result = dbPoll(query, 10000)
 						if result[1] then
 							hoursAcc = tonumber(result[1]["hours"])
@@ -127,7 +127,7 @@ function doCheck(sourcePlayer, command, ...)
 						local adminnote = ""
 						local warns = ""
 						
-						local query = dbQuery(exports.mysql:getConn("mta"), "SELECT adminnote, adminreports, warns FROM account_details WHERE account_id = ?", accountid)
+						local query = dbQuery(exports.mysql:getConn(), "SELECT adminnote, adminreports, warns FROM account_details WHERE account_id = ?", accountid)
 						local result = dbPoll(query, 10000)
 						if result[1] then
 							adminnote = result[1]["adminnote"] or ""
@@ -164,7 +164,7 @@ function doCheck(sourcePlayer, command, ...)
 						outputChatBox("Account/Player '"..offlineTarget.."' not found", sourcePlayer, 255, 0, 0)
 					end
 					dbFree(qh)
-				end, {qh, offlineTarget}, exports.mysql:getConn("core"), preparedQuery, offlineTarget)
+				end, {qh, offlineTarget}, exports.mysql:getConn(), preparedQuery, offlineTarget)
 			end
 		end
 	end
@@ -286,7 +286,7 @@ function removeAdminHistoryLine(ID)
 			end
 		elseif (tonumber(sqlQuery["action"]) == 8) then -- /punish
 			local accountNumber = tostring(sqlQuery["user"])
-			dbExec(exports.mysql:getConn("core"), "UPDATE `accounts` SET `punishpoints`=GREATEST(punishpoints-?, 0) WHERE `ID`=? AND `punishpoints` > 0", sqlQuery["duration"], accountNumber)
+			dbExec(exports.mysql:getConn(), "UPDATE `accounts` SET `punishpoints`=GREATEST(punishpoints-?, 0) WHERE `ID`=? AND `punishpoints` > 0", sqlQuery["duration"], accountNumber)
 			for i, player in pairs(getElementsByType("player")) do
 				if getElementData(player, "account:id") == tonumber(accountNumber) then
 					local currentpoints = getElementData(player, "punishment:points")

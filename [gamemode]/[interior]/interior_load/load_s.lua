@@ -38,7 +38,7 @@ local function load( res )
 	setInteriorSoundsEnabled ( false )
 	threads = { }
 	-- ok
-	local qh = dbQuery( exports.mysql:getConn('mta'), query_load.." WHERE deleted='0' " )
+	local qh = dbQuery( exports.mysql:getConn(), query_load.." WHERE deleted='0' " )
 	local result , num_affected_rows, last_insert_id = dbPoll ( qh, load_timeout )
 	if result and num_affected_rows > 0 then
 		total = num_affected_rows
@@ -176,7 +176,7 @@ function loadOne( data, updatePlayers, massLoad )
 			if result then
 				loadOne( result[1], updatePlayers )
 			end
-		end, { updatePlayers }, exports.mysql:getConn('mta'), query_load.." WHERE interiors.id=? "..( loadDeletedOne and "" or " AND deleted=0 " ), data )
+		end, { updatePlayers }, exports.mysql:getConn(), query_load.." WHERE interiors.id=? "..( loadDeletedOne and "" or " AND deleted=0 " ), data )
 	end
 end
 

@@ -64,7 +64,7 @@ function addFactionRank(FactionID, rankName, permissions, plr)
 		permissions = getDefaultPermissionSet("New Member")
 	end
 	permissions = table.concat(permissions, ",") or ""
-	local qh = dbQuery(exports.mysql:getConn("mta"),"INSERT INTO `faction_ranks` (`faction_id`, `name`, `permissions`) VALUES ('"..FactionID.."','"..rankName.."','"..permissions.."')")
+	local qh = dbQuery(exports.mysql:getConn(),"INSERT INTO `faction_ranks` (`faction_id`, `name`, `permissions`) VALUES ('"..FactionID.."','"..rankName.."','"..permissions.."')")
 	local res, num, rID = dbPoll(qh, 10000)
 
 	local rankID = tonumber(rID)
@@ -88,7 +88,7 @@ function addFactionRank(FactionID, rankName, permissions, plr)
 	if rankOrder then
 		local newOrder = rankOrder..","..rankID
 		exports.anticheat:setEld(theTeam, "rank_order", newOrder, 'all') 
-		dbExec(exports.mysql:getConn("mta"), "UPDATE `factions` SET `rank_order` = '"..newOrder.."' WHERE `id` = "..FactionID)
+		dbExec(exports.mysql:getConn(), "UPDATE `factions` SET `rank_order` = '"..newOrder.."' WHERE `id` = "..FactionID)
 	end
 	exports.anticheat:setEld(theTeam, "ranks", factionRanks, 'all')
 	triggerClientEvent("faction-system.cacheRanks", client, FactionRanks)
@@ -259,7 +259,7 @@ function cacheFactionRankDatabase(qh)
 end 
 
 addEventHandler("onResourceStart", resourceRoot, function()
-	dbQuery(cacheFactionRankDatabase, {}, exports.mysql:getConn("mta"), "SELECT * FROM `faction_ranks`")
+	dbQuery(cacheFactionRankDatabase, {}, exports.mysql:getConn(), "SELECT * FROM `faction_ranks`")
 end)
 
 
@@ -283,7 +283,7 @@ addEventHandler("faction-system.setFactionRankName", root, function(rankID, rank
 		end
 	end
 	local oldName = getRankName(rankID)
-	dbExec(exports.mysql:getConn("mta"), "UPDATE `faction_ranks` SET `name` = '"..rankName.."' WHERE `id` = "..rankID)
+	dbExec(exports.mysql:getConn(), "UPDATE `faction_ranks` SET `name` = '"..rankName.."' WHERE `id` = "..rankID)
 	outputChatBox("The '"..oldName.."' rank has been renamed to '"..rankName.."'", client, 255, 100, 100)
 	FactionRanks[rankID]["name"] = rankName
 	local factionRanks = {}
@@ -311,8 +311,8 @@ addEventHandler("faction-system.removeFactionRank", root, function(rankID, facti
 
 	local factionID = tonumber(factionID)
 	local rankName = getRankName(rankID)
-	dbExec(exports.mysql:getConn("mta"), "DELETE FROM `faction_ranks` WHERE id="..rankID) 
-	dbQuery(resetPlayerRanks,{rankID, factionID},exports.mysql:getConn("mta"), "SELECT * FROM `characters_faction` WHERE `faction_rank` = ?", rankID)
+	dbExec(exports.mysql:getConn(), "DELETE FROM `faction_ranks` WHERE id="..rankID) 
+	dbQuery(resetPlayerRanks,{rankID, factionID},exports.mysql:getConn(), "SELECT * FROM `characters_faction` WHERE `faction_rank` = ?", rankID)
 	outputChatBox("The '"..rankName.."' rank has been successfully deleted.", client, 255, 100, 100)
 	FactionRanks[rankID] = nil
 	local factionRankTable = {}
@@ -326,7 +326,7 @@ addEventHandler("faction-system.removeFactionRank", root, function(rankID, facti
 			newrank_order = newrank_order..rID..","
 		end	
 	end	
-	dbExec(exports.mysql:getConn("mta"), "UPDATE `factions` SET `rank_order` = '"..newrank_order.."' WHERE `id` = "..factionID)
+	dbExec(exports.mysql:getConn(), "UPDATE `factions` SET `rank_order` = '"..newrank_order.."' WHERE `id` = "..factionID)
 	exports.anticheat:setEld(theTeam, "rank_order", newrank_order, 'all')
 	exports.anticheat:setEld(theTeam, "ranks", factionRankTable, 'all')
 	getRankInfo(factionID, client)
@@ -336,7 +336,7 @@ function resetPlayerRanks(query, rankId, factionId)
 	local pollResult = dbPoll(query, 0)
 	local newRank = getDefaultRank(factionId)
 	
-	dbExec(exports.mysql:getConn("mta"), "UPDATE `characters_faction` SET `faction_rank` = ? WHERE `faction_rank` = ? AND `faction_id` = ?", newRank, rankId, factionId)
+	dbExec(exports.mysql:getConn(), "UPDATE `characters_faction` SET `faction_rank` = ? WHERE `faction_rank` = ? AND `faction_id` = ?", newRank, rankId, factionId)
 	
 	for _, row in pairs(pollResult) do
 		local charID = tonumber(row["character_id"])
@@ -393,7 +393,7 @@ function sortFactionRanks(factionID, ranks, theTeam)
 	if (not factionID or type(factionID) ~= "number") then return false end
 	if (not ranks or type(ranks) ~= "table") then return false end
 	ranks = table.concat(ranks, ",")
-	dbExec(exports.mysql:getConn("mta"), "UPDATE `factions` SET `rank_order` = '"..ranks.."' WHERE `id` = "..factionID)
+	dbExec(exports.mysql:getConn(), "UPDATE `factions` SET `rank_order` = '"..ranks.."' WHERE `id` = "..factionID)
 	exports.anticheat:setEld(theTeam, "rank_order", ranks, 'all')
 	return true
 end

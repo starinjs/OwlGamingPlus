@@ -159,7 +159,7 @@ function transferMoneyToPersonal( fromFactionId, name, amount, reason )
 		-- if receiver not found, chance is that it's an offline player. Let's check that.
 		if not receiver then
 			local senderAccountID = getElementData(sender, "account:id") -- Adding this check so we can compare the sender and receiver account IDs.
-			local qh = dbQuery( exports.mysql:getConn('mta'), "SELECT id, bankmoney, charactername, account FROM characters WHERE charactername=? LIMIT 1 ", string.gsub( name," ","_" ) )
+			local qh = dbQuery( exports.mysql:getConn(), "SELECT id, bankmoney, charactername, account FROM characters WHERE charactername=? LIMIT 1 ", string.gsub( name," ","_" ) )
 			local res, nums, _ = dbPoll( qh, 10000 )
 			if res then
 				if nums > 0 then
@@ -190,7 +190,7 @@ function transferMoneyToPersonal( fromFactionId, name, amount, reason )
 			if takeBankMoney( sender, amount ) then
 				-- if receiver_bank is not null then, receiver must be an offline player.
 				if receiver_bank then
-					dbExec( exports.mysql:getConn('mta'), "UPDATE characters SET bankmoney=bankmoney+? WHERE id=?", amount, receiver )
+					dbExec( exports.mysql:getConn(), "UPDATE characters SET bankmoney=bankmoney+? WHERE id=?", amount, receiver )
 				else
 					if not giveBankMoney( receiver, amount ) then
 						outputDebugString( "[BANK] Took bankmoney from sender, but unable to give receiver. Code 188." )
