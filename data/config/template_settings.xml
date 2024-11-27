@@ -1,7 +1,4 @@
 <settings>
-	<setting name="@mysql.production_server" value="PRODUCTION_SERVER" /> 
-	<!-- 1 = Live server 0 = Local/Dev server -->
-	
 	<!-- Socket -->
 	<setting name="@mysql.socket" value="unix_socket=/var/run/mysqld/mysqld.sock" />
 	
@@ -20,8 +17,6 @@
 	<setting name="@mysql.core_port" value="CORE_DATABASE_PORT" />
 	
 	<!-- No need to fill in -->
-	<setting name="@usercontrolpanel.website_pass" value="WEBSITE_PASSWORD" />
-	<setting name="@integration.forumsAPIKey" value="FORUMS_API_KEY" />
 	<setting name="imgurClient" value="IMGUR_API_KEY" />
 	
 	<!-- Inactivity Scanner -->

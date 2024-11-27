@@ -135,11 +135,3 @@ function sendMessageToAdmins(msg)
 		exports.global:sendMessageToAdmins("[UCP] "..msg)
 	end
 end
-
-addEventHandler("onResourceStart", resourceRoot, function()
-	local new_pass = tostring(get("website_pass"))
-	local aclAccount = getAccount("website")
-	if not aclAccount then 
-		addAccount("website", new_pass)
-	end
-end)

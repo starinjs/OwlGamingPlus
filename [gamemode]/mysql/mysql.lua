@@ -6,8 +6,6 @@
 * Proprietary and confidential
 * ***********************************************************************************************************************
 ]]
--- Production Server
-production = (get( "production_server" ) == "1" or false)
 socket = get( "socket" ) or ""
 
 -- connection settings
