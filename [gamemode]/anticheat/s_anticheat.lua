@@ -99,3 +99,17 @@ addEventHandler( "onResourceStart", resourceRoot,
         end
     end
 )
+
+-- [[ OwlGamingPlus ]]
+
+-- Anti event spam
+function processPlayerTriggerEventThreshold()
+    local player = source
+    local playerName = getPlayerName(player):gsub("_", " ")
+
+    local characterId = tonumber(getElementData(player, "dbid")) or 0
+    kickPlayer(source, "Too many requests, contact server support (ANTICHEAT).")
+    outputDebugString(([[> **"%s#%s"** triggered 250 events per second and got kicked.]]):format(playerName, characterId), 4, 255, 0,
+        247)
+end
+addEventHandler("onPlayerTriggerEventThreshold", root, processPlayerTriggerEventThreshold)
