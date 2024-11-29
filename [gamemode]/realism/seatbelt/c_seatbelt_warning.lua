@@ -1,13 +1,5 @@
 local seatbeltalert = { [1] = {}, [2] = {}, [3] = {} }
 
-function resStart()
-	for key, value in ipairs(getElementsByType("vehicle")) do
-		setElementData(value, "seatbeltwarning", nil)
-		triggerServerEvent("onVehicleSeatbeltWarning", value)
-	end
-end
-addEventHandler("onClientResourceStart", getResourceRootElement(), resStart)
-
 function seatBeltWarning()
 	local seatbeltwarning = getElementData(source, "seatbeltwarning")
 	if not seatbeltwarning then
