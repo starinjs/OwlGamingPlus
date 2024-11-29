@@ -274,7 +274,7 @@ function setFactionBudget(thePlayer, commandName, factionID, amount)
 
 				if (theTeam) then
 					if getElementData(theTeam, "type") >= 2 and getElementData(theTeam, "type") <= 6 then
-						if exports.global:takeMoney(getFactionFromName("Government of Los Santos"), amount) then
+						if exports.global:takeMoney(getFactionFromID(3), amount) then
 							exports.global:giveMoney(theTeam, amount)
 							outputChatBox("You added $" .. exports.global:formatMoney(amount) .. " to the budget of '" .. getTeamName(theTeam) .. "' (Total: " .. exports.global:getMoney(theTeam) .. ").", thePlayer, 255, 194, 14)
 							mysql:query_free( "INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (" .. -3 .. ", " .. -getElementData(theTeam, "id") .. ", " .. amount .. ", '', 8)" )

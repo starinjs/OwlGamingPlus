@@ -16,7 +16,7 @@ function showIBIS(thePlayer, seat)
 	else
 		if (getElementData(source, "faction") == 64) and (vehicleModel == 431 or vehicleModel == 437) then
 			if (exports.global:takeMoney(thePlayer, 10)) then
-				exports.global:giveMoney(exports.factions:getFactionFromName("San Andreas Public Transport"), 10)
+				exports.global:giveMoney(exports.factions:getFactionFromID(64), 10)
 				exports.hud:sendBottomNotification(thePlayer, "SAPT Bus Notification", "You have been charged $10 to use our services.")
 			else
 				local x, y, z = getElementPosition(thePlayer)
