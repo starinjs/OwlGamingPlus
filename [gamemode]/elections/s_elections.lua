@@ -10,7 +10,7 @@ end
 
 addEventHandler("onResourceStart", resourceRoot,
 	function()
-		dbQuery(reloadElection, exports.mysql:getConn("mta"), "SELECT * FROM `elections`")
+		dbQuery(reloadElection, exports.mysql:getConn(), "SELECT * FROM `elections`")
 		local ped = createPed(240, 1485.2607421875, 1251.177734375, 51.977203369141)
 		setElementFrozen(ped, true)
 		setElementRotation(ped, 0, 0, 180)
@@ -53,8 +53,8 @@ function updateVotes(selection)
 	currentVotes[vote]["votes"] = tonumber(currentVotes[vote]["votes"]) + 1
 	setElementData(resourceRoot, "elections:votes", currentVotes)
 
-	dbExec(exports.mysql:getConn("mta"), "UPDATE elections SET votes = votes + 1 WHERE `electionsname` = ?", selection)
-	dbExec(exports.mysql:getConn("mta"), "UPDATE account_details SET `electionsvoted`='1' WHERE `account_id` = ?", getElementData(client, "account:id"))
+	dbExec(exports.mysql:getConn(), "UPDATE elections SET votes = votes + 1 WHERE `electionsname` = ?", selection)
+	dbExec(exports.mysql:getConn(), "UPDATE account_details SET `electionsvoted`='1' WHERE `account_id` = ?", getElementData(client, "account:id"))
 	setElementData(client, "electionsvoted", 1, true)
 	outputChatBox("You have voted for: ".. selection, client)
 end
@@ -77,7 +77,7 @@ function resetElections()
 		return
 	end
 
-	dbExec(exports.mysql:getConn("mta"), "UPDATE account_details SET `electionsvoted`='0'")
+	dbExec(exports.mysql:getConn(), "UPDATE account_details SET `electionsvoted`='0'")
 	for _, player in ipairs(getElementsByType("player")) do 
 		if getElementData(player, "electionsvoted") then 
 			removeElementData(player, "electionsvoted")
@@ -94,8 +94,8 @@ function addToElection(name)
 		return
 	end
 
-	dbExec(exports.mysql:getConn("mta"), "INSERT INTO elections (electionsname) VALUES (?)", name)
-	dbQuery(reloadElection, exports.mysql:getConn("mta"), "SELECT * FROM `elections`")
+	dbExec(exports.mysql:getConn(), "INSERT INTO elections (electionsname) VALUES (?)", name)
+	dbQuery(reloadElection, exports.mysql:getConn(), "SELECT * FROM `elections`")
 
 	outputChatBox("Done.", client)
 end
@@ -107,8 +107,8 @@ function removeFromElection(name)
 		return
 	end
 
-	dbExec(exports.mysql:getConn("mta"), "DELETE FROM `elections` WHERE electionsname = ?", name)
-	dbQuery(reloadElection, exports.mysql:getConn("mta"), "SELECT * FROM `elections`")
+	dbExec(exports.mysql:getConn(), "DELETE FROM `elections` WHERE electionsname = ?", name)
+	dbQuery(reloadElection, exports.mysql:getConn(), "SELECT * FROM `elections`")
 
 	outputChatBox("Done.", client)
 end

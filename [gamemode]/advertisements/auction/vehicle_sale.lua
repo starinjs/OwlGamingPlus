@@ -5,7 +5,7 @@ end
 local function changeVehicleOwnershipData(vehicle, buyerId)
 	local vehicleId = vehicle:getData("dbid")
 
-    exports.mysql:getConn('mta'):exec(
+    exports.mysql:getConn():exec(
 		"UPDATE vehicles SET faction = -1, owner = ?, tokenUsed = 0, lastUsed = NOW() WHERE id = ?", buyerId, vehicleId
 	)
 
@@ -16,7 +16,7 @@ local function changeVehicleOwnershipData(vehicle, buyerId)
 end
 
 local function removeVehicleInsurance(vehicleId)
-    exports.mysql:getConn('mta'):exec("DELETE FROM insurance_data WHERE vehicleid = ?", vehicleId)
+    exports.mysql:getConn():exec("DELETE FROM insurance_data WHERE vehicleid = ?", vehicleId)
 end
 
 local function logSale(vehicle, buyerId, auction)
@@ -30,7 +30,7 @@ local function logSale(vehicle, buyerId, auction)
         sellerName = exports.cache:getFactionNameFromId(auction.created_by_faction)
     end
 
-    exports.mysql:getConn('mta'):exec(
+    exports.mysql:getConn():exec(
         "INSERT INTO vehicle_logs (vehID, `action`, `actor`) VALUES (?, ?, ?)",
         vehicleId,
         "Auctioned to " .. buyerName,

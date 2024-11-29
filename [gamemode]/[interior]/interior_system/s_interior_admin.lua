@@ -355,7 +355,7 @@ function getInteriorID( thePlayer, commandName )
 				if interior == v[1] and getDistanceBetweenPoints3D( x, y, z, v[2], v[3], v[4] ) < 10 then
 					theId = k
 					-- now fix it.
-					dbExec( exports.mysql:getConn('mta'), "UPDATE interiors SET interior_id=? WHERE `id`=?", k, myDim )
+					dbExec( exports.mysql:getConn(), "UPDATE interiors SET interior_id=? WHERE `id`=?", k, myDim )
 					exports.anticheat:setEld(theInterior, 'interior_id', k, 'all')
 					break
 				end
@@ -459,7 +459,7 @@ function deleteInterior( thePlayer, commandName, houseID )
 				sendPlayersOutside( interiorElement )
 
 				-- db delete.
-				dbExec( exports.mysql:getConn('mta'), "UPDATE `interiors` SET `deleted`=?, `deletedDate`=NOW() WHERE id=? ", getElementData(thePlayer, "account:username"), dbid )
+				dbExec( exports.mysql:getConn(), "UPDATE `interiors` SET `deleted`=?, `deletedDate`=NOW() WHERE id=? ", getElementData(thePlayer, "account:username"), dbid )
 				setElementData( thePlayer, "mostRecentDeletedInterior", dbid, false )
 
 				-- destroy the entrance and exit
@@ -831,7 +831,7 @@ function createInterior(thePlayer, commandName, interiorId, inttype, cost, ...)
 				local defaultSupplies = "[ [ ] ]"
 
 				local rot = getPedRotation(thePlayer)
-				local qh = dbQuery( exports.mysql:getConn('mta'), "INSERT INTO interiors SET interior_id=?, creator=?, id=" .. exports.mysql:getSmallestID( 'interiors' ) .. ", x=?, y=?, z=?, "
+				local qh = dbQuery( exports.mysql:getConn(), "INSERT INTO interiors SET interior_id=?, creator=?, id=" .. exports.mysql:getSmallestID( 'interiors' ) .. ", x=?, y=?, z=?, "
 				.." type=?, owner=?, locked=?, cost=?, name=?, interior=?, interiorx=?, interiory=?, interiorz=?, dimensionwithin=?, interiorwithin=?, angle=?, angleexit=?, supplies=?, createdDate=NOW() "
 				, interiorId, getElementData( thePlayer, "account:username" ), x, y, z, inttype, owner, locked, cost, name, interiorw, ix, iy, iz, dimension, interiorwithin, optAngle, rot, defaultSupplies )
 				local res, rows, inserted_id = dbPoll( qh, 10000 )
@@ -841,12 +841,12 @@ function createInterior(thePlayer, commandName, interiorId, inttype, cost, ...)
 						--All scripts handles interiors over ID 20,000 as vehicle interiors.
 						outputChatBox("Failed to create interior: Reached max limit.", thePlayer, 255, 0, 0)
 						outputChatBox("This script version supports a maximum of 20,000 interiors (current: "..tostring(uid)..").", thePlayer, 255, 0, 0)
-						dbExec( exports.mysql:getConn('mta'), "DELETE FROM `interiors` WHERE `id`=? LIMIT 1;", inserted_id )
+						dbExec( exports.mysql:getConn(), "DELETE FROM `interiors` WHERE `id`=? LIMIT 1;", inserted_id )
 						dbFree( qh )
 						return false
 					end
 					if tonumber(inttype) == 1 then
-						dbExec( exports.mysql:getConn('mta'), "INSERT INTO `interior_business` SET `intID`=? ", inserted_id )
+						dbExec( exports.mysql:getConn(), "INSERT INTO `interior_business` SET `intID`=? ", inserted_id )
 					end
 					outputChatBox("Created Interior with ID " .. inserted_id .. ".", thePlayer, 255, 194, 14)
 					exports.logs:dbLog(thePlayer, 37, { "in"..tostring(inserted_id) } , "ADDINTERIOR T:".. inttype .." I:"..interiorId.." C:"..cost)
@@ -1038,10 +1038,10 @@ function changeInteriorAddress( thePlayer, commandName, id, ...) --MS: Adding co
 			end
 			address = table.concat({...}, " ")
 			if address == "reset" then
-				dbExec( exports.mysql:getConn('mta'), "UPDATE interiors SET address=NULL WHERE id=?", id) -- Remove Address
+				dbExec( exports.mysql:getConn(), "UPDATE interiors SET address=NULL WHERE id=?", id) -- Remove Address
 				outputChatBox("Interior (#" .. id ..") address has been reset.", thePlayer, 0, 255, 0)
 			else
-				dbExec( exports.mysql:getConn('mta'), "UPDATE interiors SET address=? WHERE id=?", address, id) -- Set address in DB to be called later
+				dbExec( exports.mysql:getConn(), "UPDATE interiors SET address=? WHERE id=?", address, id) -- Set address in DB to be called later
 				outputChatBox("Interior (#" .. id ..") address changed to ".. address ..".", thePlayer, 0, 255, 0) -- Output confirmation.
 				exports.logs:dbLog(thePlayer, 4, { "in"..tostring(dbid) } , "SETINTERIORADDRESS '"..address.."'")
 			end

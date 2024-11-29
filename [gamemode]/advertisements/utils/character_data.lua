@@ -4,7 +4,7 @@ function getAccountIdFromCharacter(characterId)
         return player:getData("account:id")
     end
 
-    local handle = exports.mysql:getConn('mta'):query("SELECT account FROM characters WHERE id = ?", characterId)
+    local handle = exports.mysql:getConn():query("SELECT account FROM characters WHERE id = ?", characterId)
     local results = handle:poll(1000)
 
     if type(results) == 'table' and #results == 1 then

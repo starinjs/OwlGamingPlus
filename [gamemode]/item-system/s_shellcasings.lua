@@ -18,14 +18,14 @@ addEventHandler( "item-system:dropGunNote", root, createGunNote)
 
 -- Called from payday
 function startOldCasingsCheck()
-    local connection = exports.mysql:getConn("mta")
+    local connection = exports.mysql:getConn()
     dbQuery(checkOldCasings, connection, "SELECT id FROM `worlditems` WHERE itemid=271 AND protected=0 AND creationdate IS NOT NULL AND DATEDIFF(NOW(), creationdate) > 7")
 end
 addEvent("item-system:shellcasings", false)
 addEventHandler("item-system:shellcasings", root, startOldCasingsCheck)
 
 function checkOldCasings(query)
-    local connection = exports.mysql:getConn("mta")
+    local connection = exports.mysql:getConn()
     local objectsTable = {}
     
     local pollResult = dbPoll(query, 0)

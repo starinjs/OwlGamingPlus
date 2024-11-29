@@ -4,12 +4,12 @@ function loadAllTrafficCams(res)
 		for _, row in pairs(result) do 
 			loadOneTrafficCam(row["id"])
 		end
-	end, exports.mysql:getConn("mta"), "SELECT id FROM `speedcams` ORDER BY `id` ASC")
+	end, exports.mysql:getConn(), "SELECT id FROM `speedcams` ORDER BY `id` ASC")
 end
 addEventHandler("onResourceStart", getResourceRootElement(), loadAllTrafficCams)
 
 function loadOneTrafficCam(id)
-	local query = dbQuery(exports.mysql:getConn("mta"), "SELECT * FROM `speedcams` WHERE `id`= ?", id)
+	local query = dbQuery(exports.mysql:getConn(), "SELECT * FROM `speedcams` WHERE `id`= ?", id)
 	local result = dbPoll(query, -1)
 	local row = result[1]
 	if (row) then
@@ -98,7 +98,7 @@ function setTrafficCamRadius(thePlayer, commandName)
 				outputChatBox("Radius is too big.", thePlayer, 255, 0, 0)
 			else
 				exports.anticheat:changeProtectedElementDataEx(thePlayer, "speedcam:new", false, false)
-				local query = dbQuery(exports.mysql:getConn("mta"), "INSERT INTO `speedcams` SET `enabled` = 1, `radius` = ?, `maxspeed` = ?, `x` = ?, `y` = ?, `z` = ?, `interior` = ?, `dimension` = ?", radius, maxspeed, x, y, z, interior, dimension)
+				local query = dbQuery(exports.mysql:getConn(), "INSERT INTO `speedcams` SET `enabled` = 1, `radius` = ?, `maxspeed` = ?, `x` = ?, `y` = ?, `z` = ?, `interior` = ?, `dimension` = ?", radius, maxspeed, x, y, z, interior, dimension)
 				local _, _, id = dbPoll(query, 1000)
 				if (id) then
 					outputChatBox("Speed camera created.", thePlayer, 0, 255, 0)
@@ -127,7 +127,7 @@ function delTrafficCam(thePlayer, commandName)
 		--colShape = true
 		if (colShape) then
 			local id = getElementData(colShape, "speedcam:dbid")
-			dbExec(exports.mysql:getConn("mta"), "DELETE FROM `speedcams` WHERE id = ?", id)
+			dbExec(exports.mysql:getConn(), "DELETE FROM `speedcams` WHERE id = ?", id)
 			outputChatBox("Speedcam #" .. id .. " deleted.", thePlayer)
 			destroyElement(colShape)
 		else
@@ -175,10 +175,10 @@ function toggleTrafficCam(theColshape)
 		local dbid = getElementData(theColshape, "speedcam:dbid")
 		exports.anticheat:changeProtectedElementDataEx(theColshape, "speedcam:enabled",  not currentStatus, false)
 		if (newStatus == false) then
-			dbExec(exports.mysql:getConn("mta"), "UPDATE `speedcams` SET `enabled`=1 WHERE `id`= ?", dbid)
+			dbExec(exports.mysql:getConn(), "UPDATE `speedcams` SET `enabled`=1 WHERE `id`= ?", dbid)
 			return 2
 		else
-			dbExec(exports.mysql:getConn("mta"), "UPDATE `speedcams` SET `enabled`=0 WHERE `id`= ?", dbid)
+			dbExec(exports.mysql:getConn(), "UPDATE `speedcams` SET `enabled`=0 WHERE `id`= ?", dbid)
 			return 1
 		end
 	end

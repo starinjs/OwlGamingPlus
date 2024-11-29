@@ -25,7 +25,7 @@ function getUsername( clue )
 
 	if not searched[clue] or getTickCount() - searched[clue] > refreshCacheRate*1000*60 then
 		searched[clue] = getTickCount()
-		local qh = dbQuery(exports.mysql:getConn("core"), "SELECT `id`,`username` FROM accounts WHERE `username`=? LIMIT 1", clue)
+		local qh = dbQuery(exports.mysql:getConn(), "SELECT `id`,`username` FROM accounts WHERE `username`=? LIMIT 1", clue)
 		local query = dbPoll(qh, 10000)
 		if query and #query > 0 then
 			usernameCache[tonumber(query[1]["id"])] = query[1]["username"]
@@ -61,7 +61,7 @@ function getIdFromUsername(username)
 	end
 	searched2[username] = true
 
-	local qh = dbQuery(exports.mysql:getConn("core"), "SELECT `id` FROM accounts WHERE `username`=? LIMIT 1", username)
+	local qh = dbQuery(exports.mysql:getConn(), "SELECT `id` FROM accounts WHERE `username`=? LIMIT 1", username)
 	local query = dbPoll(qh, 10000)
 	if query and #query > 0 then
 		usernameCache[query[1].id] = username
@@ -127,7 +127,7 @@ function getUsernameFromId(id)
 	end
 	searched[id] = true
 
-	local qh = dbQuery(exports.mysql:getConn("core"), "SELECT `username` FROM accounts WHERE `id`=? LIMIT 1", id)
+	local qh = dbQuery(exports.mysql:getConn(), "SELECT `username` FROM accounts WHERE `id`=? LIMIT 1", id)
 	local query = dbPoll(qh, 10000)
 	if query and #query > 0 then
 		usernameCache[id] = query[1].username
@@ -184,6 +184,6 @@ function startUp()
 			for _, row in pairs(result) do
 				usernameCache[tonumber(row.id)] = row.username
 			end
-		end, exports.mysql:getConn("core"), "SELECT id, username FROM accounts")
+		end, exports.mysql:getConn(), "SELECT id, username FROM accounts")
 end
 addEventHandler("onResourceStart", resourceRoot, startUp)

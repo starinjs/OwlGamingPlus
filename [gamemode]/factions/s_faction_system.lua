@@ -20,7 +20,7 @@ function loadOneFaction(row)
 	local name = row.name
 	local money = tonumber(row.bankbalance)
 	local factionType = tonumber(row.type)
-	local rankQuery = dbQuery(allocateFactionRank, mysql:getConn("mta"), "SELECT *  FROM `faction_ranks` WHERE `faction_id` = ?", id)
+	local rankQuery = dbQuery(allocateFactionRank, mysql:getConn(), "SELECT *  FROM `faction_ranks` WHERE `faction_id` = ?", id)
 
 	theTeam = createTeam(tostring(name))
 	if theTeam then
@@ -56,7 +56,7 @@ function loadAllFactions(res)
 		for _, row in pairs(result) do
 			loadOneFaction(row)
 		end
-	end, mysql:getConn("mta"), "SELECT * FROM factions ORDER BY id ASC")
+	end, mysql:getConn(), "SELECT * FROM factions ORDER BY id ASC")
 
 	local customQ = dbQuery(function(customQ)
 		local result, num_affected_rows = dbPoll(customQ, 0)
@@ -73,7 +73,7 @@ function loadAllFactions(res)
 
 		setElementData(resourceRoot, "maxcindex", maxIndex)
 		setElementData(getResourceRootElement(getResourceFromName("duty")), "factionDuty", custom)
-	end, mysql:getConn("mta"), "SELECT * FROM duty_custom ORDER BY id ASC", id)
+	end, mysql:getConn(), "SELECT * FROM duty_custom ORDER BY id ASC", id)
 
 	local locationQ = dbQuery(function(locationQ)
 		local result, num_affected_rows = dbPoll(locationQ, 0)
@@ -90,7 +90,7 @@ function loadAllFactions(res)
 
 		setElementData(resourceRoot, "maxlindex", maxIndex)
 		setElementData(getResourceRootElement(getResourceFromName("duty")), "factionLocations", locations)
-	end, mysql:getConn("mta"), "SELECT * FROM duty_locations ORDER BY id ASC", id)
+	end, mysql:getConn(), "SELECT * FROM duty_locations ORDER BY id ASC", id)
 
 	local citteam = createTeam("Citizen", 255, 255, 255)
 	exports.pool:allocateElement(citteam, -1)
@@ -119,7 +119,7 @@ function loadAllFactions(res)
 			dbFree(qh)
 			end
 			setPlayerTeam(thePlayer, citteam)
-		end, mysql:getConn("mta"), "SELECT * FROM characters_faction WHERE character_id=? ORDER BY id ASC", dbid)
+		end, mysql:getConn(), "SELECT * FROM characters_faction WHERE character_id=? ORDER BY id ASC", dbid)
 
 		if not (isKeyBound(thePlayer, "F3", "down", showFactionMenu)) then
 			bindKey(thePlayer, "F3", "down", showFactionMenu)
@@ -156,7 +156,7 @@ function showFactionMenuEx(source, factionID, fromShowF)
 			end
 			if (factionID) then
 				local theTeam = exports.pool:getElement("team", factionID)
-				local query = dbQuery(mysql:getConn("mta"), "SELECT characters.charactername, characters_faction.faction_rank, characters_faction.faction_perks, characters_faction.faction_leader, characters_faction.faction_phone, DATEDIFF(NOW(), characters.lastlogin) AS lastlogin FROM characters_faction INNER JOIN characters ON characters.id=characters_faction.character_id WHERE characters_faction.faction_ID=? ORDER BY faction_rank DESC, charactername ASC", factionID)
+				local query = dbQuery(mysql:getConn(), "SELECT characters.charactername, characters_faction.faction_rank, characters_faction.faction_perks, characters_faction.faction_leader, characters_faction.faction_phone, DATEDIFF(NOW(), characters.lastlogin) AS lastlogin FROM characters_faction INNER JOIN characters ON characters.id=characters_faction.character_id WHERE characters_faction.faction_ID=? ORDER BY faction_rank DESC, charactername ASC", factionID)
 				local result, num_affected_rows = dbPoll(query, 10000)
 				if result then
 					local memberUsernames = {}
@@ -240,7 +240,7 @@ function showFactionMenuEx(source, factionID, fromShowF)
 
 					local towstats = nil
 					if hasMemberPermissionTo(source, factionID, "respawn_vehs") then
-						local vehicleQuery = dbQuery(mysql:getConn("mta"), "SELECT id, model, plate FROM vehicles WHERE faction=? AND deleted=0", factionID)
+						local vehicleQuery = dbQuery(mysql:getConn(), "SELECT id, model, plate FROM vehicles WHERE faction=? AND deleted=0", factionID)
 						local vehResult, num_affected_rows = dbPoll(vehicleQuery, 10000)
 						if vehResult then
 							local j = 1
@@ -256,7 +256,7 @@ function showFactionMenuEx(source, factionID, fromShowF)
 							dbFree(vehicleQuery)
 						end
 
-						local interiorQuery = dbQuery(mysql:getConn("mta"), "SELECT id, name FROM interiors WHERE faction=? AND deleted='0' AND disabled=0", factionID)
+						local interiorQuery = dbQuery(mysql:getConn(), "SELECT id, name FROM interiors WHERE faction=? AND deleted='0' AND disabled=0", factionID)
 						local interiorResult, num_affected_rows = dbPoll(interiorQuery, 10000)
 						if interiorResult then
 							local j = 1
@@ -272,7 +272,7 @@ function showFactionMenuEx(source, factionID, fromShowF)
 						end
 						if factionID == 4 then -- TTR Towstats
 						-- this basically returns a count of towed vehicles, by week -> so week 0 (current week) = X, week -1 (last week) = Y, etc.
-						local towQuery = dbQuery(mysql:getConn("mta"), "SELECT ceil(datediff(`date`, curdate() + INTERVAL 6-WEEKDAY(curdate()) DAY) / 7) AS week, c.charactername, count(vehicle) AS count FROM towstats t JOIN characters c ON t.character = c.id WHERE (SELECT faction_id FROM characters_faction WHERE character_id = t.character and faction_id = 4) = 4 GROUP BY t.character, week ORDER BY t.character ASC, week DESC")
+						local towQuery = dbQuery(mysql:getConn(), "SELECT ceil(datediff(`date`, curdate() + INTERVAL 6-WEEKDAY(curdate()) DAY) / 7) AS week, c.charactername, count(vehicle) AS count FROM towstats t JOIN characters c ON t.character = c.id WHERE (SELECT faction_id FROM characters_faction WHERE character_id = t.character and faction_id = 4) = 4 GROUP BY t.character, week ORDER BY t.character ASC, week DESC")
 						local towResult, num_affected_rows = dbPoll(towQuery, 10000)
 						if towResult then
 							towstats = {}
@@ -308,7 +308,7 @@ function loadFaction(factionID)
 	local theTeam = exports.pool:getElement("team", factionID)
 	if (theTeam) then
 		local theTeam = exports.pool:getElement("team", factionID)
-		local query = dbQuery(mysql:getConn("mta"), "SELECT characters.charactername, characters_faction.faction_rank, characters_faction.faction_perks, characters_faction.faction_leader, characters_faction.faction_phone, DATEDIFF(NOW(), characters.lastlogin) AS lastlogin FROM characters_faction INNER JOIN characters ON characters.id=characters_faction.character_id WHERE characters_faction.faction_ID=? ORDER BY faction_rank DESC, charactername ASC", factionID)
+		local query = dbQuery(mysql:getConn(), "SELECT characters.charactername, characters_faction.faction_rank, characters_faction.faction_perks, characters_faction.faction_leader, characters_faction.faction_phone, DATEDIFF(NOW(), characters.lastlogin) AS lastlogin FROM characters_faction INNER JOIN characters ON characters.id=characters_faction.character_id WHERE characters_faction.faction_ID=? ORDER BY faction_rank DESC, charactername ASC", factionID)
 		local result, num_affected_rows = dbPoll(query, 10000)
 		if result then
 			local memberUsernames = {}
@@ -394,7 +394,7 @@ function loadFaction(factionID)
 
 			local towstats = nil
 			if hasMemberPermissionTo(client, factionID, "respawn_vehs") then
-				local vehicleQuery = dbQuery(mysql:getConn("mta"), "SELECT id, model, plate FROM vehicles WHERE faction=? AND deleted=0", factionID)
+				local vehicleQuery = dbQuery(mysql:getConn(), "SELECT id, model, plate FROM vehicles WHERE faction=? AND deleted=0", factionID)
 				local vehResult, num_affected_rows = dbPoll(vehicleQuery, 10000)
 				if vehResult then
 					local j = 1
@@ -410,7 +410,7 @@ function loadFaction(factionID)
 					dbFree(vehicleQuery)
 				end
 
-				local interiorQuery = dbQuery(mysql:getConn("mta"), "SELECT id, name FROM interiors WHERE faction=? AND deleted='0' AND disabled=0", factionID)
+				local interiorQuery = dbQuery(mysql:getConn(), "SELECT id, name FROM interiors WHERE faction=? AND deleted='0' AND disabled=0", factionID)
 				local interiorResult, num_affected_rows = dbPoll(interiorQuery, 10000)
 				if interiorResult then
 					local j = 1
@@ -427,7 +427,7 @@ function loadFaction(factionID)
 
 				if factionID == 4 then -- TTR Towstats
 				-- this basically returns a count of towed vehicles, by week -> so week 0 (current week) = X, week -1 (last week) = Y, etc.
-				local towQuery = dbQuery(mysql:getConn("mta"), "SELECT ceil(datediff(`date`, curdate() + INTERVAL 6-WEEKDAY(curdate()) DAY) / 7) AS week, c.charactername, count(vehicle) AS count FROM towstats t JOIN characters c ON t.character = c.id WHERE (SELECT faction_id FROM characters_faction WHERE character_id = t.character and faction_id = 4) = 4 GROUP BY t.character, week ORDER BY t.character ASC, week DESC")
+				local towQuery = dbQuery(mysql:getConn(), "SELECT ceil(datediff(`date`, curdate() + INTERVAL 6-WEEKDAY(curdate()) DAY) / 7) AS week, c.charactername, count(vehicle) AS count FROM towstats t JOIN characters c ON t.character = c.id WHERE (SELECT faction_id FROM characters_faction WHERE character_id = t.character and faction_id = 4) = 4 GROUP BY t.character, week ORDER BY t.character ASC, week DESC")
 				local towResult, num_affected_rows = dbPoll(towQuery, 10000)
 				if towResult then
 					towstats = {}
@@ -555,7 +555,7 @@ function callbackUpdateMOTD(motd, factionID)
 	end
 
 	if (factionID ~= -1) then
-		if dbExec(mysql:getConn("mta"), "UPDATE factions SET motd=? WHERE id=?", motd, factionID) then
+		if dbExec(mysql:getConn(), "UPDATE factions SET motd=? WHERE id=?", motd, factionID) then
 			outputChatBox("You changed your faction's MOTD to '" .. motd .. "'", client, 0, 255, 0)
 			exports.anticheat:changeProtectedElementDataEx(theTeam, "motd", motd, false)
 		else
@@ -575,7 +575,7 @@ function callbackUpdateNote(note, factionID)
 	end
 
 	if (factionID ~= -1) then
-		if dbExec(mysql:getConn("mta"), "UPDATE factions SET note=? WHERE id=?", note, factionID) then
+		if dbExec(mysql:getConn(), "UPDATE factions SET note=? WHERE id=?", note, factionID) then
 			outputChatBox("You successfully changed your faction's leader note.", client, 0, 255, 0)
 			exports.anticheat:changeProtectedElementDataEx(theTeam, "note", note, false)
 		else
@@ -595,7 +595,7 @@ function callbackUpdateFNote(fnote, factionID)
 	end
 
 	if (factionID ~= -1) then
-		if dbExec(mysql:getConn("mta"), "UPDATE factions SET fnote=? WHERE id=?", fnote, factionID) then
+		if dbExec(mysql:getConn(), "UPDATE factions SET fnote=? WHERE id=?", fnote, factionID) then
 			outputChatBox("You successfully changed your faction's faction-wide note.", client, 0, 255, 0)
 			exports.anticheat:changeProtectedElementDataEx(theTeam, "fnote", fnote, false)
 		else
@@ -620,7 +620,7 @@ function callbackRemovePlayer(removedPlayerName, factionID)
 		return
 	end
 
-	if dbExec(mysql:getConn("mta"), "DELETE FROM characters_faction WHERE character_id=(SELECT id FROM characters WHERE charactername=?) AND faction_id=?", removedPlayerName, factionID) then
+	if dbExec(mysql:getConn(), "DELETE FROM characters_faction WHERE character_id=(SELECT id FROM characters WHERE charactername=?) AND faction_id=?", removedPlayerName, factionID) then
 		local theTeamName = "None"
 		if (theTeam) then
 			theTeamName = getTeamName(theTeam)
@@ -678,7 +678,7 @@ function callbackPerkEdit(perkIDTable, playerName, factionID)
 	end
 
 	local jsonPerkIDTable = toJSON(perkIDTable)
-	if dbExec(mysql:getConn("mta"), "UPDATE `characters_faction` SET `faction_perks`=? WHERE character_id=(SELECT id FROM characters WHERE charactername=?) AND faction_id=?", jsonPerkIDTable, playerName, factionID) then
+	if dbExec(mysql:getConn(), "UPDATE `characters_faction` SET `faction_perks`=? WHERE character_id=(SELECT id FROM characters WHERE charactername=?) AND faction_id=?", jsonPerkIDTable, playerName, factionID) then
 		outputChatBox(" Duty perks updated for " .. playerName:gsub("_", " ") .. ".", client, 255, 0, 0)
 		if targetPlayer then
 			factionInfo[factionID].perks = perkIDTable
@@ -697,7 +697,7 @@ function callbackQuitFaction(factionID)
 	local username = getPlayerName(client)
 	local theTeamName = getTeamName(theTeam)
 
-	if dbExec(mysql:getConn("mta"), "DELETE FROM characters_faction WHERE character_id=? AND faction_id=?", getElementData(client, "dbid"), factionID) then
+	if dbExec(mysql:getConn(), "DELETE FROM characters_faction WHERE character_id=? AND faction_id=?", getElementData(client, "dbid"), factionID) then
 		outputChatBox("You quit the faction '" .. theTeamName .. "'.", client)
 
 		local factionInfo = getElementData(client, "faction")
@@ -752,7 +752,7 @@ function callbackInvitePlayer(invitedPlayer, factionID)
 	end
 	local dbid = getElementData(invitedPlayer, "dbid")
 
-	if dbExec(mysql:getConn("mta"), "INSERT INTO characters_faction SET faction_leader = 0, faction_id = ?, faction_rank = ?, character_id = ?", factionID, defaultRank, dbid) then
+	if dbExec(mysql:getConn(), "INSERT INTO characters_faction SET faction_leader = 0, faction_id = ?, faction_rank = ?, character_id = ?", factionID, defaultRank, dbid) then
 		local theTeamName = getTeamName(theTeam)
 
 		local max = 0
@@ -930,9 +930,9 @@ addEventHandler('factionmenu:setphone', root,
 
 		local success = false
 		if tonumber(number) then
-			success = dbExec(mysql:getConn("mta"), "UPDATE characters_faction SET faction_phone=? WHERE character_id=(SELECT id FROM characters WHERE charactername=?) AND faction_id=?", number, playerName, factionID)
+			success = dbExec(mysql:getConn(), "UPDATE characters_faction SET faction_phone=? WHERE character_id=(SELECT id FROM characters WHERE charactername=?) AND faction_id=?", number, playerName, factionID)
 		else
-			success = dbExec(mysql:getConn("mta"), "UPDATE characters_faction SET faction_phone=NULL WHERE character_id=(SELECT id FROM characters WHERE charactername=?) AND faction_id=?", playerName, factionID)
+			success = dbExec(mysql:getConn(), "UPDATE characters_faction SET faction_phone=NULL WHERE character_id=(SELECT id FROM characters WHERE charactername=?) AND faction_id=?", playerName, factionID)
 		end
 
 		if success then
@@ -1251,7 +1251,7 @@ addEventHandler("faction-system.saveNewRank", root,
 			return
 		end
 		
-		dbExec(exports.mysql:getConn("mta"), "UPDATE `characters_faction` SET `faction_rank` = ? WHERE `character_id` = ? AND `faction_id` = ?", newRank, charID, fID)
+		dbExec(exports.mysql:getConn(), "UPDATE `characters_faction` SET `faction_rank` = ? WHERE `character_id` = ? AND `faction_id` = ?", newRank, charID, fID)
 		local highOrLow = ""
 		if (getSeniorRank(fID, newRank, oldRank) == newRank) then
 			highOrLow = "promoted"

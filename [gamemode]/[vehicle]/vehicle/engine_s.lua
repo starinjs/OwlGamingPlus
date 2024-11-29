@@ -54,7 +54,7 @@ function startEngine( players, veh )
 			local vid = getElementData( veh, 'dbid' )
 			if vid > 0 then
 				exports.anticheat:setEld( veh, "lastused", exports.datetime:now(), 'all' )
-				dbExec( exports.mysql:getConn('mta'), "UPDATE vehicles SET lastUsed=NOW() WHERE id=? ", vid )
+				dbExec( exports.mysql:getConn(), "UPDATE vehicles SET lastUsed=NOW() WHERE id=? ", vid )
 			end
 
 			-- logs
@@ -72,7 +72,7 @@ function startEngine( players, veh )
 			local vid = getElementData( veh, 'dbid' )
 			if vid > 0 then
 				exports.anticheat:setEld( veh, "lastused", exports.datetime:now(), 'all' )
-				dbExec( exports.mysql:getConn('mta'), "UPDATE vehicles SET lastUsed=NOW() WHERE id=? ", vid )
+				dbExec( exports.mysql:getConn(), "UPDATE vehicles SET lastUsed=NOW() WHERE id=? ", vid )
 			end
 
 			triggerEvent('sendAme', client, "reaches down sparking a few cables.")

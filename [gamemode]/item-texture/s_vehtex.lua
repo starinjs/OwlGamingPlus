@@ -23,7 +23,7 @@ function addVehicleTexture(theVehicle, texName, texURL) --Exciter
 		local vehID = tonumber(getElementData(theVehicle, "dbid")) or 0
 		if vehID > 0 then
 			local newdata = toJSON(textures)
-			dbExec(exports.mysql:getConn("mta"), "UPDATE vehicles SET textures=? WHERE id=?", newdata, vehID)
+			dbExec(exports.mysql:getConn(), "UPDATE vehicles SET textures=? WHERE id=?", newdata, vehID)
 		end
 		exports.anticheat:changeProtectedElementDataEx(theVehicle, "textures", textures, true)
 		addTexture(theVehicle, texName, texURL)
@@ -53,7 +53,7 @@ function removeVehicleTexture(theVehicle, texName) --Exciter
 		local vehID = tonumber(getElementData(theVehicle, "dbid")) or 0
 		if vehID > 0 then
 			local newdata = toJSON(textures)
-			dbExec(exports.mysql:getConn("mta"), "UPDATE vehicles SET textures=? WHERE id=?", newdata, vehID)
+			dbExec(exports.mysql:getConn(), "UPDATE vehicles SET textures=? WHERE id=?", newdata, vehID)
 		end
 		exports.anticheat:changeProtectedElementDataEx(theVehicle, "textures", textures, true)
 		removeTexture(theVehicle, texName)

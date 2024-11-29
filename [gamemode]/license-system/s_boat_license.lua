@@ -10,7 +10,7 @@ function giveBoatLicense(usingGC)
 		end
 	end	
 	
-	dbExec(exports.mysql:getConn('mta'), "UPDATE characters SET boat_license='1' WHERE id = ?", getElementData(client, 'dbid'))
+	dbExec(exports.mysql:getConn(), "UPDATE characters SET boat_license='1' WHERE id = ?", getElementData(client, 'dbid'))
 	exports.anticheat:changeProtectedElementDataEx(client, "license.boat", 1)
 	exports.hud:sendBottomNotification(client, "Department of Motor Vehicles", "Congratulations! You are now fully licensed captain a boat on the water." )
 	exports.global:giveItem(client, 155, getPlayerName(client):gsub("_"," "))

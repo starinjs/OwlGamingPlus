@@ -45,14 +45,14 @@ function convertGenerics()
 						metadata['url'] = "http://" .. itemValue[4]
 						metadata['texture'] = itemValue[5]
 					end
-					dbExec(mysql:getConn('mta'), updateStr, toJSON(metadata), row[idRow])
+					dbExec(mysql:getConn(), updateStr, toJSON(metadata), row[idRow])
 				end
 			end
 			
 			outputDebugString("[NPC] " .. counter .. " items have been converted, restarting NPC system.")
 			setTimer(restartResource, 30000, 1, getResourceFromName("npc"))
 		end
-	end, mysql:getConn('mta'), queryStr)
+	end, mysql:getConn(), queryStr)
 end
 
 function commandConvertGenerics(player, cmd)

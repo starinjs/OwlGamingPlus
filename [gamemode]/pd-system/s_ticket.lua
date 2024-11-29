@@ -16,7 +16,7 @@ end)
 addEvent("fetchTickets", true)
 addEventHandler("fetchTickets", getRootElement(), function()
 	local tickets = {}
-	local query = dbQuery(exports.mysql:getConn('mta'), "SELECT * FROM `mdc_crimes` WHERE `character` = ? ORDER BY `id` DESC", getElementData(source, "dbid"))
+	local query = dbQuery(exports.mysql:getConn(), "SELECT * FROM `mdc_crimes` WHERE `character` = ? ORDER BY `id` DESC", getElementData(source, "dbid"))
 	local result = dbPoll(query, -1)
 	if result then
 		for rid, row in pairs (result) do
@@ -55,7 +55,7 @@ addEventHandler("givePlayerTicket", getRootElement(), function(player, fine, off
 	end
 
 	local timestamp = getRealTime().timestamp
-	dbExec(exports.mysql:getConn('mta'), "INSERT INTO `mdc_crimes` ( `crime`, `punishment`, `character`, `officer`, `timestamp` ) VALUES ( ?, ?, ?, ?, ? )", "Ticket: " .. offences, "Fine: $" .. fine .. " (UNPAID)", getElementData(player, "dbid"), officer, timestamp)
+	dbExec(exports.mysql:getConn(), "INSERT INTO `mdc_crimes` ( `crime`, `punishment`, `character`, `officer`, `timestamp` ) VALUES ( ?, ?, ?, ?, ? )", "Ticket: " .. offences, "Fine: $" .. fine .. " (UNPAID)", getElementData(player, "dbid"), officer, timestamp)
 
 	triggerEvent("sendAme", source, "rips off a ticket from their ticket book and issues it to " .. getPlayerName(player):gsub("_", " ") .. ".")
 	outputChatBox("You have issued a $" .. exports.global:formatMoney(fine) .. " ticket to " .. getPlayerName(player):gsub("_", " ") .. ".", source, 0, 255, 0)
@@ -74,7 +74,7 @@ addEventHandler("giveVehicleTicket", getRootElement(), function(vehicle, info, f
 	end
 
 	local timestamp = getRealTime().timestamp
-	dbExec(exports.mysql:getConn('mta'), "INSERT INTO `mdc_crimes` ( `crime`, `punishment`, `character`, `officer`, `timestamp` ) VALUES ( ?, ?, ?, ?, ? )", "Ticket: " .. offences, "Fine: $" .. fine .. " (UNPAID)", owner, officer, timestamp)
+	dbExec(exports.mysql:getConn(), "INSERT INTO `mdc_crimes` ( `crime`, `punishment`, `character`, `officer`, `timestamp` ) VALUES ( ?, ?, ?, ?, ? )", "Ticket: " .. offences, "Fine: $" .. fine .. " (UNPAID)", owner, officer, timestamp)
 
 	triggerEvent("sendAme", source, "rips off a ticket from their ticket book and sticks it to the windshield of the " .. getElementData(vehicle, "year") .. " " .. getElementData(vehicle, "brand") .. " " .. getElementData(vehicle, "maximemodel") .. ".")
 	outputChatBox("You have issued a $" .. exports.global:formatMoney(fine) .. " ticket to the " .. getElementData(vehicle, "year") .. " " .. getElementData(vehicle, "brand") .. " " .. getElementData(vehicle, "maximemodel") .. " with plate " .. info .. ".", source, 0, 255, 0)
@@ -82,7 +82,7 @@ end)
 
 addEvent("chargePlayer", true)
 addEventHandler("chargePlayer", getRootElement(), function(amount, method, crime_id, date)
-	dbExec(exports.mysql:getConn('mta'), "UPDATE `mdc_crimes` SET `punishment`=? WHERE `id`=?", "Fine: $" .. amount, crime_id)
+	dbExec(exports.mysql:getConn(), "UPDATE `mdc_crimes` SET `punishment`=? WHERE `id`=?", "Fine: $" .. amount, crime_id)
 	if method == 1 then
 		exports.global:takeMoney(source, amount)
 	else

@@ -148,7 +148,7 @@ function wizard2Result(url, desc, skin_, for_faction)
 									exports.logs:dbLog(player, 25, player, "Made dupont skin #" .. tostring(clothing_id) .. " for $200 of size " .. tostring(size / 100) .. "kB")
 									if add.distribution == 5 then
 										savedClothing[clothing_id].mdate = exports.datetime:now()
-										dbExec(exports.mysql:getConn('mta'), "UPDATE clothing SET manufactured_date=NOW() WHERE `id`=?", clothing_id)
+										dbExec(exports.mysql:getConn(), "UPDATE clothing SET manufactured_date=NOW() WHERE `id`=?", clothing_id)
 									end
 
 									local file_path = getPath(clothing_id)
@@ -229,7 +229,7 @@ function wizard2Result(url, desc, skin_, for_faction)
 					if clothing_id and tonumber(clothing_id) then
 						if add.distribution == 5 then
 							savedClothing[clothing_id].mdate = exports.datetime:now()
-							dbExec(exports.mysql:getConn('mta'), "UPDATE clothing SET manufactured_date=NOW() WHERE `id`=?", clothing_id)
+							dbExec(exports.mysql:getConn(), "UPDATE clothing SET manufactured_date=NOW() WHERE `id`=?", clothing_id)
 						end
 
 						local new_path = getPath(clothing_id)
@@ -304,7 +304,7 @@ function manufacture(cid, instant)
 								saveClothes(clothing, client, true)
 
 								-- now set the arrival time.
-								dbExec(exports.mysql:getConn('mta'), "UPDATE clothing SET manufactured_date=NOW() + INTERVAL ? MINUTE WHERE `id`=?", extra_minutes, clothing.id)
+								dbExec(exports.mysql:getConn(), "UPDATE clothing SET manufactured_date=NOW() + INTERVAL ? MINUTE WHERE `id`=?", extra_minutes, clothing.id)
 								done, why = true, "Your manufactoring request has been confirmed. You can come back here in a couple of days to collect the products. ((in "..extra_minutes.." minutes. If you uploaded the skin instantly, please reopen your list.))"
 								triggerClientEvent(client, 'clothes:callback_Manu', resourceRoot, done, why)
 								fileClose(file)
@@ -327,7 +327,7 @@ function manufacture(cid, instant)
 						return
 					end
 				end
-				,{client, clothing, current}, exports.mysql:getConn('mta'), "SELECT max_clothes FROM characters WHERE id=? LIMIT 1", pid)
+				,{client, clothing, current}, exports.mysql:getConn(), "SELECT max_clothes FROM characters WHERE id=? LIMIT 1", pid)
 
 			else
 				why = "This clothes design has already been manufactured."
@@ -361,7 +361,7 @@ function getProduct(cid)
 				if exports.global:takeMoney(client, price) then
 					done = exports.global:giveItem(client, 16, cl.skin..':'..cl.id)
 					why = "You received a new set of clothes in your inventory."
-					dbExec( exports.mysql:getConn('mta'), "UPDATE clothing SET sold=sold+1 WHERE id=?", cl.id )
+					dbExec( exports.mysql:getConn(), "UPDATE clothing SET sold=sold+1 WHERE id=?", cl.id )
 					savedClothing[cid].sold = savedClothing[cid].sold + 1
 					sold = savedClothing[cid].sold
 					id = cl.id
@@ -390,7 +390,7 @@ function sellProduct(cid)
 				local price = 200
 				savedClothing[cid].distribution = 3
 				cl.distribution = 3
-				dbExec( exports.mysql:getConn('mta'), "UPDATE clothing SET distribution=3 WHERE id=?", cl.id )
+				dbExec( exports.mysql:getConn(), "UPDATE clothing SET distribution=3 WHERE id=?", cl.id )
 				exports.global:giveMoney(client, price)
 				exports.logs:dbLog(client, 25, client, "Sold dupont skin #" .. tostring(cl.id) .. " for $" .. tostring(price))
 				saveClothes(savedClothing[cid], client, true)
@@ -412,17 +412,17 @@ addEventHandler( 'clothes:deleteMyClothes', resourceRoot, function( index )
 	if clothes then
 		local search_for = clothes.skin..":"..index
 
-		local qh = dbQuery( exports.mysql:getConn('mta'), "SELECT `index` FROM items WHERE itemID=16 and itemValue=? LIMIT 1", search_for )
+		local qh = dbQuery( exports.mysql:getConn(), "SELECT `index` FROM items WHERE itemID=16 and itemValue=? LIMIT 1", search_for )
 		local result, num_affected_rows, last_insert_id = dbPoll ( qh, 10000 )
 		if num_affected_rows > 0 then
 			triggerClientEvent( client, 'clothes:deleteMyClothes', resourceRoot, index, false, "Because there are one or more clothes items existing somewhere in game that using this design. Find and destroy them first." )
 		else
-			local qh = dbQuery( exports.mysql:getConn('mta'), "SELECT `id` FROM worlditems WHERE itemid=16 and itemvalue=? LIMIT 1", search_for )
+			local qh = dbQuery( exports.mysql:getConn(), "SELECT `id` FROM worlditems WHERE itemid=16 and itemvalue=? LIMIT 1", search_for )
 			local result, num_affected_rows, last_insert_id = dbPoll ( qh, 10000 )
 			if num_affected_rows > 0 then
 				triggerClientEvent( client, 'clothes:deleteMyClothes', resourceRoot, index, false, "Because there are one or more clothes items existing somewhere in game that using this design. Find and destroy them first." )
 			else
-				local qh = dbQuery( exports.mysql:getConn('mta'), "SELECT `pID` FROM shop_products WHERE pItemID=16 and pItemValue=? LIMIT 1", search_for )
+				local qh = dbQuery( exports.mysql:getConn(), "SELECT `pID` FROM shop_products WHERE pItemID=16 and pItemValue=? LIMIT 1", search_for )
 				local result, num_affected_rows, last_insert_id = dbPoll ( qh, 10000 )
 				if num_affected_rows > 0 then
 					triggerClientEvent( client, 'clothes:deleteMyClothes', resourceRoot, index, false, "Because there are one or more clothes items existing somewhere in game that using this design. Find and destroy them first." )
