@@ -4,6 +4,76 @@ local mysql = exports.mysql
 local GeoIP = "http://www.freegeoip.net/json/" -- A GeoIP API
 local lastBan = nil
 local lastBanTimer = nil
+
+function ban(title, targetPlayer, hours, ...)
+	if not (title) or not (targetPlayer) or not (hours) or not tonumber(hours) or tonumber(hours)<0 or not (...) then
+		return
+	else
+		local targetPlayerName = getPlayerName(targetPlayer)
+		local targetPlayerSerial = getPlayerSerial(targetPlayer)
+		local targetPlayerIP = getPlayerIP(targetPlayer)
+		hours = tonumber(hours)
+
+		if not isElement(targetPlayer) then
+			return
+		else
+			reason = table.concat({...}, " ")
+
+			local accountID = getElementData(targetPlayer, "account:id")
+
+			local rhours = hours
+			-- text value
+			if (hours==0) then
+				hours = "Permanent"
+			elseif (hours==1) then
+				hours = "1 Hour"
+			else
+				hours = hours .. " Hours"
+			end
+
+			if hours == "Permanent" then
+				reason = reason .. " (" .. hours .. ")"
+			else
+				reason = reason .. " (" .. hours .. ")"
+			end
+
+
+			exports['admin-system']:addAdminHistory(targetPlayer, 0, reason, 2 , rhours)
+			local banId = nil
+			banId = addToBan(accountID, targetPlayerSerial, targetPlayerIP, "0", reason, rhours)
+			if banId and tonumber(banId) then
+				banQ = dbQuery(mysql:getConn(), "SELECT * FROM bans WHERE id=? LIMIT 1", banId)
+				ban = dbPoll(banQ, 10000)
+				if ban and #ban == 1 then
+					lastBan = ban[1]
+				else
+					dbFree(banQ)
+				end
+				if lastBanTimer and isTimer(lastBanTimer) then
+					killTimer(lastBanTimer)
+					lastBanTimer = nil
+				end
+				lastBanTimer = setTimer(function()
+					lastBan = nil
+				end, 1000*60*5,1) --5 minutes
+			end
+
+			for _, value in pairs(getElementsByType("player")) do
+				if getPlayerSerial(value) == targetPlayerSerial then
+					kickPlayer(value, thePlayer, reason)
+				end
+			end
+			for _, player in pairs( getElementsByType("player")) do
+				if tonumber( getElementData( player, "punishment_notification_selector") ) ~= 1 or player == thePlayer or player == targetPlayer then
+					outputChatBox("[BAN] ".. title .." banned " .. targetPlayerName .. ". (" .. hours .. ")", player, 255,0,0)
+					outputChatBox("[BAN] Reason: " .. reason .. ".", player, 255,0,0)
+				end
+			end
+			exports.global:sendMessageToAdmins("/showban for details.")
+		end
+	end
+end
+
 function banAPlayer(thePlayer, commandName, targetPlayer, hours, ...)
 	if exports["integration"]:isPlayerTrialAdmin(thePlayer) then
 		if not (targetPlayer) or not (hours) or not tonumber(hours) or tonumber(hours)<0 or not (...) then
@@ -29,7 +99,6 @@ function banAPlayer(thePlayer, commandName, targetPlayer, hours, ...)
 					local accountID = getElementData(targetPlayer, "account:id")
 					local username = getElementData(targetPlayer, "account:username") or "N/A"
 
-					local seconds = ((hours*60)*60)
 					local rhours = hours
 					-- text value
 					if (hours==0) then
@@ -71,7 +140,7 @@ function banAPlayer(thePlayer, commandName, targetPlayer, hours, ...)
 					local adminUserID = getElementData(thePlayer, "account:id")
 					local adminTitle = exports.global:getPlayerAdminTitle(thePlayer)
 					makeForumThread(targetPlayerName or "N/A", username, hours, reason, adminUsername, banId )
-					for key, value in ipairs(getElementsByType("player")) do
+					for key, value in pairs(getElementsByType("player")) do
 						if getPlayerSerial(value) == targetPlayerSerial then
 							kickPlayer(value, thePlayer, reason)
 						end

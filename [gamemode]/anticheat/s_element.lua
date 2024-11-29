@@ -10,36 +10,30 @@
 local secretHandle = 'DwcbeZdBsd432Hcw2SvySv5FcW'
 
 addEventHandler("onElementDataChange", getRootElement(),
-	function (index, oldValue)
+	function(index, oldValue)
 		if not client then
 			return
 		end
 		local theElement = source
 		if (index ~= "interiormarker") then
-			local isProtected = getElementData(theElement, secretHandle.."p:"..index)
+			local isProtected = getElementData(theElement, secretHandle .. "p:" .. index)
 			if (isProtected) then
-				-- get real source here
-				-- it aint source!
 				local sourceClient = client
 				if (sourceClient) then
 					if (getElementType(sourceClient) == "player") then
 						local newData = getElementData(source, index)
 						local playername = getPlayerName(source) or "Somethings"
-						-- Get rid of the player
 						local msg = "[AdmWarn] " .. getPlayerName(sourceClient) .. " sent illegal data. "
-						local msg2 = " (victim: "..playername.." index: "..index .." newvalue:".. tostring(newData) .. " oldvalue:".. tostring(oldValue)  ..")"
-						--outputConsole(msg)
-						--outputConsole(msg2)
-						--exports.global:sendMessageToAdmins(msg)
+						local msg2 = " (victim: " ..
+						playername ..
+						" index: " ..
+						index .. " newvalue:" .. tostring(newData) .. " oldvalue:" .. tostring(oldValue) .. ")"
 						exports.global:sendMessageToAdmins(msg)
 						exports.global:sendMessageToAdmins(msg2)
 						--exports.logs:dbLog(sourceClient, 5, sourceClient, msg..msg2 )
 
-						-- uncomment this when it works
-						--local ban = banPlayer(sourceClient, false, false, true, getRootElement(), "Hacked Client.", 0)
-
-						-- revert data
 						changeProtectedElementDataEx(source, index, oldValue, true)
+						exports.bans:ban("[ANTICHEAT]", sourceClient, 0, "Hacked Client.")
 					end
 				end
 			end
@@ -47,8 +41,8 @@ addEventHandler("onElementDataChange", getRootElement(),
 	end
 );
 
-addEventHandler ( "onPlayerJoin", getRootElement(),
-	function ()
+addEventHandler("onPlayerJoin", getRootElement(),
+	function()
 		protectElementData(source, "account:id")
 		protectElementData(source, "account:username")
 		protectElementData(source, "legitnamechange")
@@ -57,11 +51,11 @@ addEventHandler ( "onPlayerJoin", getRootElement(),
 );
 
 function allowElementData(thePlayer, index)
-	return setElementData(thePlayer, secretHandle.."p:"..index, false, false)
+	return setElementData(thePlayer, secretHandle .. "p:" .. index, false, false)
 end
 
 function protectElementData(thePlayer, index)
-	return setElementData(thePlayer, secretHandle.."p:"..index, true, false)
+	return setElementData(thePlayer, secretHandle .. "p:" .. index, true, false)
 end
 
 function changeProtectedElementData(thePlayer, index, newvalue)
@@ -84,7 +78,7 @@ function changeProtectedElementDataEx(thePlayer, index, newvalue, sync, nosyncat
 			if set then
 				if not sync then
 					if not nosyncatall then
-						if getElementType ( thePlayer ) == "player" then
+						if getElementType(thePlayer) == "player" then
 							triggerClientEvent(thePlayer, "edu", getRootElement(), thePlayer, index, newvalue)
 						end
 					end
@@ -118,7 +112,7 @@ end
 
 function genHandle()
 	local hash = ''
-	for Loop = 1, math.random(5,16) do
+	for Loop = 1, math.random(5, 16) do
 		hash = hash .. string.char(math.random(65, 122))
 	end
 	return hash
