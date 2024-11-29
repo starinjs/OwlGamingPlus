@@ -81,7 +81,7 @@ function F1RPhelp( key, keyState )
 		local xmlOverview = xmlLoadFile( "commands/overview.xml" )
 		local xmlRules = xmlLoadFile( "commands/rules.xml" )
 
-		myWindow = guiCreateWindow ( 0, 0, 800, 600, "OwlGaming - Help Center", false )
+		myWindow = guiCreateWindow ( 0, 0, 800, 600, "Help Center", false )
 		exports.global:centerWindow(myWindow)
 		guiWindowSetSizable(myWindow, false)
 		local tabPanel = guiCreateTabPanel ( 0, 0.04, 1, 1, true, myWindow )

@@ -53,13 +53,13 @@ function addSafe( dbid, oid, pos, int, rot, clearItems, skipSql )
 	-- ok.
 	safeTable[ dbid ] = buidSafe( oid, int, dbid, pos, { 0, 0, rot } )
 	if safeTable[ dbid ] and not skipSql then
-		dbExec( exports.mysql:getConn('mta'), "UPDATE interiors SET safepositionX=?, safepositionY=?, safepositionZ=?, safepositionRZ=? WHERE id=? ", pos[1], pos[2], pos[3], rot, dbid )
+		dbExec( exports.mysql:getConn(), "UPDATE interiors SET safepositionX=?, safepositionY=?, safepositionZ=?, safepositionRZ=? WHERE id=? ", pos[1], pos[2], pos[3], rot, dbid )
 	end
 	return safeTable[ dbid ]
 end
 
 function updateSafe( dbid, pos, rot )
-	return dbExec( exports.mysql:getConn('mta'), "UPDATE interiors SET safepositionX=?, safepositionY=?, safepositionZ=?, safepositionRZ=? WHERE id=? ", pos[1], pos[2], pos[3], rot, dbid )
+	return dbExec( exports.mysql:getConn(), "UPDATE interiors SET safepositionX=?, safepositionY=?, safepositionZ=?, safepositionRZ=? WHERE id=? ", pos[1], pos[2], pos[3], rot, dbid )
 	and setElementPosition( safeTable[ dbid ] , unpack(pos) )
 	and setObjectRotation( safeTable[ dbid ] , 0, 0, rot )
 end

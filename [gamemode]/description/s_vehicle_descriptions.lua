@@ -17,7 +17,7 @@ function saveToDescription(descriptions, theVehicle)
 
 	local dbid = getElementData(theVehicle, "dbid")
 	local acceptedQuerys = { }
-	connection = exports.mysql:getConn("mta")
+	connection = exports.mysql:getConn()
 	for i = 1, 5 do
 		dbExec(connection, "UPDATE `vehicles` SET `??` = ? WHERE id = ?", "description"..i, tostring(descriptions[i]), tostring(dbid))
 	

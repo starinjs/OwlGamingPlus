@@ -37,7 +37,7 @@ function createUniqueVehicle(data, existed)
 [INDENT]Door Type: [B]]=] ..tostring(getElementData(vehicle, "vDoorType") or 'NULL') ..[=[[/B][/INDENT]]=]
 
 	if not existed then
-		dbExec( exports.mysql:getConn('mta'), "REPLACE INTO vehicles_custom SET id=?, brand=?, model=?, year=?, price=?, tax=?, createdby=?, handling=(SELECT s.handling FROM vehicles_shop s WHERE s.id=?), doortype="..data.doortype, data.id, data.brand, data.model, data.year, data.price, data.tax, getElementData(client, "account:id"), getElementData( vehicle, 'vehicle_shop_id' ) )
+		dbExec( exports.mysql:getConn(), "REPLACE INTO vehicles_custom SET id=?, brand=?, model=?, year=?, price=?, tax=?, createdby=?, handling=(SELECT s.handling FROM vehicles_shop s WHERE s.id=?), doortype="..data.doortype, data.id, data.brand, data.model, data.year, data.price, data.tax, getElementData(client, "account:id"), getElementData( vehicle, 'vehicle_shop_id' ) )
 		outputChatBox("[VEHICLE MANAGER] Unique vehicle created.", client, 0,255,0)
 		exports.logs:dbLog(client, 6, { client }, " Created unique vehicle #"..data.id..".")
 		exports.global:sendMessageToAdmins("[VEHICLE-MANAGER]: "..getElementData(client, "account:username").." has created new unique vehicle #"..data.id..".")
@@ -46,7 +46,7 @@ function createUniqueVehicle(data, existed)
 		addVehicleLogs(tonumber(data.id), 'editveh: ' .. (topicLink or "DB error"), client)
 		return true
 	else
-		dbExec( exports.mysql:getConn('mta'), "UPDATE vehicles_custom SET brand=?, model=?, year=?, price=?, tax=?, updatedby=?, updatedate=NOW(), doortype="..data.doortype.." WHERE id=?", data.brand, data.model, data.year, data.price, data.tax, getElementData(client, "account:id"), data.id )
+		dbExec( exports.mysql:getConn(), "UPDATE vehicles_custom SET brand=?, model=?, year=?, price=?, tax=?, updatedby=?, updatedate=NOW(), doortype="..data.doortype.." WHERE id=?", data.brand, data.model, data.year, data.price, data.tax, getElementData(client, "account:id"), data.id )
 		outputChatBox("[VEHICLE MANAGER] You have updated unique vehicle #"..data.id..".", client, 0,255,0)
 		exports.logs:dbLog(client, 6, { client }, " Updated unique vehicle #"..data.id..".")
 		exports.global:sendMessageToAdmins("[VEHICLE-MANAGER]: "..getElementData(client, "account:username").." has updated unique vehicle #"..data.id..".")

@@ -18,7 +18,7 @@ function F1RPhelp( key, keyState )
 			local xmlExplained = xmlLoadFile( "whatisroleplaying.xml" )
 			local xmlOverview = xmlLoadFile( "overview.xml" )
 			
-			myWindow = guiCreateWindow ( 0.3, 0.3, 0.7, 0.7, "OwlGaming - F1 Help", true )
+			myWindow = guiCreateWindow ( 0.3, 0.3, 0.7, 0.7, "F1 Help", true )
 			guiWindowSetSizable(myWindow, false)
 			local tabPanel = guiCreateTabPanel ( 0, 0.1, 1, 1, true, myWindow )
 			

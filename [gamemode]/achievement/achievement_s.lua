@@ -2,7 +2,7 @@ mysql = exports.mysql
 
 function awardPlayer(thePlayer, title, desc, gc)
 	if gc and tonumber(gc) and tonumber(gc) >= 0 then
-		if dbExec(exports.mysql:getConn("core"), "UPDATE `accounts` SET `credits`=credits+? WHERE `id`=?", gc, getElementData( thePlayer, "account:id") ) then
+		if dbExec(exports.mysql:getConn(), "UPDATE `accounts` SET `credits`=credits+? WHERE `id`=?", gc, getElementData( thePlayer, "account:id") ) then
 			local currentCredits = getElementData(thePlayer, "credits")
 			setElementData(thePlayer, "credits", currentCredits + gc)
 			triggerClientEvent(thePlayer, "displayAchievement", source or thePlayer, title, desc, gc)

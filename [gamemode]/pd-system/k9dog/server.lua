@@ -24,14 +24,14 @@ addEventHandler("onResourceStart", resourceRoot,
 				table.insert(result_table, row)
 			end
 			setElementData(resourceRoot, "dogs:table", result_table)
-		end, exports.mysql:getConn("mta"), "SELECT `id`, `charactername`, `attack` FROM `dog_users`")
+		end, exports.mysql:getConn(), "SELECT `id`, `charactername`, `attack` FROM `dog_users`")
 	end)
 
 function doQuery(thetype, name, attack)
 	if thetype == 1 then
-		dbExec(exports.mysql:getConn("mta"), "INSERT INTO `dog_users` SET `charactername`=?, `attack`=?", name, attack)
+		dbExec(exports.mysql:getConn(), "INSERT INTO `dog_users` SET `charactername`=?, `attack`=?", name, attack)
 	elseif thetype == 2 then
-		dbExec(exports.mysql:getConn("mta"), "DELETE FROM `dog_users` WHERE `charactername` = ?", name)
+		dbExec(exports.mysql:getConn(), "DELETE FROM `dog_users` WHERE `charactername` = ?", name)
 	end
 end
 addEvent("dogs:doquery", true)

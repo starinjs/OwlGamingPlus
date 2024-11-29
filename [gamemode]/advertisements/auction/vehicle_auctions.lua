@@ -21,7 +21,7 @@ local function returnPreviousBid(characterId, bid, vehicle)
     if isElement(player) and getElementType(player) == 'player' then
         exports.bank:giveBankMoney(player, bid)
     else
-        exports.mysql:getConn('mta'):exec("UPDATE characters SET bankmoney = bankmoney + ? WHERE id = ?", bid, characterId)
+        exports.mysql:getConn():exec("UPDATE characters SET bankmoney = bankmoney + ? WHERE id = ?", bid, characterId)
     end
 
     exports.global:takeMoney(getTeamFromName(AUCTIONEER_FACTION_NAME), bid)
@@ -33,7 +33,7 @@ addCommandHandler("expireauctions", function (player, command)
         return
     end
 
-    exports.mysql:getConn('mta'):exec("UPDATE vehicle_auctions SET expiry = 1000000000")
+    exports.mysql:getConn():exec("UPDATE vehicle_auctions SET expiry = 1000000000")
     outputChatBox("Expired all auctions.", player, 100, 100, 255)
 end)
 
@@ -63,15 +63,15 @@ local function paySeller(auction, vehicle, isBuyout)
     if isElement(player) and getElementType(player) == 'player' then
         exports.bank:giveBankMoney(player, amount)
     else
-        exports.mysql:getConn('mta'):exec("UPDATE characters SET bankmoney = bankmoney + ? WHERE id = ?", amount, auction.created_by)
+        exports.mysql:getConn():exec("UPDATE characters SET bankmoney = bankmoney + ? WHERE id = ?", amount, auction.created_by)
     end
 
     debitAuctioneerFaction(auction.created_by, vehicle, amount)
 end
 
 local function completeAuction(auction)
-    exports.mysql:getConn('mta'):exec("DELETE FROM advertisements WHERE id = ?", auction.advertisement_id)
-    exports.mysql:getConn('mta'):exec("DELETE FROM vehicle_auctions WHERE id = ?", auction.id)
+    exports.mysql:getConn():exec("DELETE FROM advertisements WHERE id = ?", auction.advertisement_id)
+    exports.mysql:getConn():exec("DELETE FROM vehicle_auctions WHERE id = ?", auction.id)
 end
 
 local function giveKey(player, vehicleId)
@@ -98,7 +98,7 @@ function removeVehicleAuctionData(vehicle)
 end
 
 setTimer(function ()
-    exports.mysql:getConn('mta'):query(
+    exports.mysql:getConn():query(
         function (handle)
             local results = handle:poll(0)
 
@@ -108,7 +108,7 @@ setTimer(function ()
                 -- if current_bidder_id is null, alert owner that their auction completed without any bids, and they need to pickup their vehicle.
                 if not auction.current_bidder_id then
                     -- Set the current bidder to the seller, so they can come pick their car up.
-                    exports.mysql:getConn('mta'):exec("UPDATE vehicle_auctions SET awaiting_key_pickup = true, current_bidder_id = ? WHERE id = ?", auction.created_by, auction.id)
+                    exports.mysql:getConn():exec("UPDATE vehicle_auctions SET awaiting_key_pickup = true, current_bidder_id = ? WHERE id = ?", auction.created_by, auction.id)
                     removeVehicleAuctionData(vehicle)
                     moveVehicleToPickupAvailableLot(vehicle)
 
@@ -119,7 +119,7 @@ setTimer(function ()
                 -- sell auction vehicle
                 sellAuctionVehicle(auction.current_bidder_id, vehicle, auction)
                 removeVehicleAuctionData(vehicle)
-                exports.mysql:getConn('mta'):exec("UPDATE vehicle_auctions SET awaiting_key_pickup = true WHERE id = ?", auction.id)
+                exports.mysql:getConn():exec("UPDATE vehicle_auctions SET awaiting_key_pickup = true WHERE id = ?", auction.id)
                 moveVehicleToPickupAvailableLot(vehicle)
 
                 -- pay seller
@@ -140,7 +140,7 @@ setTimer(function ()
 end, COMPLETE_AUCTIONS_INTERVAL, 0)
 
 local function acceptingNewAuctions()
-    local handle = exports.mysql:getConn('mta'):query("SELECT COUNT(0) AS active_auctions FROM vehicle_auctions WHERE awaiting_key_pickup = false")
+    local handle = exports.mysql:getConn():query("SELECT COUNT(0) AS active_auctions FROM vehicle_auctions WHERE awaiting_key_pickup = false")
     local results = handle:poll(1000)
     if #results ~= 1 then return false end
 
@@ -192,7 +192,7 @@ addEventHandler("vehicle-auction:submit", resourceRoot, function (data)
         expiry = data.expiry
     }, function (sender, advertisementId)
 
-        exports.mysql:getConn('mta'):exec(
+        exports.mysql:getConn():exec(
             "INSERT INTO vehicle_auctions (vehicle_id, advertisement_id, description, starting_bid, minimum_increase, buyout, expiry, created_by, created_by_faction) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
             sender.vehicle:getData('dbid'),
             advertisementId,
@@ -221,7 +221,7 @@ end)
 
 addEvent("floor-bid:submit", true)
 addEventHandler("floor-bid:submit", resourceRoot, function (data)
-    exports.mysql:getConn('mta'):query(
+    exports.mysql:getConn():query(
         function (handle, player, data)
             local results = handle:poll(0)
             if not #results == 1 then return end
@@ -286,7 +286,7 @@ addEventHandler("floor-bid:submit", resourceRoot, function (data)
                 returnPreviousBid(auction.current_bidder_id, auction.current_bid, vehicle)
             end
 
-            exports.mysql:getConn('mta'):exec("UPDATE vehicle_auctions SET current_bidder_id = ?, current_bid = ? WHERE id = ?", characterId, bid, auction.id)
+            exports.mysql:getConn():exec("UPDATE vehicle_auctions SET current_bidder_id = ?, current_bid = ? WHERE id = ?", characterId, bid, auction.id)
             vehicle:setData("auction_vehicle:current_bid", bid)
             vehicle:setData("auction_vehicle:current_bidder_id", characterId)
 
@@ -300,7 +300,7 @@ end)
 
 addEvent("floor-bid:buyout", true)
 addEventHandler("floor-bid:buyout", resourceRoot, function (data)
-    exports.mysql:getConn('mta'):query(
+    exports.mysql:getConn():query(
         function (handle, player)
             local results = handle:poll(0)
             if not #results == 1 then return end

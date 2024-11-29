@@ -27,7 +27,7 @@ function resourceStart(resource)
 	--setGameType("")
 	setMapName("Los Santos")
 	setRuleValue("Script Version", exports.global:getScriptVersion())
-	setRuleValue("Author", "OwlGaming - MTA Server Development Team")
+	setRuleValue("Author", "MTA Server Development Team")
 	setRuleValue("Website", "www.owlgaming.net")
 	setGlitchEnabled ( "baddrivebyhitbox", false )
 	setFPSLimit(60) -- 72 is the real max before issues arise

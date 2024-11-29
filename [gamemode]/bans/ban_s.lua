@@ -51,7 +51,7 @@ function banAPlayer(thePlayer, commandName, targetPlayer, hours, ...)
 					local banId = nil
 					banId = addToBan(accountID, targetPlayerSerial, targetPlayerIP, getElementData(thePlayer, "account:id"), reason, rhours)
 					if banId and tonumber(banId) then
-						banQ = dbQuery(mysql:getConn("core"), "SELECT * FROM bans WHERE id=? LIMIT 1", banId)
+						banQ = dbQuery(mysql:getConn(), "SELECT * FROM bans WHERE id=? LIMIT 1", banId)
 						ban = dbPoll(banQ, 10000)
 						if ban and #ban == 1 then
 							lastBan = ban[1]
@@ -140,12 +140,12 @@ function offlineBanAPlayer(thePlayer, commandName, targetUsername, hours, ...)
 				outputChatBox("You cannot ban for more than 7 days (168 Hours).", thePlayer, 255, 194, 14)
 				return false
 			end
-			local qh = dbQuery(mysql:getConn("core"), "SELECT * FROM `accounts` WHERE `username`=? LIMIT 1", targetUsername)
+			local qh = dbQuery(mysql:getConn(), "SELECT * FROM `accounts` WHERE `username`=? LIMIT 1", targetUsername)
 			local result = dbPoll(qh, 10000)
 			if result and #result > 0 then
 				local user = mysql:query_fetch_assoc("SELECT account_id as id, mtaserial FROM `account_details` WHERE `account_id`='".. mysql:escape_string( result[1].id ) .."' LIMIT 1")
 				if user and user['id'] and tonumber(user['id']) then
-					local banQ = dbQuery(mysql:getConn("core"), "SELECT * FROM bans WHERE account=? AND (until IS NULL OR until > NOW() ) LIMIT 1", result[1].id)
+					local banQ = dbQuery(mysql:getConn(), "SELECT * FROM bans WHERE account=? AND (until IS NULL OR until > NOW() ) LIMIT 1", result[1].id)
 					local ban = dbPoll(banQ, 10000)
 					if ban and #ban == 1 and ban[1]['id'] and tonumber(ban[1]['id']) then
 						printBanInfo(thePlayer, ban[1])
@@ -202,7 +202,7 @@ function offlineBanAPlayer(thePlayer, commandName, targetUsername, hours, ...)
 
 					banId = addToBan(result[1].id, user['mtaserial'], result[1].ip, getElementData(thePlayer, "account:id"), reason, rhours)
 					if banId and tonumber(banId) then
-						banQ = dbQuery(mysql:getConn("core"), "SELECT * FROM bans WHERE id=? LIMIT 1", banId)
+						banQ = dbQuery(mysql:getConn(), "SELECT * FROM bans WHERE id=? LIMIT 1", banId)
 						ban = dbPoll(banQ, 10000)
 						if ban and #ban == 1 then
 							lastBan = ban[1]
@@ -267,7 +267,7 @@ function banPlayerSerial(thePlayer, commandName, serial, ...)
 			serial = string.upper(serial)
 			local id = addToBan(nil, serial, nil, getElementData(thePlayer,"account:id"), reason)
 			if id and tonumber(id) then
-				banQ = dbQuery(mysql:getConn("core"), "SELECT * FROM bans WHERE id=? LIMIT 1", id)
+				banQ = dbQuery(mysql:getConn(), "SELECT * FROM bans WHERE id=? LIMIT 1", id)
 				ban = dbPoll(banQ, 10000)
 				if ban and #ban > 0 and tonumber(ban[1]['id']) then
 					lastBan = ban[1]
@@ -305,7 +305,7 @@ function banPlayerIP(thePlayer, commandName, ip, ...)
 			local reason = table.concat({...}, " ")
 			local id = addToBan(nil, nil, ip, getElementData(thePlayer,"account:id"), reason)
 			if id and tonumber(id) then
-				banQ = dbQuery(mysql:getConn("core"), "SELECT * FROM bans WHERE id=? LIMIT 1", id)
+				banQ = dbQuery(mysql:getConn(), "SELECT * FROM bans WHERE id=? LIMIT 1", id)
 				ban = dbPoll(banQ, 10000)
 				if ban and #ban == 1 and tonumber(ban[1]['id']) then
 					lastBan = ban[1]
@@ -350,7 +350,7 @@ function banPlayerAccount(thePlayer, commandName, account, ...)
 	local reason = table.concat({...}, " ")
 	addToBan(accountid, nil, nil, getElementData(thePlayer,"account:id"), reason)
 
-	local banQ = dbQuery(mysql:getConn("core"), "SELECT * FROM bans WHERE account=? ORDER BY id DESC LIMIT 1", accountid)
+	local banQ = dbQuery(mysql:getConn(), "SELECT * FROM bans WHERE account=? ORDER BY id DESC LIMIT 1", accountid)
 	local ban = dbPoll(banQ, 10000)
 	if ban and #ban == 1 and tonumber(ban[1]['id']) then
 		lastBan = ban[1]
@@ -382,7 +382,7 @@ function unbanPlayer(thePlayer, commandName, id)
 			outputChatBox("/showban [Username or serial or IP] to retrieve ban ID.", thePlayer, 255, 194, 14)
 		else
 			if tonumber(getElementData(thePlayer, "cmd:unban")) ~= tonumber(id) then
-				banQ = dbQuery(mysql:getConn("core"), "SELECT * FROM bans WHERE id=? LIMIT 1", id)
+				banQ = dbQuery(mysql:getConn(), "SELECT * FROM bans WHERE id=? LIMIT 1", id)
 				ban = dbPoll(banQ, 10000)
 				if ban and #ban == 1 and ban[1]['id'] and tonumber(ban[1]['id']) then
 					printBanInfo(thePlayer,ban[1])
@@ -392,7 +392,7 @@ function unbanPlayer(thePlayer, commandName, id)
 					dbFree(banQ)
 				end
 			else
-				banQ = dbQuery(mysql:getConn("core"), "SELECT * FROM bans WHERE id=? LIMIT 1", id)
+				banQ = dbQuery(mysql:getConn(), "SELECT * FROM bans WHERE id=? LIMIT 1", id)
 				ban = dbPoll(banQ, 10000)
 				if ban and #ban == 1 and ban[1]['id'] and tonumber(ban[1]['id']) then
 					lastBan = ban[1]
@@ -403,7 +403,7 @@ function unbanPlayer(thePlayer, commandName, id)
 					lastBanTimer = setTimer(function()
 						lastBan = nil
 					end, 1000*60*5,1) --5 minutes
-					if dbExec(mysql:getConn("core"), "DELETE FROM bans WHERE id=?", id) then
+					if dbExec(mysql:getConn(), "DELETE FROM bans WHERE id=?", id) then
 						for _, banElement in ipairs(getBans()) do
 							if getBanSerial(banElement) == ban[1]['mta_serial'] or getBanIP(banElement) == ban[1]['ip'] then
 								removeBan(banElement)
@@ -428,7 +428,7 @@ addCommandHandler("unban", unbanPlayer, false, false)
 
 function checkForSerialOrIpBan(playerNick, playerIP, playerUsername, playerSerial, playerVersionNumber, playerVersionString)
 	--serial + IP ban.
-	local resultQ = dbQuery(mysql:getConn("core"), "SELECT * FROM bans WHERE (mta_serial=? OR ip=?) AND (until IS NULL OR until > NOW() ) LIMIT 1", playerSerial, playerIP)
+	local resultQ = dbQuery(mysql:getConn(), "SELECT * FROM bans WHERE (mta_serial=? OR ip=?) AND (until IS NULL OR until > NOW() ) LIMIT 1", playerSerial, playerIP)
 	local result = dbPoll(resultQ, 10000)
 	if result and #result > 0 then
 		lastBan = result[1]
@@ -457,7 +457,7 @@ function checkForSerialOrIpBan(playerNick, playerIP, playerUsername, playerSeria
 		dbFree(resultQ)
 	end
 	--IP range ban
-	resultQ = dbQuery(mysql:getConn("core"), "SELECT * FROM bans WHERE ip LIKE '%*%' ")
+	resultQ = dbQuery(mysql:getConn(), "SELECT * FROM bans WHERE ip LIKE '%*%' ")
 	local result = dbPoll(resultQ, 10000)
 	if result and #result > 0 then
 		for ban in pairs(result) do
@@ -533,7 +533,7 @@ end
 addEventHandler("onPlayerJoin", getRootElement(), proxyCheck)
 
 function checkAccountBan(userid)
-	local resultQ = dbQuery(mysql:getConn("core"), "SELECT * FROM bans WHERE account=? AND (until IS NULL OR until > NOW() ) LIMIT 1", userid)
+	local resultQ = dbQuery(mysql:getConn(), "SELECT * FROM bans WHERE account=? AND (until IS NULL OR until > NOW() ) LIMIT 1", userid)
 	local result = dbPoll(resultQ, 10000)
 	if result and #result > 0 then
 		lastBan = result
@@ -571,7 +571,7 @@ function showBanDetails(thePlayer, commandName, clue)
 				elseif #result == 0 then
 					outputChatBox("There is no ban records with serial or IP or account name matched the keyword '"..clue.."'.", thePlayer, 255, 194, 14)
 				end
-			end, {thePlayer, clue, username}, mysql:getConn("core"), "SELECT * FROM bans WHERE id=? OR mta_serial=? OR ip=? OR account=? ORDER BY date DESC", clue, clue, clue, username)
+			end, {thePlayer, clue, username}, mysql:getConn(), "SELECT * FROM bans WHERE id=? OR mta_serial=? OR ip=? OR account=? ORDER BY date DESC", clue, clue, clue, username)
 		elseif lastBan then
 			printBanInfo(thePlayer, lastBan)
 		else
@@ -647,10 +647,10 @@ function addToBan(account, serial, ip, admin, reason, hours)
 	if hours and tonumber(hours) and tonumber(hours) >0 then
 		tail = tail..", until=NOW() + INTERVAL "..hours.." HOUR "
 	end
-	return dbExec(mysql:getConn("core"), "INSERT INTO bans SET date=NOW() "..tail)
+	return dbExec(mysql:getConn(), "INSERT INTO bans SET date=NOW() "..tail)
 end
 
 function cleanUp()
-	dbExec(mysql:getConn("core"), "DELETE FROM bans WHERE until IS NOT NULL AND until < NOW() ")
+	dbExec(mysql:getConn(), "DELETE FROM bans WHERE until IS NOT NULL AND until < NOW() ")
 end
 addEventHandler("onResourceStart", resourceRoot, cleanUp)

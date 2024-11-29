@@ -13,7 +13,7 @@ local percent = 0
 local total
 
 function getMapObjects( map_id )
-	local qh = dbQuery( exports.mysql:getConn('mta'), "SELECT * FROM maps_objects WHERE map_id=?", map_id )
+	local qh = dbQuery( exports.mysql:getConn(), "SELECT * FROM maps_objects WHERE map_id=?", map_id )
 	local res, nums, id = dbPoll( qh, 100000 )
 	if res then	
 		return res
@@ -70,7 +70,7 @@ addEventHandler( 'maps:requestServerMaps', root, requestServerMaps )
 --[[ alternative approach.
 function loadAllMaps()
 	local online_players = #getElementsByType( 'player' )
-	local qh = dbQuery( exports.mysql:getConn('mta'), "SELECT m.*, (SELECT COUNT(o.id) FROM maps_objects o WHERE o.map_id=m.id) AS object_count FROM maps m WHERE m.approved=1 AND m.enabled=1 ORDER BY object_count" )
+	local qh = dbQuery( exports.mysql:getConn(), "SELECT m.*, (SELECT COUNT(o.id) FROM maps_objects o WHERE o.map_id=m.id) AS object_count FROM maps m WHERE m.approved=1 AND m.enabled=1 ORDER BY object_count" )
 	local res, nums, id = dbPoll( qh, 100000 )
 	if res and nums > 0 then	
 		total = nums
@@ -89,7 +89,7 @@ end
 
 function loadAllMaps()
 	local online_players = #getElementsByType( 'player' )
-	local qh = dbQuery( exports.mysql:getConn('mta'), "SELECT o.* FROM maps m LEFT JOIN maps_objects o ON m.id=o.map_id WHERE m.approved=1 AND m.enabled=1" )
+	local qh = dbQuery( exports.mysql:getConn(), "SELECT o.* FROM maps m LEFT JOIN maps_objects o ON m.id=o.map_id WHERE m.approved=1 AND m.enabled=1" )
 	local res, nums, id = dbPoll( qh, 100000 )
 	if res and nums > 0 then	
 		total = nums

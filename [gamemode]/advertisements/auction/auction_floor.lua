@@ -67,7 +67,7 @@ local function loadAuctionFloorVehicle(positionKey, auction)
 end
 
 function loadAuctionFloorVehicles()
-    exports.mysql:getConn("mta"):query(function (handle)
+    exports.mysql:getConn():query(function (handle)
         local results = handle:poll(0)
 
         for key, auction in pairs(results) do

@@ -40,7 +40,7 @@ addEventHandler("onResourceStop", resourceRoot, function()
     local players = exports.pool:getPoolElementsByType("player")
 	for key, value in ipairs(players) do
 		if getElementData(value, "loggedin")==1 and getElementData(value, "jailed") then
-            dbExec(exports.mysql:getConn("mta"), "UPDATE jailed SET jail_time=?, jail_time_online=? WHERE charid=?", getElementData(value, "jail_time"), getElementData(value, "jail_time_online"), getElementData(value, "dbid"))
+            dbExec(exports.mysql:getConn(), "UPDATE jailed SET jail_time=?, jail_time_online=? WHERE charid=?", getElementData(value, "jail_time"), getElementData(value, "jail_time_online"), getElementData(value, "dbid"))
         end
     end
 end)
@@ -489,7 +489,7 @@ function playerQuit()
         killTimer(timer)
     end
     if getElementData(source, "jailed") then
-        dbExec(exports.mysql:getConn("mta"), "UPDATE jailed SET jail_time=?, jail_time_online=? WHERE charid=?", getElementData(source, "jail_time"), getElementData(source, "jail_time_online"), getElementData(source, "dbid"))
+        dbExec(exports.mysql:getConn(), "UPDATE jailed SET jail_time=?, jail_time_online=? WHERE charid=?", getElementData(source, "jail_time"), getElementData(source, "jail_time_online"), getElementData(source, "dbid"))
     end
 end
 addEventHandler ( "onPlayerQuit", getRootElement(), playerQuit, true, "high" )
@@ -500,7 +500,7 @@ function playerChangeAlts()
         killTimer(timer)
     end
     if getElementData(source, "jailed") then
-        dbExec(exports.mysql:getConn("mta"), "UPDATE jailed SET jail_time=?, jail_time_online=? WHERE charid=?", getElementData(source, "jail_time"), getElementData(source, "jail_time_online"), getElementData(source, "dbid"))
+        dbExec(exports.mysql:getConn(), "UPDATE jailed SET jail_time=?, jail_time_online=? WHERE charid=?", getElementData(source, "jail_time"), getElementData(source, "jail_time_online"), getElementData(source, "dbid"))
     end
     removeElementData(source, "jailed")
     removeElementData(source, "jail_time")

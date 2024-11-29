@@ -92,7 +92,7 @@ function crushCar()
 			local price = getElementData(theVehicle, "crushing")
 			local dbid = tonumber( getElementData( theVehicle, "dbid" ) )
 			if price and price >= 0 and dbid > 0 then
-				dbExec( exports.mysql:getConn('mta'), "UPDATE `vehicles` SET deleted=1 WHERE id=? ", dbid )
+				dbExec( exports.mysql:getConn(), "UPDATE `vehicles` SET deleted=1 WHERE id=? ", dbid )
 				triggerClientEvent( thePlayer, 'crusher:hide', thePlayer )
 
 				exports.global:giveMoney( thePlayer, price )

@@ -55,7 +55,7 @@ function cacheOnStart()
 		outputDebugString("mdc-system/mdc.lua: Failed to load pilot licenses!",2)
 	end
 	
-	local anprResult = dbQuery( exports.mysql:getConn('mta'), "SELECT a.*, charactername FROM mdc_anpr a LEFT JOIN characters c ON c.id=a.doneby ORDER BY time ASC" )
+	local anprResult = dbQuery( exports.mysql:getConn(), "SELECT a.*, charactername FROM mdc_anpr a LEFT JOIN characters c ON c.id=a.doneby ORDER BY time ASC" )
 	local results, num_affected_rows, last_insert_id = dbPoll ( anprResult, 10000 )
 	if results and num_affected_rows > 0 then
 		for i, row in ipairs( results ) do
@@ -72,7 +72,7 @@ function cacheOnStart()
 		dbFree( anprResult )
     end
 
-	local qh = dbQuery( exports.mysql:getConn('mta'), "SELECT a.*, charactername FROM mdc_apb a LEFT JOIN characters c ON c.id=a.doneby ORDER BY time ASC" )
+	local qh = dbQuery( exports.mysql:getConn(), "SELECT a.*, charactername FROM mdc_apb a LEFT JOIN characters c ON c.id=a.doneby ORDER BY time ASC" )
 	local results, num_affected_rows, last_insert_id = dbPoll ( qh, 10000 )
 	if results and num_affected_rows > 0 then
 		for i, row in ipairs( results ) do
@@ -155,7 +155,7 @@ end
 ------------------------------------------
 function login( charid, silent )
 	charid = tonumber(charid) or getElementData( source, "dbid" )
-	local accountQuery = dbQuery( exports.mysql:getConn('mta'), "SELECT * FROM mdc_users WHERE `charid` = ? ", charid )
+	local accountQuery = dbQuery( exports.mysql:getConn(), "SELECT * FROM mdc_users WHERE `charid` = ? ", charid )
 	local res, nums, id = dbPoll( accountQuery, 10000 )
 	if res and nums > 0 then
 		local account = {}
@@ -245,7 +245,7 @@ function main ( )
 					oneLane.release_date = lane.release_date
 					oneLane.fine = tonumber(lane.fine)
 				else
-					dbExec( exports.mysql:getConn('mta'), "UPDATE leo_impound_lot SET veh=0, release_date=NULL, fine=0 WHERE veh=?", lane.veh )
+					dbExec( exports.mysql:getConn(), "UPDATE leo_impound_lot SET veh=0, release_date=NULL, fine=0 WHERE veh=?", lane.veh )
 				end
 			end
 			table.insert(impounds, oneLane)
@@ -595,7 +595,7 @@ function add_apb( type, description, person )
 	local timestamp = time.timestamp
 	local _,_,org = canAccess( source, 'name' )
 	if type == "APB" then
-		local query = dbQuery( exports.mysql:getConn('mta'), "INSERT INTO `mdc_apb` ( `person_involved`, `description`, `doneby`, `time`, `organization` ) VALUES (?, ?, ?, ?, ?) ", person, description, officer, timestamp, org )
+		local query = dbQuery( exports.mysql:getConn(), "INSERT INTO `mdc_apb` ( `person_involved`, `description`, `doneby`, `time`, `organization` ) VALUES (?, ?, ?, ?, ?) ", person, description, officer, timestamp, org )
 		local res, nums, id = dbPoll( query, 10000 )
 		if res and nums > 0 then
 			local officerName = getCharacterNameFromID( officer, 2 )
@@ -613,7 +613,7 @@ function add_apb( type, description, person )
 		end
 	elseif type == "ANPR" then
 		local plate = person
-		local query = dbQuery( exports.mysql:getConn('mta'), "INSERT INTO `mdc_anpr` ( `vehicle_plate`, `description`, `doneby`, `time`, `organization` ) VALUES (?, ?, ?, ?, ?)", plate, description, officer, timestamp, org)
+		local query = dbQuery( exports.mysql:getConn(), "INSERT INTO `mdc_anpr` ( `vehicle_plate`, `description`, `doneby`, `time`, `organization` ) VALUES (?, ?, ?, ?, ?)", plate, description, officer, timestamp, org)
 		local res, nums, id = dbPoll( query, 10000 )
 		if res and nums > 0 then
 			local officerName = getCharacterNameFromID( officer, 2 )
@@ -684,7 +684,7 @@ function remove_apb( id )
 	triggerEvent( "mdc:main", source )
 
 	updateClientAPB()
-	dbExec( exports.mysql:getConn('mta'), "DELETE FROM `mdc_apb` WHERE `id` = ? ", id )
+	dbExec( exports.mysql:getConn(), "DELETE FROM `mdc_apb` WHERE `id` = ? ", id )
 end
 
 function remove_pilot_event( charactername, crime_id )
@@ -832,7 +832,7 @@ function system_admin( faction_id )
 			end
 			triggerClientEvent( source, resourceName .. ":system_admin", root, results, nums )
 		end
-	end, { faction_id, source }, exports.mysql:getConn('mta'), "SELECT * FROM `mdc_users` WHERE `organization`=? ORDER BY level DESC, id DESC ", faction_id )
+	end, { faction_id, source }, exports.mysql:getConn(), "SELECT * FROM `mdc_users` WHERE `organization`=? ORDER BY level DESC, id DESC ", faction_id )
 end
 
 function create_account( charid, level, organization )
@@ -847,25 +847,25 @@ function create_account( charid, level, organization )
 		return
 	end
 
-	local qh = dbQuery( exports.mysql:getConn('mta'), "SELECT * FROM mdc_users WHERE organization=? AND charid=? LIMIT 1", level, charid )
+	local qh = dbQuery( exports.mysql:getConn(), "SELECT * FROM mdc_users WHERE organization=? AND charid=? LIMIT 1", level, charid )
 	local res, nums, id = dbPoll( qh, 10000 )
 	if res and nums > 0 then
 		outputChatBox( "MDC account for this user is already existed for this organization.", source, 255, 0, 0 )
 	else
-		dbExec( exports.mysql:getConn('mta'), "INSERT INTO `mdc_users` ( `charid`, `level`, `organization` ) VALUES ( ?, ?, ? ) ", charid, level + 1, organization )
+		dbExec( exports.mysql:getConn(), "INSERT INTO `mdc_users` ( `charid`, `level`, `organization` ) VALUES ( ?, ?, ? ) ", charid, level + 1, organization )
 		outputChatBox( "MDC account has been successfully created.", source, 255, 0, 0 )
 	end
 	triggerEvent( 'mdc:system_admin', source, organization )
 end
 
 function edit_account( id, level, org )
-	dbExec( exports.mysql:getConn('mta'), "UPDATE mdc_users SET level=? WHERE id=? AND organization=?", tonumber(level) + 1, id, org )
+	dbExec( exports.mysql:getConn(), "UPDATE mdc_users SET level=? WHERE id=? AND organization=?", tonumber(level) + 1, id, org )
 	triggerEvent( 'mdc:system_admin', source, org )
 	outputChatBox( "Done.", source )
 end
 
 function delete_account( id, org )
-	dbExec( exports.mysql:getConn('mta'), "DELETE FROM mdc_users WHERE id=? AND organization=?", id, org )
+	dbExec( exports.mysql:getConn(), "DELETE FROM mdc_users WHERE id=? AND organization=?", id, org )
 	triggerEvent( 'mdc:system_admin', source, org )
 	outputChatBox( "Done.", source )
 end
@@ -984,7 +984,7 @@ function remove_anpr( id )
 
     triggerEvent( "mdc:main", source )
 
-    dbExec( exports.mysql:getConn('mta'), "DELETE FROM `mdc_anpr` WHERE `id` = ? ", id )
+    dbExec( exports.mysql:getConn(), "DELETE FROM `mdc_anpr` WHERE `id` = ? ", id )
 end
 
 function getANPRTable()
@@ -1066,23 +1066,23 @@ function makeMdcAccount(player, cmd, target, faction, level)
 			return not outputChatBox( "Level must be 1 or 2.", player, 255, 0, 0 )
 		else
 			local charid = getElementData( targetPlayer, 'dbid' )
-			local qh = dbQuery( exports.mysql:getConn('mta'), "SELECT * FROM mdc_users WHERE charid=? AND organization=? LIMIT 1", charid, faction )
+			local qh = dbQuery( exports.mysql:getConn(), "SELECT * FROM mdc_users WHERE charid=? AND organization=? LIMIT 1", charid, faction )
 			local res, nums, id = dbPoll( qh, 10000 )
 			if res and nums > 0 then
 				if tonumber(level) == 0 then
-					dbExec( exports.mysql:getConn('mta'), "DELETE FROM mdc_users WHERE id=?", res[1].id )
+					dbExec( exports.mysql:getConn(), "DELETE FROM mdc_users WHERE id=?", res[1].id )
 					return outputChatBox("MDC account for "..targetPlayerName.." has been deleted.", player, 0,255,0 )
 				elseif res[1].level == tonumber(level) then
 					return not outputChatBox( "This player has already had an MDC account for this faction with the same access level as you tried to make. ", player, 255,0,0 )
 				else
-					dbExec( exports.mysql:getConn('mta'), "UPDATE mdc_users SET level=? WHERE id=?", level, res[1].id )
+					dbExec( exports.mysql:getConn(), "UPDATE mdc_users SET level=? WHERE id=?", level, res[1].id )
 					outputChatBox("Access level for MDC account for "..targetPlayerName.." has been updated from "..(res[1].level).." to "..level..".", player, 0,255,0 )
 				end
 			else
 				if tonumber(level) == 0 then
 					outputChatBox("MDC account for "..targetPlayerName.." was not found.", player, 0,255,0 )
 				else
-					dbExec( exports.mysql:getConn('mta'), "INSERT INTO mdc_users SET charid=?, level=?, organization=?", charid, level, faction )
+					dbExec( exports.mysql:getConn(), "INSERT INTO mdc_users SET charid=?, level=?, organization=?", charid, level, faction )
 					outputChatBox("MDC account for "..targetPlayerName.." has been successfully created.", player, 0,255,0 )
 				end
 			end

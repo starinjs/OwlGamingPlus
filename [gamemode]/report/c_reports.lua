@@ -43,7 +43,7 @@ function showReportMainUI()
 	if (logged==1) then
 		if (wReportMain==nil)  then
 			reportedPlayer = nil
-			wReportMain = guiCreateWindow(0.2, 0.2, 0.2, 0.25, "OwlGaming - F2 - Report", true)
+			wReportMain = guiCreateWindow(0.2, 0.2, 0.2, 0.25, "Report System", true)
 			scale(wReportMain)
 
 			-- Controls within the window

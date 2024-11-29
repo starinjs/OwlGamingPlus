@@ -21,7 +21,7 @@ function giveCarLicense(usingGC)
 		setElementFrozen(theVehicle, true)
 	end
 	exports.anticheat:changeProtectedElementDataEx(client, "license.car", 1)
-	dbExec(exports.mysql:getConn('mta'), "UPDATE characters SET car_license='1' WHERE id = ?", getElementData(client, 'dbid'))
+	dbExec(exports.mysql:getConn(), "UPDATE characters SET car_license='1' WHERE id = ?", getElementData(client, 'dbid'))
 	exports.hud:sendBottomNotification(client, "Department of Motor Vehicles", "Congratulations! You've passed your driving examination!" )
 	exports.global:giveItem(client, 133, getPlayerName(client):gsub("_"," "))
 	executeCommandHandler("stats", client, getPlayerName(client))
@@ -33,7 +33,7 @@ function passTheory( skipSQL )
 	exports.anticheat:setEld( client, "license.car.cangetin", true, 'one' )
 	exports.anticheat:setEld( client, "license.car", 3, 'one' ) -- Set data to "theory passed"
 	if not skipSQL then
-		dbExec( exports.mysql:getConn('mta'), "UPDATE characters SET car_license='3' WHERE id = ?", getElementData(client, 'dbid') )
+		dbExec( exports.mysql:getConn(), "UPDATE characters SET car_license='3' WHERE id = ?", getElementData(client, 'dbid') )
 	end
 end
 addEvent("theoryComplete", true)

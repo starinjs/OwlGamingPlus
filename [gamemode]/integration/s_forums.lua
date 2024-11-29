@@ -17,7 +17,7 @@ local functions = {
 			exports.global:sendMessageToAdmins("[BAN] Ban topic created: "..url)
 		end
 		if id and banRecordID then
-			dbExec( exports.mysql:getConn('core'), "UPDATE `bans` SET `threadid`=? WHERE `id`=?", id, banRecordID )
+			dbExec( exports.mysql:getConn(), "UPDATE `bans` SET `threadid`=? WHERE `id`=?", id, banRecordID )
 		end
 	end),
 }
@@ -37,70 +37,72 @@ function forumCallback(data, errno, ...)
 end
 
 function createForumThread(createInForumID, fTitle, fContent, ...)
+	-- We don't have the UCP, so let's just return here.
+	return
 	--Validate
-	if not createInForumID or not fTitle or not fContent or not tonumber(createInForumID) or string.len(fTitle) < 1 then
-		outputDebugString("integration / createInForumID / Invalid parameters.")
-		return false
-	end
+	-- if not createInForumID or not fTitle or not fContent or not tonumber(createInForumID) or string.len(fTitle) < 1 then
+	-- 	outputDebugString("integration / createInForumID / Invalid parameters.")
+	-- 	return false
+	-- end
 
-	-- Preconfigured settings
-	local title = tostring(fTitle)
-	local posterID = 39015 --Bot AI
-	local key = tostring(get("forumsAPIKey"))
+	-- -- Preconfigured settings
+	-- local title = tostring(fTitle)
+	-- local posterID = 39015 --Bot AI
+	-- local key = tostring(get("forumsAPIKey"))
 
-	-- Generate content, a table will run through as key, value pairs to generate a template. Otherwise use string
-	-- {{"Banned User:", "Chaos"}, {"Banning Admin:", "Maxime"}} etc
-	-- HEADER
-	local content =
-		[[
-		<div style="text-align: center;">
-			<img alt="OwlGaming.png" class="ipsImage" src="http://files.owlgaming.net/Logo/OwlGaming.png">
-			<p></p>
+	-- -- Generate content, a table will run through as key, value pairs to generate a template. Otherwise use string
+	-- -- {{"Banned User:", "Chaos"}, {"Banning Admin:", "Maxime"}} etc
+	-- -- HEADER
+	-- local content =
+	-- 	[[
+	-- 	<div style="text-align: center;">
+	-- 		<img alt="OwlGaming.png" class="ipsImage" src="http://files.owlgaming.net/Logo/OwlGaming.png">
+	-- 		<p></p>
 
-			<p style="text-align: center;">
-				<strong><span style="font-size:18px;">]] .. fTitle .. [[</span></strong>
-			</p>
-		</div>
-		]]
-	-- BODY
-	if type(fContent) == "table" then
-		for _, list in ipairs(fContent) do
-			content = (content ..
-				[[
-				<strong>]] .. list[1] .. [[</strong>
-					<p style="margin-left: 40px;">
-						]] .. list[2] .. [[
-					</p>
-				]])
-		end
-	else
-		content = (content ..
-			[[
-			<p>
-				]] .. fContent .. [[
-			</p>
-			]])
-	end
-	-- FOOTER
-	local content = (content ..
-		[[
-		<br>
-		<u>Note: Please make a reply to this post with any additional information you may have.</u>
-		]])
+	-- 		<p style="text-align: center;">
+	-- 			<strong><span style="font-size:18px;">]] .. fTitle .. [[</span></strong>
+	-- 		</p>
+	-- 	</div>
+	-- 	]]
+	-- -- BODY
+	-- if type(fContent) == "table" then
+	-- 	for _, list in ipairs(fContent) do
+	-- 		content = (content ..
+	-- 			[[
+	-- 			<strong>]] .. list[1] .. [[</strong>
+	-- 				<p style="margin-left: 40px;">
+	-- 					]] .. list[2] .. [[
+	-- 				</p>
+	-- 			]])
+	-- 	end
+	-- else
+	-- 	content = (content ..
+	-- 		[[
+	-- 		<p>
+	-- 			]] .. fContent .. [[
+	-- 		</p>
+	-- 		]])
+	-- end
+	-- -- FOOTER
+	-- local content = (content ..
+	-- 	[[
+	-- 	<br>
+	-- 	<u>Note: Please make a reply to this post with any additional information you may have.</u>
+	-- 	]])
 
-	-- Setup the remote call
-	local options = {
-		connectionAttempts = 5,
-		method = "POST",
-		formFields = {
-			forum = createInForumID,
-			author = posterID,
-			title = title,
-			post = content
-		}
-	}
+	-- -- Setup the remote call
+	-- local options = {
+	-- 	connectionAttempts = 5,
+	-- 	method = "POST",
+	-- 	formFields = {
+	-- 		forum = createInForumID,
+	-- 		author = posterID,
+	-- 		title = title,
+	-- 		post = content
+	-- 	}
+	-- }
 
-	fetchRemote("https://forums.owlgaming.net/api/forums/topics?key="..key, options, forumCallback, {...})
+	-- fetchRemote("https://forums.owlgaming.net/api/forums/topics?key="..key, options, forumCallback, {...})
 end
 addEvent('integration:createForumThread', false)
 addEventHandler('integration:createForumThread', root, createForumThread)

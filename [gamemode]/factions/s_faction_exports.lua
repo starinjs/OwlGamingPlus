@@ -53,7 +53,7 @@ function sendNotiToAllFactionMembers(fId, title, details, leaderOnly)
 				end
 			end
 		end
-	end, exports.mysql:getConn("mta"), "SELECT c.account AS aid, c.id AS cid, charactername FROM characters_faction cf LEFT JOIN characters c ON cf.character_id = c.id WHERE "..(leaderOnly and "cf.faction_leader=1 AND " or "").." cf.faction_id =? ORDER BY (aid) " , fId )
+	end, exports.mysql:getConn(), "SELECT c.account AS aid, c.id AS cid, charactername FROM characters_faction cf LEFT JOIN characters c ON cf.character_id = c.id WHERE "..(leaderOnly and "cf.faction_leader=1 AND " or "").." cf.faction_id =? ORDER BY (aid) " , fId )
 end
 
 -- returns stateid, {[factionid] = {factionrank, factionleader, table with factionperks}, element of player if applicable
@@ -72,7 +72,7 @@ function getPlayerFactions(playerName)
 	end
 
 	if (not thePlayerElement or override) then  -- Player is offline
-		local q = dbQuery(exports.mysql:getConn("mta"), "SELECT faction_id, faction_rank, faction_perks, cf.faction_leader FROM characters c LEFT JOIN characters_faction cf ON c.id=cf.character_id LEFT JOIN factions f ON cf.faction_id=f.id WHERE c.id IS NOT NULL AND cf.id IS NOT NULL AND f.id IS NOT NULL AND charactername=?", playerName)
+		local q = dbQuery(exports.mysql:getConn(), "SELECT faction_id, faction_rank, faction_perks, cf.faction_leader FROM characters c LEFT JOIN characters_faction cf ON c.id=cf.character_id LEFT JOIN factions f ON cf.faction_id=f.id WHERE c.id IS NOT NULL AND cf.id IS NOT NULL AND f.id IS NOT NULL AND charactername=?", playerName)
 		local result, num_rows = dbPoll(q, 10000)
 
 		if not result then dbFree(q) return 2, {} end

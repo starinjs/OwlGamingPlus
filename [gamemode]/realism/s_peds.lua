@@ -18,7 +18,7 @@ function setWalkingStyle(thePlayer, commandName, walkingStyle)
 	else
 		setPedWalkingStyle( thePlayer, tonumber(walkingStyle) )
 		outputChatBox("Walking style successfully set to: " .. walkingStyle, thePlayer, 0, 255, 0)
-		dbExec( exports.mysql:getConn('mta'), "UPDATE characters SET walkingstyle=? WHERE id=? ", walkingStyle, getElementData(thePlayer, "dbid") )
+		dbExec( exports.mysql:getConn(), "UPDATE characters SET walkingstyle=? WHERE id=? ", walkingStyle, getElementData(thePlayer, "dbid") )
 	end
 end
 addCommandHandler("setwalkingstyle", setWalkingStyle)
@@ -41,7 +41,7 @@ function applyWalkingStyle(style, ignoreSQL)
 	end
 
 	if not ignoreSQL then
-		dbExec( exports.mysql:getConn('mta'), "UPDATE characters SET walkingstyle=? WHERE id=? ", style, getElementData(source, "dbid") )
+		dbExec( exports.mysql:getConn(), "UPDATE characters SET walkingstyle=? WHERE id=? ", style, getElementData(source, "dbid") )
 	end
 end
 addEvent("realism:applyWalkingStyle", true)

@@ -11,7 +11,7 @@ addEventHandler( 'onVehicleEnter', root, function( player, seat, jacked )
 	if seat == 0 and not hasVehicleEngine( source ) then
 		local vid = getElementData( source, 'dbid' )
 		exports.anticheat:setEld( source, "lastused", exports.datetime:now(), 'all' )
-		dbExec( exports.mysql:getConn('mta'), "UPDATE vehicles SET lastUsed=NOW() WHERE id=? ", vid )
+		dbExec( exports.mysql:getConn(), "UPDATE vehicles SET lastUsed=NOW() WHERE id=? ", vid )
 		-- logs
 		exports.vehicle_manager:addVehicleLogs( vid , "Got in and reset last used because vehicle is engineless.", player )
 		exports.logs:dbLog( player, 31, source , "Got in and reset last used because vehicle is engineless." )

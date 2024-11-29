@@ -1776,11 +1776,11 @@ end
 addCommandHandler("getcolor", getAVehicleColor, false, false)
 
 local function removeOne( id )
-	dbExec( exports.mysql:getConn('mta'), "DELETE FROM vehicles WHERE id=? ", id )
-	dbExec( exports.mysql:getConn('mta'), "DELETE FROM vehicle_logs WHERE vehID=? ", id )
-	dbExec( exports.mysql:getConn('mta'), "DELETE FROM vehicles_custom WHERE id=? ", id )
-	dbExec( exports.mysql:getConn('mta'), "DELETE FROM vehicle_notes WHERE vehid=? ", id )
-	dbExec( exports.mysql:getConn('mta'), "DELETE FROM items WHERE type=2 AND owner=? ", id )
+	dbExec( exports.mysql:getConn(), "DELETE FROM vehicles WHERE id=? ", id )
+	dbExec( exports.mysql:getConn(), "DELETE FROM vehicle_logs WHERE vehID=? ", id )
+	dbExec( exports.mysql:getConn(), "DELETE FROM vehicles_custom WHERE id=? ", id )
+	dbExec( exports.mysql:getConn(), "DELETE FROM vehicle_notes WHERE vehid=? ", id )
+	dbExec( exports.mysql:getConn(), "DELETE FROM items WHERE type=2 AND owner=? ", id )
 	exports['item-system']:deleteAll( 3, id )
 	return true
 end
@@ -1811,7 +1811,7 @@ function removeVehicle(thePlayer, commandName, id)
 						outputChatBox(" No such vehicle with ID #"..dbid.." found in Database.", thePlayer, 255, 0, 0)
 					end
 				end
-			end, { thePlayer, dbid }, exports.mysql:getConn('mta'), "SELECT deleted FROM vehicles WHERE id=? ", dbid )
+			end, { thePlayer, dbid }, exports.mysql:getConn(), "SELECT deleted FROM vehicles WHERE id=? ", dbid )
 		else
 			exports.data:save( dbid, 'removeVehicle:'..getElementData( thePlayer, 'dbid' ) )
 			outputChatBox(" Are you sure? Type /"..commandName.." "..dbid.." again.", thePlayer )
@@ -1840,7 +1840,7 @@ function removeVehs( p, c )
 				else
 					outputChatBox( " Nothing to remove.", p, 255, 0, 0 )
 				end
-			end, { p }, exports.mysql:getConn('mta'), "SELECT id FROM vehicles WHERE deleted!=0 " )
+			end, { p }, exports.mysql:getConn(), "SELECT id FROM vehicles WHERE deleted!=0 " )
 		else
 			exports.data:save( true, 'removeVehs:'..getElementData( p, 'dbid') )
 			outputChatBox(" Are you sure? Type /"..c.." again.", p )
@@ -2047,7 +2047,7 @@ function deleteVehicle(thePlayer, commandName, id)
 					if exports.global:isResourceRunning("insurance") then -- Remove insurance.
 						exports.insurance:cancelPolicy(dbid, thePlayer)
 					else
-						dbExec(exports.mysql:getConn('mta'), "DELETE FROM `insurance_data` WHERE `vehicleid` = ?", dbid)
+						dbExec(exports.mysql:getConn(), "DELETE FROM `insurance_data` WHERE `vehicleid` = ?", dbid)
 					end
 
 					if hiddenAdmin == 0 then
@@ -2118,7 +2118,7 @@ function setVehicleFaction(thePlayer, theCommand, vehicleID, factionID)
 
 				-- let's check if they have enough vehicle slots.
 				
-				local qh = dbQuery(exports.mysql:getConn("mta"), "SELECT COUNT(*) AS vehs FROM vehicles WHERE faction = ? AND deleted=0", factionID)
+				local qh = dbQuery(exports.mysql:getConn(), "SELECT COUNT(*) AS vehs FROM vehicles WHERE faction = ? AND deleted=0", factionID)
 				local result = dbPoll(qh, 1000)
 				local vehSlots = getElementData(factionElement, "max_vehicles")
 				if result and result[1].vehs >= vehSlots then 
@@ -2131,7 +2131,7 @@ function setVehicleFaction(thePlayer, theCommand, vehicleID, factionID)
 					dbFree(qh)
 				end
 
-				dbExec(exports.mysql:getConn("mta"), "UPDATE `vehicles` SET `owner`= ?, `faction`= ? WHERE id = ?", owner, factionID, vehicleID)
+				dbExec(exports.mysql:getConn(), "UPDATE `vehicles` SET `owner`= ?, `faction`= ? WHERE id = ?", owner, factionID, vehicleID)
 
 				local x, y, z = getElementPosition(theVehicle)
 				local int = getElementInterior(theVehicle)
@@ -2534,7 +2534,7 @@ function setVehicleAsHotwired(thePlayer, commandName, vin)
 	end
 
 	setElementData(vehicle, "hotwired", not hotwiredData)
-	dbExec(exports.mysql:getConn("mta"), "UPDATE vehicles SET hotwired = ? WHERE id = ?", (hotwiredData and 0 or 1), tonumber(vin))
+	dbExec(exports.mysql:getConn(), "UPDATE vehicles SET hotwired = ? WHERE id = ?", (hotwiredData and 0 or 1), tonumber(vin))
 	addVehicleLogs(vin , "SET TO " .. (hotwiredData and "NO LONGER ALLOW HOTWIRE START." or "ALLOW HOTWIRE START."), thePlayer )
 	exports.logs:dbLog(thePlayer, 4, { vehicle, thePlayer } , "SET VEHICLE TO " .. (hotwiredData and "NO LONGER ALLOW HOTWIRE START." or "ALLOW HOTWIRE START."))
 end
