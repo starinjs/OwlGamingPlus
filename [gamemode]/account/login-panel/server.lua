@@ -82,10 +82,10 @@ function playerLogin(username,password,checksave)
 						return false
 					end
 
-					if tonumber(accountData["activated"]) == 0 then
-						triggerClientEvent(client,"set_warning_text",client,"Login","Account '".. username .."' is not activated.")
-						return false
-					end
+					-- if tonumber(accountData["activated"]) == 0 then
+					-- 	triggerClientEvent(client,"set_warning_text",client,"Login","Account '".. username .."' is not activated.")
+					-- 	return false
+					-- end
 
 					--Validation is done, fetching some more details
 					triggerClientEvent(client,"set_authen_text",client,"Login","Account authenticated!")
@@ -352,22 +352,22 @@ function playerRegister(username,password,confirmPassword, email)
 				--START CREATING ACCOUNT.
 				local encryptedPW = passwordHash(password, "bcrypt", {cost = 12})
 				local ipAddress = getPlayerIP(client)
-				preparedQuery3 = "INSERT INTO `accounts` SET `username`=?, `password`=?, `email`=?, `registerdate`=NOW(), `ip`=?, `activated`='0' "
+				preparedQuery3 = "INSERT INTO `accounts` SET `username`=?, `password`=?, `email`=?, `registerdate`=NOW(), `ip`=? "
 				local userid = dbExec(exports.mysql:getConn(), preparedQuery3, username, encryptedPW, email, ipAddress)
 				if userid then
 					triggerClientEvent(client,"accounts:register:complete",client, username, password)
 					dbQuery(function(qh, client)
 						local result = dbPoll(qh, 0)
 						if result and #result == 1 then
-							if dbExec(exports.mysql:getConn(), "INSERT INTO account_details SET `account_id`=?, `mtaserial`=?", result[1].id, mtaSerial) then
-								callRemote("http://127.0.0.1:8000/api/send-activation-mail/",
-									function(returns)
-										if not returns.success then
-											outputDebugString("MTA Activation Eamil Postback "..returns.error)
-										end
-									end,
-								{id=result[1].id})
-							else
+							if not dbExec(exports.mysql:getConn(), "INSERT INTO account_details SET `account_id`=?, `mtaserial`=?", result[1].id, mtaSerial) then
+							-- 	callRemote("http://127.0.0.1:8000/api/send-activation-mail/",
+							-- 		function(returns)
+							-- 			if not returns.success then
+							-- 				outputDebugString("MTA Activation Eamil Postback "..returns.error)
+							-- 			end
+							-- 		end,
+							-- 	{id=result[1].id})
+							-- else
 								triggerClientEvent(client,"set_warning_text",client,"Register","Error code 0005 occurred.")
 							end
 						else

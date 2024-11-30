@@ -35,6 +35,12 @@ function startStep11(retest)
 		table.insert(quests, row )
 	end
 	exports.mysql:free_result(mQuery)
+
+	if #quests == 0 then
+		exports.mysql:query_free("UPDATE `account_details` SET `appstate`='3' WHERE `account_id`='"..userid.."' ")
+		triggerEvent("accounts:playerFinishApps", client)
+		return
+	end
 	
 	while #selectedQuests[client] < 6 do
 		local ran = math.random(1, #quests)
