@@ -27,7 +27,6 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `fmt` float NOT NULL DEFAULT '0',
   `credits` int(11) NOT NULL DEFAULT '0',
   `referrer` int(11) DEFAULT NULL,
-  `activated` tinyint(1) NOT NULL DEFAULT '0',
   `forumid` int(11) DEFAULT NULL,
   `require_password_change` tinyint(1) NOT NULL DEFAULT '0',
   `ucp_lastlogin` datetime(6) DEFAULT NULL,
