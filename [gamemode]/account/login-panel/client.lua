@@ -11,9 +11,7 @@ local panel = {
 		login = {},
 		register = {},
 		sounds = {
-			{ 'http://files.owlgaming.net/menu.mp3', 0.3 },
-			{ 'http://files.owlgaming.net/gtav.mp3', 0.3 },
-			{ 'http://files.owlgaming.net/gtaiv.mp3', 0.3 },
+			{ '/login-panel/gtaiv.mp3', 0.3 },
 		}
 	}
 local sw, sh = guiGetScreenSize()
@@ -25,7 +23,7 @@ local uFont
 function startLoginSound()
 	local setting = loadMusicSetting()
 	if setting == 0 then
-		local sound = math.random( 1, 3 )
+		local sound = math.random( 1, #panel.sounds )
 		local bgMusic = playSound ( panel.sounds[ sound ][ 1 ], true )
 		if bgMusic then
 			setSoundVolume( bgMusic, panel.sounds[ sound ][ 2 ] )
