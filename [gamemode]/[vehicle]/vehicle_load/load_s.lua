@@ -208,7 +208,6 @@ function loadOneVehicle(data, loadDeletedOne)
 			exports.anticheat:setEld( veh, "textures", customTextures, 'all' )
 
 			exports.anticheat:setEld( veh, "deleted", data.deleted, 'all' )
-			exports.anticheat:setEld( veh, "chopped", data.chopped, 'all' )
 			--exports.anticheat:setEld(veh, "note", data.note, true)
 
 			-- impound shizzle
