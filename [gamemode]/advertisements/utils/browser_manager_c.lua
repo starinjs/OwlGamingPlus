@@ -43,7 +43,7 @@ BrowserManager = {
         local str = string.sub(toJSON(tbl), 2, -2)
 
         if encoded then
-            return base64Encode(str)
+            return encodeString("base64", str)
         end
 
         return str

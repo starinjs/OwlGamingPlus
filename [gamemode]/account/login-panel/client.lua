@@ -11,9 +11,7 @@ local panel = {
 		login = {},
 		register = {},
 		sounds = {
-			{ 'http://files.owlgaming.net/menu.mp3', 0.3 },
-			{ 'http://files.owlgaming.net/gtav.mp3', 0.3 },
-			{ 'http://files.owlgaming.net/gtaiv.mp3', 0.3 },
+			{ '/login-panel/gtaiv.mp3', 0.3 },
 		}
 	}
 local sw, sh = guiGetScreenSize()
@@ -25,7 +23,7 @@ local uFont
 function startLoginSound()
 	local setting = loadMusicSetting()
 	if setting == 0 then
-		local sound = math.random( 1, 3 )
+		local sound = math.random( 1, #panel.sounds )
 		local bgMusic = playSound ( panel.sounds[ sound ][ 1 ], true )
 		if bgMusic then
 			setSoundVolume( bgMusic, panel.sounds[ sound ][ 2 ] )
@@ -569,18 +567,17 @@ function displayRegisterConpleteText(username)
     guiWindowSetMovable(GUIEditor.window[1], false)
     guiWindowSetSizable(GUIEditor.window[1], false)
     guiSetProperty(GUIEditor.window[1], "AlwaysOnTop", "True")
-    local temp = "An email contains instructions to activate your account has been dispatched, please check your email's inbox.\n\nIf for some reasons you don't receive the email, please check your junk box or try to dispatch another activation email at https://owlgaming.net/account/"
-    GUIEditor.label[1] = guiCreateLabel(8, 50, 339, 121+extend, "Your MTA account for '"..username.."' is almost ready for action!\n\n"..temp.."\n\nSincerely, \nOwlGaming Community OwlGaming Development Team\"", false, GUIEditor.window[1])
+    local temp = "Welcome to OwlPlus! Your account has been successfully created. You can now enjoy all the features and services we offer. Feel free to explore and get started!"
+    GUIEditor.label[1] = guiCreateLabel(8, 50, 339, 121+extend, "Your MTA account for '"..username.."' is ready for action!\n\n"..temp.."\n\nSincerely, \nOwlPlus Community OwlPlus Development Team\"", false, GUIEditor.window[1])
     guiLabelSetHorizontalAlign(GUIEditor.label[1], "left", true)
 
-    GUIEditor.button[1] = guiCreateButton(10, 153+extend, 337, 26, "Copy Activation Link", false, GUIEditor.window[1])
+    GUIEditor.button[1] = guiCreateButton(10, 153+extend, 337, 26, "Login into your account", false, GUIEditor.window[1])
     addEventHandler("onClientGUIClick", GUIEditor.button[1], function()
     	if source == GUIEditor.button[1] then
     		if isElement(GUIEditor.window[1]) then
     			destroyElement(GUIEditor.window[1])
     			GUIEditor = nil
     			switchToLoginPanel()
-    			setClipboard("https://owlgaming.net/account/")
     		end
     	else
     		cancelEvent()
