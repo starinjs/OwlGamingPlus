@@ -13,7 +13,7 @@
     <script src="c_overlay_functions.lua" type="client" />
     <script src="s_overlay_functions.lua" type="server" />
 
-    <script src="c_interface.luac" type="client" />
+    <script src="c_interface.lua" type="client" />
 
     <script src="loading_preview_c.lua" type="client" />
     <file src="images/loading.png" />

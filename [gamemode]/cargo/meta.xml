@@ -1,6 +1,6 @@
 <meta>
     <info author="Exciter" name="cargo" description="cargo moving system" version="1.0" type="script" />
-    <script src="c_forklift.luac" type="client" />
+    <script src="c_forklift.lua" type="client" />
     <script src="s_forklift.lua" type="server" />
     
     <script src="s_ship.lua" type="server" />
