@@ -293,7 +293,7 @@ function openNewStation(id, name, ip, state, order, buyNew)
 	exports.global:playSoundSuccess()
 	local perk = exports.donators:getPerks(28)
 	local w, h = 400, 135
-	gui.wNewStation = guiCreateStaticImage(0, 0, w, h, ":resources/window_body.png", false)
+	gui.wNewStation = guiCreateStaticImage(0, 0, w, h, ":resources/images/window_body.png", false)
 	exports.global:centerWindow(gui.wNewStation)
 	local margin = 10
 	local lineH = 25
@@ -437,7 +437,7 @@ function renewStation(station)
 	togRadioManager(false)
 	exports.global:playSoundSuccess()
 	local w, h = 400, 170
-	gui.wRenewStation = guiCreateStaticImage(0, 0, w, h, ":resources/window_body.png", false)
+	gui.wRenewStation = guiCreateStaticImage(0, 0, w, h, ":resources/images/window_body.png", false)
 	exports.global:centerWindow(gui.wRenewStation)
 	local margin = 20
 	local lineH = 16

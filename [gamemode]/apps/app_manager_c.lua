@@ -519,7 +519,7 @@ function openQuestionDetail(part1, createNew, fromServer, data)
 		end
 
 
-		gui2.main = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/window_body.png", false)
+		gui2.main = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/images/window_body.png", false)
 
 		gui2.lQuestion = guiCreateLabel(20, 25, windowWidth-40, line, "Question:", false, gui2.main)
 		gui2.eQuestion = guiCreateEdit(20, 25+line, windowWidth-40, line*2, loadingText, false, gui2.main)

@@ -14,7 +14,7 @@ local heightOffset = 1.4
 local refreshingInterval = 1
 local showing = false
 local timerRefresh = nil
-local BizNoteFont18 = dxCreateFont ( "BizNote.ttf" , 18 )
+local BizNoteFont18 = dxCreateFont ( ":resources/fonts/BizNote.ttf" , 18 )
 local hideOwn = true
 
 local noPlateVehs = {
@@ -79,7 +79,7 @@ function showNearbyVehicleDescriptions()
 			FontElementVeh = fontStringVeh
 			if FontElementVeh == "BizNoteFont18" then
 				if not BizNoteFont18 then
-					BizNoteFont18 = dxCreateFont ( ":resources/BizNote.ttf" , 18 )
+					BizNoteFont18 = dxCreateFont ( ":resources/fonts/BizNote.ttf" , 18 )
 				end
 				FontElementVeh = BizNoteFont18
 			end
@@ -123,7 +123,7 @@ function togglePinVD()
 				FontElementVeh = fontStringVeh
 				if FontElementVeh == "BizNoteFont18" then
 					if not BizNoteFont18 then
-						BizNoteFont18 = dxCreateFont ( ":resources/BizNote.ttf" , 18 )
+						BizNoteFont18 = dxCreateFont ( ":resources/fonts/BizNote.ttf" , 18 )
 					end
 					FontElementVeh = BizNoteFont18
 				end

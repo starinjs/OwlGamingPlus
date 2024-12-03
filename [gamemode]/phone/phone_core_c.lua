@@ -13,7 +13,7 @@ posX, posY = sx-w-margin+xoffset, sy-h-100
 curX, curY = posX, posY
 slidingSpeed = 20
 contactListLimit = {}
-font1 = guiCreateFont ( ":resources/cartwheel.otf", 12 )
+font1 = guiCreateFont ( ":resources/fonts/cartwheel.otf", 12 )
 curEditPhoneNumber = ""
 
 function drawPhoneGUI()
@@ -117,7 +117,7 @@ function triggerSlidingPhoneIn(thePhoneNumber, popOutOnPhoneCall, callingNumberF
 	end
 
 	if not font1 then
-		font1 = guiCreateFont ( ":resources/cartwheel.otf", 12 )
+		font1 = guiCreateFont ( ":resources/fonts/cartwheel.otf", 12 )
 	end
 
 	if thePhoneNumber and tonumber(thePhoneNumber) then
@@ -526,10 +526,8 @@ function powerOnPhone()
 		local ratio = 0.8
 		local rawW, rawH = 257*ratio, 120*ratio
 		alphaTmp = nil
-		powerOnPhone_logo = guiCreateStaticImage(30, 200, rawW, rawH, ":resources/OGLogo.png", false, wPhoneMenu)
-		--guiSetAlpha(logo, alpha)
+		powerOnPhone_logo = guiCreateStaticImage(30, 200, rawW, rawH, ":resources/images/OGLogo.png", false, wPhoneMenu)
 		powerOnPhone_text = guiCreateLabel(80, 180+rawH+5, rawW, rawH, "Starting up...0%", false, wPhoneMenu)
-		--guiSetAlpha(text, alpha)
 		guiSetEnabled(wPhoneMenu, false)
 		addEventHandler("onClientRender", root, fadeInLogo)
 	end
@@ -542,10 +540,8 @@ function powerOffPhone()
 		local ratio = 0.8
 		local rawW, rawH = 257*ratio, 120*ratio
 		alphaTmp = nil
-		powerOnPhone_logo = guiCreateStaticImage(30, 200, rawW, rawH, ":resources/OGLogo.png", false, wPhoneMenu)
-		--guiSetAlpha(logo, alpha)
+		powerOnPhone_logo = guiCreateStaticImage(30, 200, rawW, rawH, ":resources/images/OGLogo.png", false, wPhoneMenu)
 		powerOnPhone_text = guiCreateLabel(80, 180+rawH+5, rawW, rawH, "Starting up...0%", false, wPhoneMenu)
-		--guiSetAlpha(text, alpha)
 		guiSetEnabled(wPhoneMenu, false)
 		addEventHandler("onClientRender", root, fadeInLogo)
 	end
@@ -644,7 +640,7 @@ function playToggleSound()
 	if getPhoneSettings(phone, "keypress_tone") == 0 then
 		return false
 	end
-	playSound(":resources/toggle.mp3")
+	playSound(":resources/sounds/toggle.mp3")
 end
 
 function cleanUp()

@@ -10,7 +10,7 @@ function popupJesPedMenu()
 	local x = scrWidth/2 - (width/2)
 	local y = scrHeight/2 - (height/2)
 
-	vmOptionMenu = guiCreateStaticImage(x, y, width, height, ":resources/window_body.png", false)
+	vmOptionMenu = guiCreateStaticImage(x, y, width, height, ":resources/images/window_body.png", false)
 	local l1 = guiCreateLabel(0, 0.08, 1, 0.25, "What can I help you with?", true, vmOptionMenu)
 	guiLabelSetHorizontalAlign(l1, "center")
 	local bJob = guiCreateButton(0.05, 0.3, 0.87, 0.18, "I want to apply for a job.", true, vmOptionMenu)

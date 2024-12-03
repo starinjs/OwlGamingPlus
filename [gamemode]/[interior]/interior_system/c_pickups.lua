@@ -104,7 +104,7 @@ local textShadowDistance = 3
 local intNameFont, BizNoteFont
 local function makeFonts()
     intNameFont = intNameFont or dxCreateFont( "intNameFont.ttf", 30 ) or "default-bold"
-    BizNoteFont = BizNoteFont or dxCreateFont( ":resources/BizNote.ttf", 21 ) or "default-bold"
+    BizNoteFont = BizNoteFont or dxCreateFont( ":resources/fonts/BizNote.ttf", 21 ) or "default-bold"
 end
 
 function renderInteriorName()
@@ -217,7 +217,7 @@ function renderInteriorName()
                         intOwner = "For sale: $"..intPrice
                         intInst = "Press F to purchase"
                         local url = getElementData(theInterior, 'interior_id') and exports.cache:getImage(-tonumber(getElementData(theInterior, 'interior_id')))
-                        dxDrawImage ( img_l, img_t, img_w, img_h, url and url.tex or ':resources/loading.jpg' )
+                        dxDrawImage ( img_l, img_t, img_w, img_h, url and url.tex or ':resources/images/loading.jpg' )
                     end
                 end
                 local intOwner_width = dxGetTextWidth ( intOwner, 1, "default" )

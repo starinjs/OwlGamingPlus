@@ -77,7 +77,7 @@ function options_showmenu()
 	local wHeight = margin
 	showCursor(true)
 	
-	wOptions = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/window_body.png", false)
+	wOptions = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/images/window_body.png", false)
 	
 
 	bChangeCharacter = guiCreateButton(margin, margin, 230, 30, "Change Character", false, wOptions)

@@ -236,7 +236,7 @@ addEventHandler( "onClientElementStreamOut", getRootElement( ),
 local sw, sh = guiGetScreenSize ( )
 local mp3Station = nil
 local mp3Sound = nil
-local BizNoteFont20 = dxCreateFont ( ":resources/BizNote.ttf" , 20 )
+local BizNoteFont20 = dxCreateFont ( ":resources/fonts/BizNote.ttf" , 20 )
 local widthToDraw, widthToDraw2 = 0, 0
 local heightToDraw, heightToDraw2 = 50, 50
 local mp3_w = 200

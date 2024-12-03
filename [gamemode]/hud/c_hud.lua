@@ -11,7 +11,7 @@ screenWidth, screenHeight = guiGetScreenSize()
 local localPlayer = getLocalPlayer()
 local iconW, iconH = 34, 64
 local actualIconSizeW, actualIconSizeW = 34, 64
-local fontToolTip = "clear" --dxCreateFont ( ":resources/panel_tooltip.ttf" , 12)
+local fontToolTip = "clear"
 local tooltip_background_color = tocolor( 0, 0, 0, 180 )
 local tooltip_text_color = tocolor( 255, 255, 255, 255 )
 last_tick = 0
@@ -960,7 +960,7 @@ end
 addEventHandler("onClientRender", getRootElement(), drawHUD)
 
 function playToggleSound()
-	playSound(":resources/toggle.mp3")
+	playSound(":resources/sounds/toggle.mp3")
 end
 
 --[[

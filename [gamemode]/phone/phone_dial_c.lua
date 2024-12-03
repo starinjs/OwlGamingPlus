@@ -106,7 +106,7 @@ function startDialing(from, to, popOutOnPhoneCall)
 		local lineW2 = 150
 
 		if not font2 then
-			font2 = guiCreateFont ( ":resources/nametags0.ttf", 17 )
+			font2 = guiCreateFont ( ":resources/fonts/clbold.ttf", 17 )
 		end
 
 		lCallingTo = guiCreateLabel(margin,posY-10,lineW,40, callingTo[1], false, wPhoneMenu)

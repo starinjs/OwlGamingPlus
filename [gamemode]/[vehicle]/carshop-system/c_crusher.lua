@@ -29,7 +29,7 @@ addEventHandler('crusher:show', root,
 
 		setElementData(getLocalPlayer(), "exclusiveGUI", true, false)
 
-		window = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/window_body.png", false)
+		window = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/images/window_body.png", false)
 		guiCreateLabel(20, 15, windowWidth - 40, 16, 'We are about to crush your vehicle (( delete ))!', false, window)
 		guiSetFont(guiCreateLabel(40, 40, windowWidth - 40, 16, exports.global:getVehicleName(source), false, window), 'default-bold-small')
 		guiSetFont(guiCreateLabel(40, 65, windowWidth - 40, 16, 'VIN: ' .. tostring(getElementData(source, 'dbid')), false, window), 'default-bold-small')

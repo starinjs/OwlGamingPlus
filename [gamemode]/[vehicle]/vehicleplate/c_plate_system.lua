@@ -58,9 +58,8 @@ function cBeginGUI()
 	local scrWidth, scrHeight = guiGetScreenSize()
 	local x = scrWidth/2 - (width/2)
 	local y = scrHeight/2 - (height/2)
-
-	--greetingWindow = guiCreateWindow(x, y, width, height, "Which are you here for?", false)
-	greetingWindow = guiCreateStaticImage(x, y, width, height, ":resources/window_body.png", false)
+	
+	greetingWindow = guiCreateStaticImage(x, y, width, height, ":resources/images/window_body.png", false)
 	local width2, height2 = 10, 10
 	local x = scrWidth/2 - (width2/2)
 	local y = scrHeight/2 - (height2/2)
@@ -228,7 +227,7 @@ function editPlateWindow()
 		local x = scrWidth/2 - (width/2)
 		local y = scrHeight/2 - (height/2)
 
-		efinalWindow = guiCreateStaticImage(x, y, width, height, ":resources/window_body.png", false)
+		efinalWindow = guiCreateStaticImage(x, y, width, height, ":resources/images/window_body.png", false)
 		local mainT = guiCreateLabel(0.03, 0.08, 0.96, 0.2, "Registering plates for vehicle VIN: " .. svnum .. ".\nPlease enter your new plate:", true, efinalWindow)
 		guiLabelSetHorizontalAlign(mainT, "center", true)
 
@@ -295,7 +294,7 @@ function updateRegistration()
 		local x = scrWidth/2 - (width/2)
 		local y = scrHeight/2 - (height/2)
 
-		efinalWindow = guiCreateStaticImage(x, y, width, height, ":resources/window_body.png", false)
+		efinalWindow = guiCreateStaticImage(x, y, width, height, ":resources/images/window_body.png", false)
 		local mainT = guiCreateLabel(0.03, 0.08, 0.96, 0.2, (state == "Unregistered" and "Registering" or "Unregistering")..(" vehicle VIN: " .. svnum .. "."), true, efinalWindow)
 		taxLabel = guiCreateLabel(0.03, 0.18, 0.96, 0.2, "Vehicle Tax: Loading...", true, efinalWindow)
 		triggerServerEvent("plate:grabTax", resourceRoot, svnum)
@@ -448,7 +447,7 @@ function insuranceDetails()
 		local x = scrWidth/2 - (width/2)
 		local y = scrHeight/2 - (height/2)
 
-		efinalWindow = guiCreateStaticImage(x, y, width, height, ":resources/window_body.png", false)
+		efinalWindow = guiCreateStaticImage(x, y, width, height, ":resources/images/window_body.png", false)
 
 		mainT = guiCreateLabel(0.03, 0.03, 0.96, 0.57, "", true, efinalWindow)
 		guiLabelSetHorizontalAlign(mainT, "left", true)

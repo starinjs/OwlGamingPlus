@@ -3,7 +3,7 @@ gInteriorName, gOwnerName, gBuyMessage, gBizMessage = nil
 timer = nil
 
 intNameFont = guiCreateFont( "intNameFont.ttf", 30 ) or "default-bold" --AngryBird
-BizNoteFont = guiCreateFont( ":resources/BizNote.ttf", 21 ) or "default-bold"
+BizNoteFont = guiCreateFont( ":resources/fonts/BizNote.ttf", 21 ) or "default-bold"
 
 -- Message on enter
 function showIntName(name, ownerName, inttype, cost, ID, bizMsg)

@@ -421,7 +421,7 @@ function openNewCommand(id, perm, cmd, key, ex)
 	togF1Menu(false)
 	exports.global:playSoundSuccess()
 	local w, h = 500, 225
-	gui.wNewStation = guiCreateStaticImage(0, 0, w, h, ":resources/window_body.png", false)
+	gui.wNewStation = guiCreateStaticImage(0, 0, w, h, ":resources/images/window_body.png", false)
 	exports.global:centerWindow(gui.wNewStation)
 	local margin = 20
 	local lineH = 25

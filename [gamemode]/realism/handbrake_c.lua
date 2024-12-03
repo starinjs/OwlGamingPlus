@@ -1,12 +1,12 @@
 --MAXIME
 function playSoundHandbrake(state)
 	if state == "off" then
-		local sound = playSound(":resources/hb_off.mp3")
+		local sound = playSound(":resources/sounds/hb_off.mp3")
 		if sound then
 			setSoundVolume(sound , 1)
 		end
 	else
-		local sound = playSound(":resources/hb_on.mp3")
+		local sound = playSound(":resources/sounds/hb_on.mp3")
 		if sound then
 			setSoundVolume(sound , 0.3)
 		end

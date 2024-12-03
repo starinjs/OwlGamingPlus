@@ -333,10 +333,10 @@ function listMyClothes(list, for_faction)
 		addEventHandler('account:changingchar', root, closeWindow)
 		--Now request custom clothes from server
 		triggerServerEvent('clothes:list', localPlayer, nil, for_faction)
-		setSoundVolume(playSound(":resources/inv_open.mp3"), 0.3)
+		setSoundVolume(playSound(":resources/sounds/inv_open.mp3"), 0.3)
 	end
 
-	--setSoundVolume(playSound(":resources/inv_open.mp3"), 0.3)
+
 end
 addEvent('clothes:listMyClothes', true)
 addEventHandler('clothes:listMyClothes', root, listMyClothes)

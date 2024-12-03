@@ -496,7 +496,7 @@ function Characters_characterSelectionVisisble()
 	local width, height = 300, 50
 
 
-	bLogout = guiCreateStaticImage(swidth-width, 0, width, height, ":resources/window_body.png" , false, nil)
+	bLogout = guiCreateStaticImage(swidth-width, 0, width, height, ":resources/images/window_body.png" , false, nil)
 	local text1= guiCreateLabel (0,0,1,1, "Logout", true, bLogout)
 	guiLabelSetHorizontalAlign(text1, "center", true)
 	guiLabelSetVerticalAlign(text1, "center", true)
@@ -510,7 +510,7 @@ function Characters_characterSelectionVisisble()
 			end, 2000,1)
 		end)
 
-	newCharacterButton = guiCreateStaticImage(swidth-width, 53, width, height, ":resources/window_body.png" , false, nil)
+	newCharacterButton = guiCreateStaticImage(swidth-width, 53, width, height, ":resources/images/window_body.png" , false, nil)
 	newCharacterButton_text = guiCreateLabel (0,0,1,1, "Create a new character!", true, newCharacterButton)
 	guiLabelSetHorizontalAlign(newCharacterButton_text, "center", true)
 	guiLabelSetVerticalAlign(newCharacterButton_text, "center", true)
@@ -580,7 +580,7 @@ local function getHoverElement()
 	end
 end
 
-local font1 = dxCreateFont(':resources/nametags0.ttf')
+local font1 = dxCreateFont(':resources/fonts/clbold.ttf')
 local font2 = dxCreateFont(':interior_system/intNameFont.ttf')
 function characterMouseOver()
 	local cursorX, cursorY
@@ -600,7 +600,7 @@ function characterMouseOver()
 			end
 			local text = "■ Race: "..tRace.."\n■ Gender: "..(getElementData(ped, "account:charselect:gender") == 0 and "Male" or "Female").."\n■ Status: "..(getElementData(ped, "account:charselect:cked") > 0 and "#FF0000Dead" or "#00FF00Alive").."\n#FFFFFF■ Age: "..getElementData(ped, "account:charselect:age").."\n■ Height: "..getElementData(ped, "account:charselect:height").."cm\n■ Weight: "..getElementData(ped, "account:charselect:weight").."kg\n■ Played: "..getElementData(ped, "account:charselect:hoursplayed").."h"
 			local text2 = "■ Race: "..tRace.."\n■ Gender: "..(getElementData(ped, "account:charselect:gender") == 0 and "Male" or "Female").."\n■ Status: "..(getElementData(ped, "account:charselect:cked") > 0 and "Dead" or "Alive").."\n■ Age: "..getElementData(ped, "account:charselect:age").."\n■ Height: "..getElementData(ped, "account:charselect:height").."cm\n■ Weight: "..getElementData(ped, "account:charselect:weight").."kg\n■ Played: "..getElementData(ped, "account:charselect:hoursplayed").."h"
-			if not font1 then font1 = dxCreateFont(':resources/nametags0.ttf') end
+			if not font1 then font1 = dxCreateFont(':resources/fonts/clbold.ttf') end
 			dxDrawText(text2, 915+ox, 433+oy, 1050+ox, 538+oy, tocolor(0, 0, 0, 255), 1.00, font1 or "default", "left", "top", true, false, true, true, false)
 			dxDrawText(text2, 915+ox, 431+oy, 1050+ox, 536+oy, tocolor(0, 0, 0, 255), 1.00, font1 or "default", "left", "top", true, false, true, true, false)
 			dxDrawText(text2, 913+ox, 433+oy, 1048+ox, 538+oy, tocolor(0, 0, 0, 255), 1.00, font1 or "default", "left", "top", true, false, true, true, false)

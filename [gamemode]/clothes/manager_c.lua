@@ -44,9 +44,7 @@ function clothesManager(item, list)
  			end
  		end)
  		addEventHandler('account:changingchar', root, closeManager)
-	--Now request custom clothes from server
-	--triggerServerEvent('clothes:list', source, item)
-	--setSoundVolume(playSound(":resources/inv_open.mp3"), 0.3)
+
 	end
 end
 addEvent('clothes:clothesManager', true)

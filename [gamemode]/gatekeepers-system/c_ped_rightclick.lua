@@ -41,7 +41,7 @@ function clickPed(button, state, absX, absY, wx, wy, wz, element)
 
 
 
-				wPedRightClick = guiCreateStaticImage(ax-w/2, ay-h/2, w, h , ":resources/window_body.png", false)
+				wPedRightClick = guiCreateStaticImage(ax-w/2, ay-h/2, w, h , ":resources/images/window_body.png", false)
 				local l1 = guiCreateLabel(0, 0.08, 1, 0.25, pedName, true, wPedRightClick)
 				guiLabelSetHorizontalAlign(l1, "center")
 				bTalkToPed = guiCreateButton(0.05, 0.3, 0.87, 0.25, "Talk", true, wPedRightClick)

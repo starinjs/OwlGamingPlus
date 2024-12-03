@@ -199,7 +199,7 @@ end
 -- Drawing stuff
 local container_width, container_height, padding = 220, 120, 10
 local white = tocolor( 255, 255, 255, 255 )
-local font = dxCreateFont( "segoeuil.ttf", 12 )
+local font = dxCreateFont( ":resources/fonts/segoeuil.ttf", 12 )
 local small = "default"
 
 local scroll_y = 0.1

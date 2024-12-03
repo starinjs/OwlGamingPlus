@@ -54,8 +54,7 @@ function carshop_buyCar(carPrice, cashEnabled, bankEnabled)
 	local windowWidth, windowHeight = 350, 190
 	local left = screenWidth/2 - windowWidth/2
 	local top = screenHeight/2 - windowHeight/2
-	gui["_root"] = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/window_body.png", false)
-	--guiWindowSetSizable(gui["_root"], false)
+	gui["_root"] = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/images/window_body.png", false)
 
 	gui["lblText1"] = guiCreateLabel(20, 25, windowWidth-40, 16, "You're about to buy the following vehicle:", false, gui["_root"])
 	gui["lblVehicleName"] = guiCreateLabel(20, 45+5, windowWidth-40, 13, exports.global:getVehicleName(source) , false, gui["_root"])

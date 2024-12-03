@@ -9,7 +9,7 @@
 
 local sx, sy = guiGetScreenSize()
 local localPlayer = getLocalPlayer()
-local font = dxCreateFont (":resources/Anton.ttf" , 16 )
+local font = dxCreateFont (":resources/fonts/Anton.ttf" , 16 )
 local unreads = 0
 local notis = {}
 local notis_pending_deleted = {}
@@ -42,7 +42,7 @@ function drawPmThump()
 		dxDrawImage ( posxIcon+thumpOffsetX, 5+globalOffSetY, imgw, imgh, "owl_noti.png")
 		--dxDrawRectangle(posxBG+thumpOffsetX, 10+globalOffSetY, bgw, bgh, tocolor(0, 0, 0, 100), false)
 		if not font then
-			font = dxCreateFont (":resources/Anton.ttf" , 10 )
+			font = dxCreateFont (":resources/fonts/Anton.ttf" , 10 )
 		end
 		local text = ''
 		if unreads > 0 then
@@ -61,7 +61,7 @@ function drawPmThump()
 			if isInBox( cursorX, cursorY, posxText+thumpOffsetX, posxText+thumpOffsetX+2+bgw, 12+globalOffSetY, 12+globalOffSetY+bgh) then
 				if justClicked_title then
 					if justClicked_title == "left" then
-						playSound(":resources/toggle.mp3")
+						playSound(":resources/sounds/toggle.mp3")
 			            --if (#notis > 0) then
 							toggleNotiDetail()
 						--end
@@ -69,7 +69,7 @@ function drawPmThump()
 						if lastClick >= getTickCount()-2000 then
 							lastClick = 0
 							justClicked_title = false
-							playSound(":resources/inv_toggle.mp3")
+							playSound(":resources/sounds/inv_toggle.mp3")
 							if (#notis > 0) then
 								clearNotifications()
 							end
@@ -121,7 +121,7 @@ function drawPmPreviews()
 				if isInBox( cursorX, cursorY, ax, bx, ay, by) then
 					mhover = true
 					if justClicked_preview then
-						playSound(":resources/toggle.mp3")
+						playSound(":resources/sounds/toggle.mp3")
 						if noti then
 							if justClicked_preview == "left" then
 								openNoti(noti)
@@ -316,18 +316,6 @@ addEventHandler( "onClientClick", root,
 		end
 	end
 )
---[[
-addEventHandler( "onClientGUIMouseDown", getRootElement( ),
-    function ( btn, x, y )
-        if btn == "left" and source == invisibleArea then
-        	playSound(":resources/toggle.mp3")
-            if (#notis > 0) then
-				toggleNotiDetail()
-			end
-        end
-    end
-)
-]]
 
 function toggleNotiDetail()
 	--if not showPreview then return false end

@@ -12,8 +12,8 @@ bSend, tBizManagement, tGoodBye = nil
 shop = nil
 shop_type = nil
 
-BizNoteFont = guiCreateFont( ":resources/BizNote.ttf", 30 )
-BizNoteFont18 = guiCreateFont( ":resources/BizNote.ttf", 18 )
+BizNoteFont = guiCreateFont( ":resources/fonts/BizNote.ttf", 30 )
+BizNoteFont18 = guiCreateFont( ":resources/fonts/BizNote.ttf", 18 )
 BizNoteFont2 = guiCreateFont( "seguisb.ttf", 11 )
 
 coolDownSend = 1 -- Minutes
@@ -441,10 +441,8 @@ function showGeneralshopUI(shop_type, race, gender, discount, products1)
 					end
 				end
 			end, false)
-			setSoundVolume(playSound(":resources/inv_open.mp3"), 0.3)
+			setSoundVolume(playSound(":resources/sounds/inv_open.mp3"), 0.3)
 		elseif shop_type==18 then --Faction Drop NPC - General Items
-			--shit
-			--setSoundVolume(playSound(":resources/inv_open.mp3"), 0.3)
 		elseif shop_type==19 then --Faction Drop NPC - Weapons
 			if not canPlayerViewShop(localPlayer, ped) and not canPlayerAdminShop(localPlayer) then
 				hideGeneralshopUI()
@@ -616,7 +614,7 @@ function showGeneralshopUI(shop_type, race, gender, discount, products1)
 				guiSetFont(bCloseStatic2, BizNoteFont2)
 				addEventHandler( "onClientGUIClick", bCloseStatic2,hideGeneralshopUI , false )
 			end
-			setSoundVolume(playSound(":resources/inv_open.mp3"), 0.3)
+			setSoundVolume(playSound(":resources/sounds/inv_open.mp3"), 0.3)
 		else
 
 			shop = g_shops[ shop_type ]
@@ -1049,7 +1047,7 @@ function showGeneralshopUI(shop_type, race, gender, discount, products1)
 				local bClose = guiCreateButton(0.5, 0.88, 0.49, 0.1, "Close", true, tGoodBye)
 				addEventHandler( "onClientGUIClick", bClose, hideGeneralshopUI, false )
 			end
-			setSoundVolume(playSound(":resources/inv_open.mp3"), 0.3)
+			setSoundVolume(playSound(":resources/sounds/inv_open.mp3"), 0.3)
 		end
 	end
 end
@@ -1350,12 +1348,12 @@ function hideGeneralshopUI()
 	if wGeneralshop then
 		destroyElement(wGeneralshop)
 		wGeneralshop = nil
-		setSoundVolume(playSound(":resources/inv_close.mp3"), 0.3)
+		setSoundVolume(playSound(":resources/sounds/inv_close.mp3"), 0.3)
 	end
 	if wCustomShop then
 		destroyElement(wCustomShop)
 		wCustomShop = nil
-		setSoundVolume(playSound(":resources/inv_close.mp3"), 0.3)
+		setSoundVolume(playSound(":resources/sounds/inv_close.mp3"), 0.3)
 	end
 	closeOwnerProductView()
 	closeAddingItemWindow()

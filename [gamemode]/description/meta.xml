@@ -7,6 +7,4 @@
 	<script src="c_property_descriptions.lua" type="client"/>
 
   <script src="c_note_descriptions.lua" type="client" />
-
-	<file src="BizNote.ttf"/>
 </meta>

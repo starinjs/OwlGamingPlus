@@ -6,7 +6,7 @@ function showCreateFactionDropItem(npcID)
 		guiSetEnabled(wCustomShop, false)
 	end
 	exports.global:playSoundSuccess()
-	gui.main = guiCreateStaticImage(566,236,446,294,":resources/window_body.png",false)
+	gui.main = guiCreateStaticImage(566,236,446,294,":resources/images/window_body.png",false)
 	exports.global:centerWindow(gui.main)
 	gui.lItem = guiCreateLabel(43,39,117,24,"Weapon:",false,gui.main)
 	guiLabelSetVerticalAlign(gui.lItem,"center")

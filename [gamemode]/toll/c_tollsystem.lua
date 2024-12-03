@@ -15,7 +15,7 @@ function onQuestionShow(questionArray)
 	local y = (screenheight - h)/2
 	local verticalPos = 0.3
 	if not (wGui) then
-		wGui = guiCreateStaticImage(x ,y , w, h , ":resources/window_body.png", false)
+		wGui = guiCreateStaticImage(x ,y , w, h , ":resources/images/window_body.png", false)
 		local l1 = guiCreateLabel(0, 0.08, 1, 0.25, "Conversation", true, wGui)
 		guiLabelSetHorizontalAlign(l1, "center")
 		for answerID, answerStr in ipairs(questionArray) do

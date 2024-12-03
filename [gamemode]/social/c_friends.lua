@@ -208,10 +208,10 @@ end
 
 local white = tocolor( 255, 255, 255, 255 )
 function makeFonts(new_style)
-	font = font or dxCreateFont( ":resources/segoeuil.ttf", 12 ) or "default"
+	font = font or dxCreateFont( ":resources/fonts/segoeuil.ttf", 12 ) or "default"
 	font2 = font2 or dxCreateFont(':interior_system/intNameFont.ttf', 10) or "default"
-	font3 = font3 or "default" --dxCreateFont(':resources/segoeuil.ttf')
-	font4 = font4 or "default" --dxCreateFont(':resources/clashofclans.ttf') or "default"
+	font3 = font3 or "default" 
+	font4 = font4 or "default"
 end
 
 local scroll_y = 0.1

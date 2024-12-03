@@ -407,7 +407,7 @@ function showInfoPanel(state, cost)
 	local windowWidth, windowHeight = 350, 190+length
 	local left = screenWidth/2 - windowWidth/2
 	local top = screenHeight/2 - windowHeight/2
-	wPhone = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/window_body.png", false)
+	wPhone = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/images/window_body.png", false)
 
 	gui["lblText1"] = guiCreateLabel(20, 25, windowWidth-40, 100+length, content, false, wPhone)
 	guiLabelSetHorizontalAlign(gui["lblText1"], "left", true)
@@ -465,7 +465,7 @@ function showPhonePicker(perkID)
 	local windowWidth, windowHeight = 350, 190
 	local left = screenWidth/2 - windowWidth/2
 	local top = screenHeight/2 - windowHeight/2
-	wPhone = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/window_body.png", false)
+	wPhone = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/images/window_body.png", false)
 	--guiWindowSetSizable(wPhone, false)
 
 	guiCreateLabel(20, 25, windowWidth-40, 16, "Pick a phone number of your choice:", false, wPhone)
@@ -542,7 +542,7 @@ function showUsernameChange(perkID)
 	local windowWidth, windowHeight = 350, 190
 	local left = screenWidth/2 - windowWidth/2
 	local top = screenHeight/2 - windowHeight/2
-	guiUsername.main = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/window_body.png", false)
+	guiUsername.main = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/images/window_body.png", false)
 	--guiWindowSetSizable(wPhone, false)
 
 	guiCreateLabel(20, 25, windowWidth-40, 16, "Rename my username to:", false, guiUsername.main)
@@ -582,7 +582,7 @@ function showGcTransfer(perkID, fee1)
 	local windowWidth, windowHeight = 350, 190+15*4
 	local left = screenWidth/2 - windowWidth/2
 	local top = screenHeight/2 - windowHeight/2
-	guiGC.main = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/window_body.png", false)
+	guiGC.main = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/images/window_body.png", false)
 	--guiWindowSetSizable(wPhone, false)
 
 	guiCreateLabel(20, 25, windowWidth-40, 16, "Enter account name you want to transfer GCs to:", false, guiGC.main)
@@ -722,7 +722,7 @@ function showKeypadDoorLock(perkID)
 	local windowWidth, windowHeight = 350, 190+offSet
 	local left = screenWidth/2 - windowWidth/2
 	local top = screenHeight/2 - windowHeight/2
-	keypadDoor.main = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/window_body.png", false)
+	keypadDoor.main = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/images/window_body.png", false)
 	--guiWindowSetSizable(wPhone, false)
 
 	keypadDoor.purchase = guiCreateButton(20, 140+offSet, 150, 30, "Purchase", false, keypadDoor.main)
@@ -865,7 +865,7 @@ function showConfirmSpend(perkName, perkDur, perkCost, perkID)
 
 
 
-	wPhone = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/window_body.png", false)
+	wPhone = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/images/window_body.png", false)
 	--guiWindowSetSizable(wPhone, false)
 
 	gui["lblText1"] = guiCreateLabel(20, 25, windowWidth-40, 16, "You're about to purchase the following perk:", false, wPhone)
@@ -927,7 +927,7 @@ function showConfirmRemovePerk(aName, aExpireDate, aID)
 		local windowWidth, windowHeight = 350, 190+150
 		local left = screenWidth/2 - windowWidth/2
 		local top = screenHeight/2 - windowHeight/2
-		wPhone = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/window_body.png", false)
+		wPhone = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/images/window_body.png", false)
 		--guiWindowSetSizable(wPhone, false)
 
 		gui["lblText1"] = guiCreateLabel(20, 25, windowWidth-40, 16, "Unique character selection screen configurations:", false, wPhone)
@@ -994,7 +994,7 @@ function showConfirmRemovePerk(aName, aExpireDate, aID)
 		local windowWidth, windowHeight = 350, 190
 		local left = screenWidth/2 - windowWidth/2
 		local top = screenHeight/2 - windowHeight/2
-		wPhone = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/window_body.png", false)
+		wPhone = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/images/window_body.png", false)
 		--guiWindowSetSizable(wPhone, false)
 
 		gui["lblText1"] = guiCreateLabel(20, 25, windowWidth-40, 16, "You're about to remove the following perk:", false, wPhone)
@@ -1150,7 +1150,7 @@ function showCustomChatIconMenu(pID, pCost, removing)
 	local imageSizeW, imageSizeH = 126*imageScale, 77*imageScale
 	local imgPosX = (windowWidth-imageSizeW)/2
 
-	chatIcon.wMain = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/window_body.png", false)
+	chatIcon.wMain = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/images/window_body.png", false)
 
 	chatIcon["lblText1"] = guiCreateLabel(20, 25, windowWidth-40, 100, content, false, chatIcon.wMain)
 	guiLabelSetHorizontalAlign(chatIcon["lblText1"], "left", true)
@@ -1224,7 +1224,7 @@ function showLearnLanguageMenu(pID, pCost)
 	local imageSizeW, imageSizeH = 126*imageScale, 77*imageScale
 	local imgPosX = (windowWidth-imageSizeW)/2
 
-	chatIcon.wMain = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/window_body.png", false)
+	chatIcon.wMain = guiCreateStaticImage(left, top, windowWidth, windowHeight, ":resources/images/window_body.png", false)
 
 	chatIcon["lblText1"] = guiCreateLabel(20, 25, windowWidth-40, 100, content, false, chatIcon.wMain)
 	guiLabelSetHorizontalAlign(chatIcon["lblText1"], "left", true)

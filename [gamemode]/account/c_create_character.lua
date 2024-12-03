@@ -17,7 +17,7 @@ function newCharacter_init()
 	fadeCamera ( true , 1, 0,0,0 )
 	local screenX, screenY = guiGetScreenSize()
 
-	gui["_root"] = guiCreateStaticImage(10, screenY/2-225, 255, 475, ":resources/window_body.png", false)
+	gui["_root"] = guiCreateStaticImage(10, screenY/2-225, 255, 475, ":resources/images/window_body.png", false)
 	--guiWindowSetSizable(gui["_root"], false)
 
 	gui["lblCharName"] = guiCreateLabel(10, 25, 91, 16, "Name:", false, gui["_root"])

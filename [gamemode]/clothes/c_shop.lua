@@ -38,7 +38,7 @@ function closeWindow()
 	if window then
 		destroyElement(window)
 		window = nil
-		setSoundVolume(playSound(":resources/inv_close.mp3"), 0.3)
+		setSoundVolume(playSound(":resources/sounds/inv_close.mp3"), 0.3)
 		triggerEvent('npc:togShopWindow', resourceRoot, true)
 		removeEventHandler('account:changingchar', root, closeWindow)
 	end
@@ -128,7 +128,6 @@ function listClothes(item, list)
 		addEventHandler('account:changingchar', root, closeWindow)
 		--Now request custom clothes from server
 		triggerServerEvent('clothes:list', source, item)
-		--setSoundVolume(playSound(":resources/inv_open.mp3"), 0.3)
 	end
 end
 addEvent('clothes:list', true)

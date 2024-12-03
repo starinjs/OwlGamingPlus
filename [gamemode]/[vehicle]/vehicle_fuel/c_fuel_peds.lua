@@ -17,7 +17,7 @@ function onQuestionShow(questionArray)
 	local Y = (screenheight - Height)/2
 	local verticalPos = 0.05
 	if not (wGui) then
-		wGui = guiCreateStaticImage(X, Y, Width, Height, ":resources/window_body.png", false )
+		wGui = guiCreateStaticImage(X, Y, Width, Height, ":resources/images/window_body.png", false )
 
 		for answerID, answerStr in ipairs(questionArray) do
 			if (answerStr) then

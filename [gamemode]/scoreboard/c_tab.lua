@@ -341,7 +341,7 @@ drawBackground = function ()
 		--[[
 		dxDrawImage ( SCOREBOARD_X+120, SCOREBOARD_Y + 150,
 					  SCOREBOARD_WIDTH - 220, SCOREBOARD_HEIGHT - 357,
-					  ":resources/OGLogo.png", 0, 0, 0, SCOREBOARD_BACKGROUND_IMAGE, SCOREBOARD_POSTGUI ) -- Maxime on 31/3/2013, Removed logo in tab
+					  ":resources/images/OGLogo.png", 0, 0, 0, SCOREBOARD_BACKGROUND_IMAGE, SCOREBOARD_POSTGUI ) -- Maxime on 31/3/2013, Removed logo in tab
 		]]
 		-- Overlay
 		dxDrawRectangle ( SCOREBOARD_X, SCOREBOARD_Y + SCOREBOARD_HEADER_HEIGHT,
