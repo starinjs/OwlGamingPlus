@@ -73,7 +73,7 @@ function showSettingsWindow(tab)
 	posY = posY + lineH
 
 	GUIEditor_Checkbox.graphic_logs = guiCreateCheckBox(0.036,0.1005+posY,0.2992,lineH,"Enable client logging of chatbox",false,true,GUIEditor_Tab.graphicSettings)
-	if getResourceFromName("OwlGamingLogs") then
+	if getResourceFromName("OwlGamingPlusLogs") then
 		if getElementData(localPlayer, "graphic_logs") == "0" then
 			guiCheckBoxSetSelected(GUIEditor_Checkbox.graphic_logs,false)
 		else
@@ -86,7 +86,7 @@ function showSettingsWindow(tab)
 	posY = posY + lineH
 
 	GUIEditor_Checkbox.cellphone_log = guiCreateCheckBox(0.036,0.1005+posY,0.2992,lineH,"Enable client logging of calls & SMS",false,true,GUIEditor_Tab.graphicSettings)
-	if getResourceFromName("OwlGamingLogs") and getResourceFromName("phone") then
+	if getResourceFromName("OwlGamingPlusLogs") and getResourceFromName("phone") then
 		if getElementData(localPlayer, "cellphone_log") == "0" then
 			guiCheckBoxSetSelected(GUIEditor_Checkbox.cellphone_log,false)
 		else
@@ -617,7 +617,7 @@ function closeSettingsWindow()
 		guiSetEnabled(wOptions, true)
 	end
 	setElementData(getLocalPlayer(), "exclusiveGUI", false, false)
-	exports.OwlGamingLogs:closeInfoBox()
+	exports.OwlGamingPlusLogs:closeInfoBox()
 end
 
 function options_updateGameSettings()
@@ -760,7 +760,7 @@ function options_updateGameSettings()
 		local name, value = "cellphone_log", "0"
 		if guiCheckBoxGetSelected ( GUIEditor_Checkbox.cellphone_log ) then
 			value = "1"
-			exports.OwlGamingLogs:drawInfoBox()
+			exports.OwlGamingPlusLogs:drawInfoBox()
 		end
 	elseif source == GUIEditor_Checkbox.talk_anim then
 		local name, value = "talk_anim", "0"

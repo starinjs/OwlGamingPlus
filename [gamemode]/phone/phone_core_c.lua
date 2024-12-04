@@ -280,7 +280,7 @@ function toggleOffEverything()
 	togglePanesOfApps(false)
 	toggleSettingsGUI(false)
 	closeDialing()
-	exports.OwlGamingLogs:closeInfoBox()
+	exports.OwlGamingPlusLogs:closeInfoBox()
 	toggleHotlines(false)
 	exports["computers-system"]:closeBrowser()
 	triggerEvent("hideBankUI", localPlayer)
@@ -413,7 +413,7 @@ function hidePhoneGUI()
 	end
 	closeConfirmBox()
 	killSettingSounds()
-	exports.OwlGamingLogs:closeInfoBox()
+	exports.OwlGamingPlusLogs:closeInfoBox()
 end
 
 

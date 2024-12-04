@@ -289,7 +289,7 @@ function guiSettingClick()
 		else
 			triggerEvent("accounts:settings:updateAccountSettings", localPlayer, "cellphone_log", "1")
 			guiSetText(settingGuis[32], "Enabled")
-			exports.OwlGamingLogs:drawInfoBox()
+			exports.OwlGamingPlusLogs:drawInfoBox()
 		end
 	elseif source == settingGuis[19] then
 		if guiGetText(settingGuis[19]) == "Enabled" then
