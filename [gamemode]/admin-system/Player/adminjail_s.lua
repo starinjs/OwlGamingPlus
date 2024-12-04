@@ -28,7 +28,7 @@ function jailPlayer(thePlayer, commandName, who, minutes, ...)
 					minutes = "indefinitely."
 					exports.anticheat:changeProtectedElementDataEx(targetPlayer, "jailtimer", true, false)
 				else
-					mysql:query_free("UPDATE account_details SET adminjail='1', adminjail_time='" .. mysql:escape_string(minutes) .. "', adminjail_permanent='0', adminjail_by='" .. mysql:escape_string(playerName) .. "', adminjail_reason='" .. mysql:escape_string(reason) .. "' WHERE account_id='" .. mysql:escape_string(tonumber(accountID))
+					mysql:query_free("UPDATE account_details SET adminjail='1', adminjail_time='" .. mysql:escape_string(minutes) .. "', adminjail_permanent='0', adminjail_by='" .. mysql:escape_string(playerName) .. "', adminjail_reason='" .. mysql:escape_string(reason) .. "' WHERE account_id='" .. mysql:escape_string(tonumber(accountID)))
 					local theTimer = setTimer(timerUnjailPlayer, 60000, 1, targetPlayer)
 					setElementData(targetPlayer, "jailtimer", theTimer, false)
 					exports.anticheat:changeProtectedElementDataEx(targetPlayer, "jailserved", 0, false)

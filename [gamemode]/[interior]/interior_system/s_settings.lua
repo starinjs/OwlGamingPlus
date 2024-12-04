@@ -1,16 +1,5 @@
 --Interior settings //Exciter
 
-local migrations = {
-	"ALTER TABLE `interiors` ADD `settings` TEXT NULL DEFAULT NULL;",
-	"ALTER TABLE `vehicles` ADD `settings` TEXT NULL DEFAULT NULL;",
-	"ALTER TABLE `interiors` ADD `deletedDate` DATETIME NULL DEFAULT NULL AFTER `deleted`;"
-}
-addEventHandler('onResourceStart', resourceRoot,
-	function ()
-		exports.mysql:createMigrations(getResourceName(getThisResource()), migrations)
-	end
-)
-
 -- USEFUL CLEANUP QUERIES:
 -- Clean up interiors that was deleted more than 30 days ago:
 -- DELETE FROM `interiors` WHERE `deleted` != '0' AND `deleted` IS NOT NULL AND `deletedDate` IS NOT NULL AND (DATEDIFF(NOW(), deletedDate) > 30 );

@@ -1,11 +1,3 @@
-local migrations = {
-	"ALTER TABLE `shop_products` ADD `pMetadata` TEXT NULL DEFAULT NULL AFTER `pItemValue` ;",
-}
-addEventHandler('onResourceStart', resourceRoot,
-	function ()
-		exports.mysql:createMigrations(getResourceName(getThisResource()), migrations)
-	end
-)
 
 
 function convertGenerics()

@@ -9,15 +9,6 @@
 
 local mysql = exports.mysql
 
-local migrations = {
-	"ALTER TABLE `vehicles` ADD `deletedDate` DATETIME NULL DEFAULT NULL AFTER `deleted`;"
-}
-addEventHandler('onResourceStart', resourceRoot,
-	function ()
-		exports.mysql:createMigrations(getResourceName(getThisResource()), migrations)
-	end
-)
-
 -- USEFUL CLEANUP QUERIES:
 -- Clean up vehicles that was deleted more than 30 days ago:
 -- DELETE FROM `vehicles` WHERE `deleted` != '0' AND `deleted` IS NOT NULL AND `deletedDate` IS NOT NULL AND (DATEDIFF(NOW(), deletedDate) > 30 );
