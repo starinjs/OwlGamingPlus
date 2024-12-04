@@ -49,7 +49,6 @@ addEventHandler("ippc:web:getSessionData", resourceRoot, ippcGetSessionData)
 
 local function addNewAirline(airlineName, airlineCode)
 	local id = exports.mysql:query_insert_free("INSERT INTO `ippc_airlines` (`name`, `code`) VALUES('"..exports.mysql:escape_string(airlineName).."', '"..exports.mysql:escape_string(airlineCode).."')")
-	--local id = tonumber(exports.mysql:insert_id())
 	table.insert(airlinesCache, {id, airlineName, airlineCode, {}})
 end
 addEvent("ippc:web:addNewAirline", true)

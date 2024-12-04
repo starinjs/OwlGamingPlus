@@ -344,7 +344,7 @@ function createPermPed(thePlayer, command, interact) --create temporary ped (no 
 			interact = ""
 		end
 
-		mysql:query_free("INSERT INTO `peds` (`name`, `type`, `x`, `y`, `z`, `rotation`, `interior`, `dimension`, `skin`, `gender`, `created_by`, `created_at`) VALUES ('"..name.."', '"..mysql:escape_string(interact).."', '"..x.."', '"..y.."', '"..z.."', '"..rz.."', '"..int.."', '"..dim.."', '"..skin.."', '"..gender.."', '"..userID.."', NOW());")
+		mysql:query("INSERT INTO `peds` (`name`, `type`, `x`, `y`, `z`, `rotation`, `interior`, `dimension`, `skin`, `gender`, `created_by`, `created_at`) VALUES ('"..name.."', '"..mysql:escape_string(interact).."', '"..x.."', '"..y.."', '"..z.."', '"..rz.."', '"..int.."', '"..dim.."', '"..skin.."', '"..gender.."', '"..userID.."', NOW());")
 		local insertid = mysql:insert_id()
 
 		setElementPosition(thePlayer, x+0.5, y, z)

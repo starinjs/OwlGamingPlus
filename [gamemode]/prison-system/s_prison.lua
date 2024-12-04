@@ -143,7 +143,7 @@ addEventHandler("addPrisoner", resourceRoot,
             jailTime = ( r.timestamp + (tonumber(hours) + days) * 60 * 60  )
             onlineTime = 0
         end
-		local query = mysql:query_free("INSERT INTO jailed SET charid=(SELECT id FROM characters WHERE charactername='".. mysql:escape_string(returnWhat(name, online)) .. "'), charactername='" .. mysql:escape_string(returnWhat(name, online)) .. "', jail_time=".. mysql:escape_string(jailTime) ..", jail_time_online=".. mysql:escape_string(onlineTime) ..", updatedBy='".. mysql:escape_string(updatedWho(client, online)) .."', charges='" .. mysql:escape_string(charges) .. "', cell='" .. mysql:escape_string(cell) .. "', fine='" .. mysql:escape_string(fine) .. "'")
+		local query = mysql:query("INSERT INTO jailed SET charid=(SELECT id FROM characters WHERE charactername='".. mysql:escape_string(returnWhat(name, online)) .. "'), charactername='" .. mysql:escape_string(returnWhat(name, online)) .. "', jail_time=".. mysql:escape_string(jailTime) ..", jail_time_online=".. mysql:escape_string(onlineTime) ..", updatedBy='".. mysql:escape_string(updatedWho(client, online)) .."', charges='" .. mysql:escape_string(charges) .. "', cell='" .. mysql:escape_string(cell) .. "', fine='" .. mysql:escape_string(fine) .. "'")
 		if query then
 			mysql:query_free("UPDATE characters SET pdjail=1 WHERE charactername='".. mysql:escape_string(returnWhat(name, online)) .. "'")
 
