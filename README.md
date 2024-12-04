@@ -15,7 +15,7 @@ The following steps are for setting up the **MySQL database**:
 
 1. Install a MySQL server like [MariaDB](https://mariadb.org/)
 2. Configure a MySQL username and password that will be used by the MTA server
-3. Access the [data](/data/mysql) folder, which contains the necessary initial setup files
+3. Access the [data/mysql](/data/mysql) folder, which contains the necessary initial setup files
 4. Create a new database with a name of your choice and preferably UTF8 charset
 5. Run the `mta.sql` script to create the tables in your new database
 6. Run the `data.sql` script to populate the tables created with initial data
