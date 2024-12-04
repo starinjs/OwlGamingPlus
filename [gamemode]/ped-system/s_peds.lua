@@ -11,7 +11,7 @@
 local tempPeds = {}
 local pedMoveTimer = {}
 local pedMoveTimerTO = {}
-local null = mysql_null()
+local null = nil
 local toLoad = { }
 local threads = { }
 

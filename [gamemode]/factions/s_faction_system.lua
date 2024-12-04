@@ -33,9 +33,9 @@ function loadOneFaction(row)
 		local rank_order = row.rank_order 
 		exports.anticheat:setEld(theTeam, "rank_order", rank_order, 'all')
 		exports.anticheat:setEld(theTeam, "motd", motd, 'one')
-		exports.anticheat:setEld(theTeam, "note", row.note == mysql_null() and "" or row.note, 'one')
-		exports.anticheat:setEld(theTeam, "fnote", row.fnote == mysql_null() and "" or row.fnote, 'one')
-		exports.anticheat:setEld(theTeam, "phone", row.phone ~= mysql_null() and row.phone or nil, 'one')
+		exports.anticheat:setEld(theTeam, "note", row.note == nil and "" or row.note, 'one')
+		exports.anticheat:setEld(theTeam, "fnote", row.fnote == nil and "" or row.fnote, 'one')
+		exports.anticheat:setEld(theTeam, "phone", row.phone ~= nil and row.phone or nil, 'one')
 		exports.anticheat:setEld(theTeam, "max_interiors", tonumber(row.max_interiors), 'none') --Don't sync at all
 		exports.anticheat:setEld(theTeam, "max_vehicles", tonumber(row.max_vehicles), 'none') --Don't sync at all
 		exports.anticheat:setEld(theTeam, "before_tax_value", tonumber(row.before_tax_value), 'none') --Don't sync at all
@@ -203,7 +203,7 @@ function showFactionMenuEx(source, factionID, fromShowF)
 						memberUsernames[i] = playerName
 						memberRanks[i] = row.faction_rank
 						memberPerks[i] = type(row.faction_perks) == "string" and fromJSON(row.faction_perks) or {}
-						if phone and row.faction_phone ~= mysql_null() and tonumber(row.faction_phone) then
+						if phone and row.faction_phone ~= nil and tonumber(row.faction_phone) then
 							memberPhones[i] = ("%02d"):format(tonumber(row.faction_phone))
 						end
 
@@ -355,7 +355,7 @@ function loadFaction(factionID)
 				memberUsernames[i] = playerName
 				memberRanks[i] = row.faction_rank
 				memberPerks[i] = type(row.faction_perks) == "string" and fromJSON(row.faction_perks) or {}
-				if phone and row.faction_phone ~= mysql_null() and tonumber(row.faction_phone) then
+				if phone and row.faction_phone ~= nil and tonumber(row.faction_phone) then
 					memberPhones[i] = ("%02d"):format(tonumber(row.faction_phone))
 				end
 
@@ -815,12 +815,12 @@ function getFactionFinance(factionID)
 				if not transactions[week] then transactions[week] = {} end
 				local type = tonumber(row["type"])
 				local reason = row["reason"]
-				if reason == mysql_null() then
+				if reason == nil then
 					reason = ""
 				end
 
 				local from, to = "-", "-"
-				if row["characterfrom"] ~= mysql_null() then
+				if row["characterfrom"] ~= nil then
 					from = row["characterfrom"]:gsub("_", " ")
 				elseif tonumber(row["from"]) then
 					num = tonumber(row["from"])
@@ -830,7 +830,7 @@ function getFactionFinance(factionID)
 						from = "Government"
 					end
 				end
-				if row["characterto"] ~= mysql_null() then
+				if row["characterto"] ~= nil then
 					to = row["characterto"]:gsub("_", " ")
 				elseif tonumber(row["to"]) and tonumber(row["to"]) < 0 then
 					to = exports.cache:getFactionNameFromId(-tonumber(row["to"])) or "-"

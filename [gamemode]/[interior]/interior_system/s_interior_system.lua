@@ -322,7 +322,7 @@ function unownProperty(intid, reason) --This function is meant to be used by the
 
 	--Now we process in database first.
 	local int = mysql:query_fetch_assoc("SELECT id, type FROM interiors WHERE id="..intid.." LIMIT 1")
-	if int and int.id ~= mysql_null() then
+	if int and int.id ~= nil then
 		mysql:query_free("UPDATE interiors SET owner=-1, faction=0, locked=1, safepositionX=NULL, safepositionY=NULL, safepositionZ=NULL, safepositionRZ=NULL WHERE id='" .. intid .. "'")
 		if int.type == "1" then -- if it's a business, clean up in other table too.
 			mysql:query_free("DELETE FROM interior_business WHERE intID='" .. intid .. "'")

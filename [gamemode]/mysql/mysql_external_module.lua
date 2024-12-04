@@ -377,7 +377,7 @@ function update( tableName, array, clause )
 
 	local strings = { }
 	for i, k in pairs( array ) do
-		table.insert( strings, "`" .. i .. "` = " .. ( k == mysql_null() and "NULL" or ( "'" .. ( tonumber( k ) or escape_string( k ) ) .. "'" ) ) )
+		table.insert( strings, "`" .. i .. "` = " .. ( k == nil and "NULL" or ( "'" .. ( tonumber( k ) or escape_string( k ) ) .. "'" ) ) )
 	end
 	local q = "UPDATE `" .. tableName .. "` SET " .. table.concat( strings, ", " ) .. createWhereClause( clause, true )
 

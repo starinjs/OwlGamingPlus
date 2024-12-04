@@ -183,7 +183,7 @@ function loadItems( element, force )
 						tonumber( row.itemValue ) or row.itemValue,
 						tonumber( row.index ),
 						tonumber( row.protected ),
-						row.metadata ~= mysql_null() and fromJSON(row.metadata) or nil
+						row.metadata ~= nil and fromJSON(row.metadata) or nil
 					}
 				end
 			until not row

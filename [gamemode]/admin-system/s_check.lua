@@ -216,9 +216,9 @@ function showAdminHistory( target )
 				record[3] = row["reason"]
 				record[4] = row["duration"]
 				record[5] = exports.cache:getUsernameFromId(row["hadmin"]) or "SYSTEM"
-				record[6] = row["user_char"] == mysql_null() and "N/A" or row["user_char"]
+				record[6] = row["user_char"] == nil and "N/A" or row["user_char"]
 				record[7] = row["recordid"]
-				record[8] = row["hadmin"] == mysql_null() and "SYSTEM" or row["hadmin"]
+				record[8] = row["hadmin"] == nil and "SYSTEM" or row["hadmin"]
 
 				table.insert( info, record )
 			end
@@ -251,9 +251,9 @@ function showOfflineAdminHistory( gameaccountid, name )
 				record[3] = row["reason"]
 				record[4] = row["duration"]
 				record[5] = row["username"] == exports.cache:getUsernameFromId(row["hadmin"]) or "SYSTEM"
-				record[6] = row["user_char"] == mysql_null() and "N/A" or row["user_char"]
+				record[6] = row["user_char"] == nil and "N/A" or row["user_char"]
 				record[7] = row["recordid"]
-				record[8] = row["hadmin"] == mysql_null() and "SYSTEM" or row["hadmin"]
+				record[8] = row["hadmin"] == nil and "SYSTEM" or row["hadmin"]
 
 				table.insert( info, record )
 			end

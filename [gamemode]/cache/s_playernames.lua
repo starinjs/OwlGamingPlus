@@ -42,7 +42,7 @@ function getCharacterName( id, singleName )
 							local name2 = query["charactername"]
 							local gender2 = tonumber(query["gender"])
 							singleCharCache[ marriedto ] = name2:gsub("_", " ")
-							if name2 ~= mysql_null( ) then
+							if name2 ~= nil then
 								if gender == gender2 then
 									if name < name2 then
 										name = makeName( name, name2 )

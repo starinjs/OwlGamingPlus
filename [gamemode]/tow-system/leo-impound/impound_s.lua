@@ -506,7 +506,7 @@ addEventHandler("tow:openReleaseGUI", root, openReleaseGUI)
 
 function release(pedName, vehid, cost)
 	local lane = exports.mysql:query_fetch_assoc("SELECT CASE WHEN release_date IS NULL THEN 'seized' ELSE TO_SECONDS(release_date) END AS secdiff FROM leo_impound_lot WHERE veh="..vehid.." LIMIT 1")
-	if not lane or lane.secdiff == mysql_null() then
+	if not lane or lane.secdiff == nil then
 		local veh = exports.pool:getElement('vehicle', vehid)
 		if veh then
 			exports.anticheat:setEld(veh, 'Impounded', 0, 'all')

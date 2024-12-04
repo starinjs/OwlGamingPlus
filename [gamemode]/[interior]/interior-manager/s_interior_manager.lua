@@ -157,7 +157,7 @@ addEventHandler("interiorManager:checkint", root, checkInt)
 
 function formatCreator(creator, creatorId)
 	if creator and creatorId then
-		if creator == mysql_null() then
+		if creator == nil then
 			if creatorId == "0" then
 				return "SYSTEM"
 			else

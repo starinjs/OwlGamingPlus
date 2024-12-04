@@ -13,7 +13,7 @@ oneSupply = tonumber(get( getResourceName( getResourceFromName("npc") ).. '.oneS
 local function SmallestID() -- finds the smallest ID in the SQL instead of auto increment
 	local result1 = mysql:query_fetch_assoc("SELECT MIN(e1.orderID+1) AS nextID FROM jobs_trucker_orders AS e1 LEFT JOIN jobs_trucker_orders AS e2 ON e1.orderID +1 = e2.orderID WHERE e2.orderID IS NULL")
 	if result1 then
-		return result1["nextID"] ~= mysql_null() and result1["nextID"] or "1"
+		return result1["nextID"] ~= nil and result1["nextID"] or "1"
 	end
 	return false
 end

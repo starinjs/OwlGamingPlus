@@ -169,7 +169,7 @@ function getAccountFromCharacterId(id)
 	accountCacheSearched[id] = true
 
 	local user = mysql:query_fetch_assoc("SELECT account AS id FROM characters WHERE id="..id.." LIMIT 1")
-	if user and user.id ~= mysql_null() then
+	if user and user.id ~= nil then
 		accountCache[id] = {id = tonumber(user.id), username = getUsernameFromId(user.id)}
 		return accountCache[id]
 	end

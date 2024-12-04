@@ -24,7 +24,7 @@ addEventHandler('onResourceStart', resourceRoot, function()
 				row.for_sale_until = tonumber(row.for_sale_until) or nil
 				row.date = tonumber(row.date)
 				row.mdate = tonumber(row.mdate) or 0
-				row.fmdate = row.fmdate ~= mysql_null() and row.fmdate or nil
+				row.fmdate = row.fmdate ~= nil and row.fmdate or nil
 				row.distribution = tonumber(row.distribution)
 				row.sold = tonumber(row.sold) or 0
 				savedClothing[row.id] = row

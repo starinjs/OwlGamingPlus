@@ -64,7 +64,7 @@ local function queryWhoisAccount(clue, type)
 			local result = mysql:fetch_assoc(q)
 			if not result then break end
 			for k, v in pairs( result ) do
-				if v == mysql_null() then
+				if v == nil then
 					result[k] = nil
 				else
 					result[k] = tonumber(result[k]) or result[k]
@@ -83,7 +83,7 @@ local function queryWhoisAccount(clue, type)
 			local result = mysql:fetch_assoc(q)
 			if not result then break end
 			for k, v in pairs( result ) do
-				if v == mysql_null() then
+				if v == nil then
 					result[k] = nil
 				else
 					result[k] = tonumber(result[k]) or result[k]
@@ -101,7 +101,7 @@ local function queryWhoisAccount(clue, type)
 			local result = mysql:fetch_assoc(q)
 			if not result then break end
 			for k, v in pairs( result ) do
-				if v == mysql_null() then
+				if v == nil then
 					result[k] = nil
 				else
 					result[k] = tonumber(result[k]) or result[k]
@@ -119,7 +119,7 @@ local function queryWhoisAccount(clue, type)
 			local result = mysql:fetch_assoc(q)
 			if not result then break end
 			for k, v in pairs( result ) do
-				if v == mysql_null() then
+				if v == nil then
 					result[k] = nil
 				else
 					result[k] = tonumber(result[k]) or result[k]
@@ -195,7 +195,7 @@ local function showIPAlts(thePlayer, ip)
 						local row = mysql:fetch_assoc(result)
 						if not row then break end
 						
-						if result1["lastlogin"] == mysql_null() then
+						if result1["lastlogin"] == nil then
 							result1["lastlogin"] = "Never"
 						end
 						
@@ -327,11 +327,11 @@ local function showAlts(thePlayer, id, creation)
 				text = text .. " (Buried)"
 			end
 			
-			if row['lastlogin'] ~= mysql_null() then
+			if row['lastlogin'] ~= nil then
 				text = text .. " - " .. tostring( row['lastlogin'] )
 			end
 			
-			if creation and row['creationdate'] ~= mysql_null() then
+			if creation and row['creationdate'] ~= nil then
 				text = text .. " - Created " .. tostring( row['creationdate'] )
 			end
 

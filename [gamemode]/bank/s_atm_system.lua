@@ -104,7 +104,7 @@ function applyForNewATMCard(replacingOldATMCard, limitType)
 		--outputDebugString(numSum)
 		if string.len(numSum) == 19 then
 			local checkNumber = mysql:query_fetch_assoc("SELECT `card_number` FROM `atm_cards` WHERE `card_number`='"..numSum.."' ")
-			if (not checkNumber or checkNumber["card_number"]==mysql_null() or checkNumber["card_number"] ~= numSum) then
+			if (not checkNumber or checkNumber["card_number"]==nil or checkNumber["card_number"] ~= numSum) then
 				break
 			end
 		end
@@ -485,7 +485,7 @@ function withdrawATMMoneyPersonal(amount, theATM)
 
 	local balanceCheck = mysql:query_fetch_assoc("SELECT `bankmoney`, `id` FROM `characters` LEFT JOIN `atm_cards` ON `characters`.`id`=`atm_cards`.`card_owner` WHERE `card_number`='"..cardNumber.."' AND `card_locked`='0' AND `card_type`='1' ")
 	local balance = nil
-	if not balanceCheck or balanceCheck["bankmoney"] == mysql_null() then
+	if not balanceCheck or balanceCheck["bankmoney"] == nil then
 		triggerClientEvent( client, "bank:respondToPendingTransfer", client, "Could not complete the transaction. Please contact the bank or try again later.")
 		return false
 	else
@@ -891,12 +891,12 @@ function tellATMTransfers(source, cardInfo, event)
 			local time = row["newtime"]
 			local type = tonumber(row["type"])
 			local reason = row["reason"]
-			if reason == mysql_null() then
+			if reason == nil then
 				reason = ""
 			end
 
 			local from, to = "-", "-"
-			if row["characterfrom"] ~= mysql_null() then
+			if row["characterfrom"] ~= nil then
 				from = row["characterfrom"]:gsub("_", " ")
 			elseif tonumber(row["from"]) then
 				num = tonumber(row["from"])
@@ -906,7 +906,7 @@ function tellATMTransfers(source, cardInfo, event)
 					from = "Government"
 				end
 			end
-			if row["characterto"] ~= mysql_null() then
+			if row["characterto"] ~= nil then
 				to = row["characterto"]:gsub("_", " ")
 			elseif tonumber(row["to"]) and tonumber(row["to"]) < 0 then
 				to = getTeamName(exports.pool:getElement("team", -tonumber(row["to"])))

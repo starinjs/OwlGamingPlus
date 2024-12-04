@@ -25,7 +25,7 @@ function convertGenerics()
 			for _, row in pairs(res) do
 				if row then
 					local metadata
-					if row[metadataRow] and row[metadataRow] ~= mysql_null() then
+					if row[metadataRow] and row[metadataRow] ~= nil then
 						metadata = fromJSON(row[metadataRow]) or {}
 					else
 						metadata = {}

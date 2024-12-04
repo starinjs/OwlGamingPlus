@@ -13,7 +13,7 @@ local stats_numberOfVehs = 0
 local timerDelay = 50
 local loadedVehicles = 0
 local initializeSoFarDetector = 0
-local null = mysql_null()
+local null = nil
 
 function SmallestID( ) -- finds the smallest ID in the SQL instead of auto increment
 	local result = mysql:query_fetch_assoc("SELECT MIN(e1.id+1) AS nextID FROM vehicles AS e1 LEFT JOIN vehicles AS e2 ON e1.id +1 = e2.id WHERE e2.id IS NULL")

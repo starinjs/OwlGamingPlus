@@ -307,7 +307,7 @@ function search( query, queryType )
 					if isFAA then --FAA only get aircrafts listed
 						if(getVehicleType(tonumber(row.model)) == "Plane" or getVehicleType(tonumber(row.model)) == "Helicopter") then
 							vehicles[count][1] = row.id
-							if row.vehbrand and row.vehmodel and row.vehyear and row.vehbrand ~= mysql_null() and row.vehmodel ~= mysql_null() and row.vehyear ~= mysql_null() then
+							if row.vehbrand and row.vehmodel and row.vehyear and row.vehbrand ~= nil and row.vehmodel ~= nil and row.vehyear ~= nil then
 								vehicles[count][2] = row.vehyear .. " " .. row.vehbrand .. " " .. row.vehmodel
 							else
 								vehicles[count][2] = row.model
@@ -317,7 +317,7 @@ function search( query, queryType )
 						end
 					else
 						vehicles[count][1] = row.id
-						if row.vehbrand and row.vehmodel and row.vehyear and row.vehbrand ~= mysql_null() and row.vehmodel ~= mysql_null() and row.vehyear ~= mysql_null() then
+						if row.vehbrand and row.vehmodel and row.vehyear and row.vehbrand ~= nil and row.vehmodel ~= nil and row.vehyear ~= nil then
 							vehicles[count][2] = row.vehyear .. " " .. row.vehbrand .. " " .. row.vehmodel
 						else
 							vehicles[count][2] = row.model
@@ -471,7 +471,7 @@ function search( query, queryType )
 		end
 
 		local vehicle = exports.mysql:query_fetch_assoc( "SELECT v.*, c.vehbrand, c.vehmodel, c.vehyear FROM `vehicles` v LEFT JOIN vehicles_shop c ON v.vehicle_shop_id = c.id WHERE " .. q .. " AND deleted = 0 AND registered = 1 LIMIT 1" ) --Fetch the information from the database
-		if vehicle and vehicle.id ~= mysql_null() then
+		if vehicle and vehicle.id ~= nil then
 			local crimes = { }
 			local result2 = exports.mysql:query( "SELECT * FROM `speedingviolations` WHERE `carID` = '".. vehicle.id .."' ORDER BY `id` DESC" )
 			if ( result2 ) then

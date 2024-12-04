@@ -86,9 +86,9 @@ function loadOneGate(gateID)
 			--Exciter 2014.07.12: Support for custom trigger distances and sounds
 			local triggerDistance, triggerDistanceVehicle, gateSound
 			--outputDebugString("row['triggerDistanceVehicle']="..tostring(row['triggerDistanceVehicle'])..", row['triggerDistance']="..tostring(row['triggerDistance']))
-			if row["triggerDistance"] == mysql_null() then triggerDistance = false else triggerDistance = tonumber(row["triggerDistance"]) or 35 end
-			if row["triggerDistanceVehicle"] == mysql_null() then triggerDistanceVehicle = false else triggerDistanceVehicle = tonumber(row["triggerDistanceVehicle"]) or 35 end
-			if row["sound"] == mysql_null() then gateSound = false else gateSound = tostring(row["sound"]) end
+			if row["triggerDistance"] == nil then triggerDistance = false else triggerDistance = tonumber(row["triggerDistance"]) or 35 end
+			if row["triggerDistanceVehicle"] == nil then triggerDistanceVehicle = false else triggerDistanceVehicle = tonumber(row["triggerDistanceVehicle"]) or 35 end
+			if row["sound"] == nil then gateSound = false else gateSound = tostring(row["sound"]) end
 			--outputDebugString("triggerDistanceVehicle="..tostring(triggerDistanceVehicle)..", triggerDistance="..tostring(triggerDistance))
 			exports.anticheat:changeProtectedElementDataEx(tempObject, "gate:triggerDistance", triggerDistance, true)
 			exports.anticheat:changeProtectedElementDataEx(tempObject, "gate:triggerDistanceVehicle", triggerDistanceVehicle, true)

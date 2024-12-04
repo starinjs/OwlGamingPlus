@@ -565,7 +565,7 @@ function clickStoreKeeper()
 			local pRow = mysql:fetch_assoc(shopProducts)
 			if not pRow then break end
 			local pMetadata
-			if pRow["pMetadata"] and pRow["pMetadata"] ~= mysql_null() then
+			if pRow["pMetadata"] and pRow["pMetadata"] ~= nil then
 				pMetadata = fromJSON(pRow["pMetadata"]) or {}
 			else
 				pMetadata = {}
@@ -587,7 +587,7 @@ function clickStoreKeeper()
 			local pRow = mysql:fetch_assoc(shopProducts)
 			if not pRow then break end
 			local pMetadata
-			if pRow["pMetadata"] and pRow["pMetadata"] ~= mysql_null() then
+			if pRow["pMetadata"] and pRow["pMetadata"] ~= nil then
 				pMetadata = fromJSON(pRow["pMetadata"]) or {}
 			else
 				pMetadata = {}

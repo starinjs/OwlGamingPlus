@@ -117,7 +117,7 @@ function offlineJailPlayer(thePlayer, commandName, who, minutes, ...)
 			local row = mysql:query_fetch_assoc("SELECT `id`, `username`, `admin` FROM `accounts` WHERE `username`='".. mysql:escape_string( who ) .."' LIMIT 1")
 			local accountID = false
 			local accountUsername = true -- Let it be set to true, because when you jail an offline player, it prevents getElementData errors in the debug log.
-			if row and row.id ~= mysql_null() then
+			if row and row.id ~= nil then
 				accountID = row["id"]
 				accountUsername = row["username"]
 			else

@@ -191,12 +191,12 @@ function loadOneVehicle(data, loadDeletedOne)
 			exports.anticheat:setEld( veh, "token", data.tokenUsed == 1, 'all' )
 			exports.anticheat:setEld( veh, "hotwired", (data.hotwired == 1 and true or false), 'all')
 
-			if data.lastused_sec ~= mysql_null() then
+			if data.lastused_sec ~= nil then
 				exports.anticheat:setEld( veh, "lastused", data.lastused_sec, 'all' )
 			end
 
 			--outputDebugString(tostring(data.owner_last_login))
-			if data.owner_last_login ~= mysql_null() then
+			if data.owner_last_login ~= nil then
 				exports.anticheat:setEld( veh, "owner_last_login", data.owner_last_login, 'all' )
 			end
 

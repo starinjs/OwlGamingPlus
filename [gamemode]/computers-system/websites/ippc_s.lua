@@ -83,7 +83,7 @@ local function fetchAirlines(page)
 						if not row then break end
 						local data = {}
 						for k,v in pairs(row) do
-							if v == mysql_null() then v = "" end
+							if v == nil then v = "" end
 							data[k] = v
 						end
 						table.insert(flights, data)

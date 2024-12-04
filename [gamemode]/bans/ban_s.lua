@@ -264,7 +264,7 @@ function offlineBanAPlayer(thePlayer, commandName, targetUsername, hours, ...)
 					exports['admin-system']:addAdminHistory(user['id'], thePlayer, reason, 2, rhours)
 
 					local targetSerial = nil
-					if user['mtaserial'] ~= mysql_null() then
+					if user['mtaserial'] ~= nil then
 						targetSerial = user['mtaserial']
 					end
 					local banId = nil
@@ -479,7 +479,7 @@ function unbanPlayer(thePlayer, commandName, id)
 								break
 							end
 						end
-						if ban[1]['account'] ~=mysql_null() then
+						if ban[1]['account'] ~=nil then
 							exports['admin-system']:addAdminHistory(ban[1]['account'], thePlayer, "UNBAN", 2 , 0)
 						end
 						local hiddenAdmin = getElementData(thePlayer, "hiddenadmin")
