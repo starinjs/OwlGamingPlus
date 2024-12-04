@@ -358,7 +358,7 @@ function takeItemFromSlot(element, slot, nosqlupdate, no_update_guns)
 			local index = saveditems[element][slot][3]
 			local success = true
 			if not nosqlupdate then
-				local result = mysql:query_free( "DELETE FROM items WHERE `index` = " .. index .. " LIMIT 1" )
+				local result = mysql:query( "DELETE FROM items WHERE `index` = " .. index .. " LIMIT 1" )
 				--[[if itemID == 178 then
 					local query = mysql:query_free( "DELETE FROM books WHERE id = " .. index .. " LIMIT 1")
 				end]]
