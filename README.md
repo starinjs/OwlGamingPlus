@@ -2,7 +2,14 @@
 
 ## Setup
 
-The ideal setup is an up-to-date MTA Server running on a Linux Machine (64 bit) with a MariaDB server also running on the same machine.
+The **ideal setup** is the following:
+
+- Linux Operating System (64 bit)
+- Up-to-date MTA server
+- Local MariaDB server with remote connections blocked
+- Security:
+  - Minimal port forwarding: use a firewall to only allow MTA ports and never open the MySQL port (default 3306)
+  - Remote SSH access: disable password authentication and set up SSH key authentication
 
 The following steps are for setting up the **MySQL database**:
 
