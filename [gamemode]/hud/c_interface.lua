@@ -170,6 +170,13 @@ function drawWindowGUI(element, windowTexture)
 				for i, v in ipairs(renderlist) do
 					if v[1] == element then
 						local windowTexture = dxCreateRenderTarget(width, height, true)
+						setElementData(element, "renderTarget", windowTexture)
+						addEventHandler("onClientElementDestroy", element, function()
+							local v = getElementData(source, "renderTarget")
+							if isElement(v) then
+								destroyElement(v)
+							end
+						end, false)
 						dxSetRenderTarget(windowTexture)
 						dxDrawRectangle(0, 0, width, height, tocolor(20, 20, 20, 180)) -- main window
 						dxDrawRectangle(0, 0, width, 18, tocolor(20, 20, 20, 200)) -- titlebar
@@ -199,6 +206,13 @@ function guiConvertWindow(element)
 	setElementData(element, "ui:text", text)
 
 	local windowTexture = dxCreateRenderTarget(width, height, true)
+	setElementData(element, "renderTarget", windowTexture)
+	addEventHandler("onClientElementDestroy", element, function()
+		local v = getElementData(source, "renderTarget")
+		if isElement(v) then
+			destroyElement(v)
+		end
+	end, false)
 	if windowTexture then
 		dxSetRenderTarget(windowTexture)
 		dxDrawRectangle(0, 0, width, height, tocolor(20, 20, 20, 180)) -- main window
@@ -269,6 +283,13 @@ function guiConvertTabPanel(panel, window)
 	local difference = 0
 	local panelWidth, panelHeight = guiGetSize(panel, false)
 	local panelTexture = dxCreateRenderTarget(panelWidth, panelHeight, true)
+	setElementData(panel, "renderTarget", panelTexture)
+	addEventHandler("onClientElementDestroy", panel, function()
+		local v = getElementData(source, "renderTarget")
+		if isElement(v) then
+			destroyElement(v)
+		end
+	end, false)
 	setElementData(panel, "Owl-GUI", true)
 
 	for i, v in ipairs(getElementChildren(panel)) do
@@ -291,9 +312,19 @@ function guiConvertButton(element, window)
 
 	local buttonTexture = dxCreateRenderTarget(width, height, true)
 	local buttonHoverTexture = dxCreateRenderTarget(width, height, true)
-	local buttonHoverTexture = dxCreateRenderTarget(width, height, true)
 	local buttonClickTexture = dxCreateRenderTarget(width, height, true)
 	local buttonDisabledTexture = dxCreateRenderTarget(width, height, true)
+	setElementData(element, "renderlist", { buttonTexture, buttonHoverTexture, buttonClickTexture, buttonDisabledTexture })
+	addEventHandler("onClientElementDestroy", element, function()
+		local list = getElementData(source, "renderlist")
+		if list and type(list) == "table" then
+			for i, v in ipairs(list) do
+				if isElement(v) then
+					destroyElement(v)
+				end
+			end
+		end
+	end, false)
 
 	if buttonTexture and buttonHoverTexture and buttonClickTexture then
 		dxSetRenderTarget(buttonTexture)
