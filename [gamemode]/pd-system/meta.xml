@@ -79,7 +79,6 @@
 
     <script type="client" src="c_speedcam.lua"/>
     <file src="speedcam/gps.png"/>
-    <file src="speedcam/digital-7.ttf"/>
 
     <file src="silenced.dff" />
     <file src="silenced.txd" />

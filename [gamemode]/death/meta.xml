@@ -3,9 +3,7 @@
     
     <script src="graveyard/graveyard_s.lua" type="server" />
     <script src="graveyard/graveyard_c.lua" type="client" />
-
-    <script src="graveyard/tombs_g.lua" type="server" />
-    <script src="graveyard/tombs_g.lua" type="client" />
+    <script src="graveyard/tombs_g.lua" type="shared" />
     <file src="graveyard/tombstone.ttf"/>
 
     <script src="deathFX/deathFX_c.lua" type="client" />

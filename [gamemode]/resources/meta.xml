@@ -7,7 +7,9 @@
 	<file src="fonts/cartwheel.otf"/>
 	<file src="fonts/Anton.ttf"/>
 	<file src="fonts/BizNote.ttf"/>
-
+	<file src="fonts/helveticastrong.ttf"/>
+	<file src="fonts/digital.ttf"/>
+	
 	<!-- Images -->
 	<file src="images/loading.jpg"/>
 	<file src="images/window_body.png"/>

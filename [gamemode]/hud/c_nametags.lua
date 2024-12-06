@@ -3,7 +3,7 @@ local badges = {}
 masks = {}
 local font =  "default-bold"
 local newfont = dxCreateFont ( "nametags0.ttf" , 12)
-local moneyFont = dxCreateFont ( "old_school_united_stencil.ttf" , 16)
+local moneyFont = dxCreateFont ( ":resources/fonts/clbold.ttf" , 16) 
 local moneyFloat = {}
 local maxIconsPerLine = 6
 function moneyUpdateFX(state, amount, toEachother)

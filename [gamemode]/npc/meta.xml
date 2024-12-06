@@ -41,7 +41,6 @@
 	<file src="playCollectMoneySound.mp3" /> 
 	<file src="playPayWageSound.mp3" /> 
 	<file src="playBuySound.mp3" /> 
-	<file src="seguisb.ttf" /> 
 	<settings> 
 		<setting name="*warningDebtAmount" value="[5000]"/>  <!--The shop will send SMS to owners when debt reaches this amount-->
 		<setting name="*limitDebtAmount" value="[6000]"/>  <!--The shop will quitjob (delete itself) when debt reaches this amount-->

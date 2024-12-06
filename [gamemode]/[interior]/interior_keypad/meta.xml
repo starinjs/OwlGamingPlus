@@ -10,11 +10,6 @@
 	<file src="images/keypad.png"/>
 	<file src="images/keypad_locked.png"/>
 	<file src="images/keypad_unlocked.png"/>
-	<!--
-	<file src="fonts/led_sas.ttf"/>
-	<file src="fonts/led_board-7.ttf"/>
-	-->
-	<file src="fonts/digi.ttf"/>
 	
 	<file src="sounds/granted.mp3"/>
 	<file src="sounds/denied.mp3"/>

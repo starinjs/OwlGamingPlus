@@ -60,7 +60,7 @@ local function www_ippc_sa_themes_main(desiredLength)
 	local logo = guiCreateStaticImage(10,5,40,40,"websites/images/faa.png",false,header)
 	--local logo = guiCreateStaticImage(0,0,565,100,"websites/images/eastsky.png",false,header)
 	local headertxt = guiCreateLabel(60,10,80,50,"IPPC",false,header)
-		guiSetFont(headertxt, guiCreateFont(":fonts/helveticastrong.ttf", 30))
+		guiSetFont(headertxt, guiCreateFont(":resources/fonts/helveticastrong.ttf", 30))
 	local headertxt2 = guiCreateLabel(140,27,170,25,"Internet Pilot Planning Center",false,header)
 
 	local usertxt1 = guiCreateLabel(wrapper_width-100,5,100,15,"Logged in as",false,header)
@@ -254,7 +254,7 @@ function www_ippc_sa()
 	-- Content --
 	-------------	
 	local content_title = guiCreateLabel(10,5,400,25,"Welcome to IPPC",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 
 	local para1 = guiCreateLabel(10,30,400,240, "The IPPC is a online tool for pilots, offered by the FAA.\n\nThis site gives pilots easy access to important and useful information.\n\nPilots can use the IPPC to create, edit and view flightplans which is submitted directly to the FAA and air traffic controllers.",false,content)
@@ -272,7 +272,7 @@ function www_ippc_sa_flights()
 	-- Content --
 	-------------	
 	local content_title = guiCreateLabel(10,5,400,25,"Flights",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 
 	local para1 = guiCreateLabel(10,30,50,20, "Show: ",false,content)
@@ -313,7 +313,7 @@ function www_ippc_sa_fpl()
 	-- Content --
 	-------------	
 	local content_title = guiCreateLabel(10,5,400,25,"Flightplan",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 
 	fplErrorLabel = guiCreateLabel(10,30,540,20,"",false,content)
@@ -431,7 +431,7 @@ function www_ippc_sa_fpl_ack()
 	-- Content --
 	-------------	
 	local content_title = guiCreateLabel(10,5,530,25,"Flightplan",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 
 	local txt1 = guiCreateLabel(10,30,540,200,"Your flightplan has been submitted. Thank you!\n\nCallsign: "..tostring(myFplCallsign),false,content)
@@ -450,7 +450,7 @@ function www_ippc_sa_fpl_at()
 	-- Content --
 	-------------	
 	local content_title = guiCreateLabel(10,5,400,25,"Flightplan",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 
 	local txt1 = guiCreateLabel(10,30,540,20,"Do you want to sell tickets for this flight?",false,content)
@@ -476,7 +476,7 @@ function www_ippc_sa_fpl_tickets()
 	-- Content --
 	-------------	
 	local content_title = guiCreateLabel(10,5,400,25,"Flightplan",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 
 	local txt1 = guiCreateLabel(10,30,540,100,"Your flightplan has been submitted. Thank you!\n\nCallsign: "..tostring(myFplCallsign),false,content)
@@ -494,7 +494,7 @@ function www_ippc_sa_notam()
 	-- Content --
 	-------------	
 	local content_title = guiCreateLabel(10,5,400,25,"NOTAMs",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 
 	local para1 = guiCreateLabel(10,30,530,40, "NOTAM is short for Notice to Airmen. It is a notice that contains important information to pilots regarding their flight. See below for currently active NOTAMs.",false,content)
@@ -526,7 +526,7 @@ function www_ippc_sa_charts()
 	-- Content --
 	-------------	
 	local content_title = guiCreateLabel(10,5,400,25,"Charts",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 
 	local link = guiCreateLabel(10,30,400,25, "BCA - Bone County Air Base",false,content)
@@ -590,7 +590,7 @@ function www_ippc_sa_charts_bca()
 	www_ippc_sa_themes_main() -- load theme
 	guiSetText(address_bar,"www.ippc.sa/charts/bca") -- correct the URL
 	local content_title = guiCreateLabel(10,5,400,25,"Charts",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 	local link = guiCreateLabel(10,30,400,25, "< Go back",false,content)
 		guiSetFont(link, "clear-normal")
@@ -606,7 +606,7 @@ function www_ippc_sa_charts_bca()
 			get_page(url)
 		end,false)	
 	local label = guiCreateLabel(10,55,400,25,"Bone County Air Base (BCA)",false,content)
-		guiSetFont(label, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(label, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(label,0,0,0)
 	local map = guiCreateStaticImage(10, 80, 521, 515, ":sfia/images/map_BCA.jpg", false, content) --521,641
 	local label = guiCreateLabel(541,80,400,400, "Military restricted area\nAccess: PPR\nELE: 18\nRWYS: 18, 36\nPrior permission required!",false,content)
@@ -616,7 +616,7 @@ function www_ippc_sa_charts_lsa()
 	www_ippc_sa_themes_main() -- load theme
 	guiSetText(address_bar,"www.ippc.sa/charts/lsa") -- correct the URL
 	local content_title = guiCreateLabel(10,5,400,25,"Charts",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 	local link = guiCreateLabel(10,30,400,25, "< Go back",false,content)
 		guiSetFont(link, "clear-normal")
@@ -632,7 +632,7 @@ function www_ippc_sa_charts_lsa()
 			get_page(url)
 		end,false)	
 	local label = guiCreateLabel(10,55,500,25,"Los Santos International Airport (LSA)",false,content)
-		guiSetFont(label, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(label, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(label,0,0,0)
 	local map = guiCreateStaticImage(10, 80, 721, 515, ":sfia/images/map_LSA.jpg", false, content) --521,641
 	local label = guiCreateLabel(741,80,400,400, "Controlled\nAccess: Public\nELE: 14\nRWYS: 9, 27\nGRND: 122.800\nCheck if tower is active.",false,content)
@@ -642,7 +642,7 @@ function www_ippc_sa_charts_lva()
 	www_ippc_sa_themes_main() -- load theme
 	guiSetText(address_bar,"www.ippc.sa/charts/lva") -- correct the URL
 	local content_title = guiCreateLabel(10,5,400,25,"Charts",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 	local link = guiCreateLabel(10,30,400,25, "< Go back",false,content)
 		guiSetFont(link, "clear-normal")
@@ -658,7 +658,7 @@ function www_ippc_sa_charts_lva()
 			get_page(url)
 		end,false)	
 	local label = guiCreateLabel(10,55,400,25,"Las Venturas Airport (LVA)",false,content)
-		guiSetFont(label, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(label, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(label,0,0,0)
 	local map = guiCreateStaticImage(10, 80, 521, 515, ":sfia/images/map_LVA.png", false, content) --521,641
 	local label = guiCreateLabel(541,80,400,400, "Controlled\nAccess: Public\nELE: 11\nRWYS: 18, 36\nGRND: 119.900\nCheck if tower is active.",false,content)
@@ -668,7 +668,7 @@ function www_ippc_sa_charts_sfa()
 	www_ippc_sa_themes_main() -- load theme
 	guiSetText(address_bar,"www.ippc.sa/charts/sfa") -- correct the URL
 	local content_title = guiCreateLabel(10,5,400,25,"Charts",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 	local link = guiCreateLabel(10,30,400,25, "< Go back",false,content)
 		guiSetFont(link, "clear-normal")
@@ -684,7 +684,7 @@ function www_ippc_sa_charts_sfa()
 			get_page(url)
 		end,false)	
 	local label = guiCreateLabel(10,55,400,25,"San Fierro Airport (SFA)",false,content)
-		guiSetFont(label, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(label, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(label,0,0,0)
 	local map = guiCreateStaticImage(10, 80, 521, 515, ":sfia/images/map_SFA.png", false, content) --521,641
 	local label = guiCreateLabel(541,80,400,400, "Uncontrolled\nAccess: Public\nELE: 14\nRWYS: 4, 22\nGRND: 118.500\nTransmit intentions on traffic UNICOM.",false,content)
@@ -700,7 +700,7 @@ function www_ippc_sa_profile()
 	-- Content --
 	-------------	
 	local content_title = guiCreateLabel(10,5,400,25,"My Profile",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 
 	myInfoLabel = guiCreateLabel(10,30,330,50, "Name: "..tostring(getPlayerName(localPlayer):gsub("_", " ")).."\nWork for: "..tostring(guiGetText(orgLabel)),false,content)
@@ -731,7 +731,7 @@ function www_ippc_sa_airline()
 	-- Content --
 	-------------	
 	local content_title = guiCreateLabel(10,5,400,25,"Airline Management",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 
 	selectAirline = guiCreateComboBox(10,30,250,80,"",false,content)
@@ -863,7 +863,7 @@ function www_ippc_sa_airline_admin()
 	-- Content --
 	-------------	
 	local content_title = guiCreateLabel(10,5,400,25,"Airline Administration",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 
 	if isFAALeader then
@@ -935,7 +935,7 @@ function www_ippc_sa_gates()
 	-- Content --
 	-------------	
 	local content_title = guiCreateLabel(10,5,400,25,"Airport Gates",false,content)
-		guiSetFont(content_title, guiCreateFont(":fonts/helveticastrong.ttf", 20))
+		guiSetFont(content_title, guiCreateFont(":resources/fonts/helveticastrong.ttf", 20))
 		guiLabelSetColor(content_title,0,0,0)
 
 	local verticalOffset = 86

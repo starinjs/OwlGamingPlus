@@ -1,6 +1,6 @@
 function createSpeedcam ()
 	if getElementData(localPlayer, "speedradar_chat") == false and not speedcamMeter then
-	speedFont = guiCreateFont( "speedcam/digital-7.ttf", 32 )
+	speedFont = guiCreateFont( ":resources/fonts/digital.ttf", 32 )
 
 	speedcamMeter = guiCreateStaticImage(0.75, 0.25, 0.24, 0.17, "speedcam/gps.png", true)
 	targetSpeed = guiCreateLabel(0.15, 0.34, 0.21, 0.25, "0", true, speedcamMeter)
