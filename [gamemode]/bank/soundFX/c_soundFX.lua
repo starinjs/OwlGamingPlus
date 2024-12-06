@@ -15,7 +15,7 @@ addEventHandler("bank:playAtmEject", root,
 addEvent("bank:playAtmWithdraw", true)
 addEventHandler("bank:playAtmWithdraw", root,
 	function()
-		playSound(":shop-system/playBuySound.mp3")
+		playSound(":npc/playBuySound.mp3")
 	end
 )
 
