@@ -46,6 +46,59 @@ function restartSingleResource(thePlayer, commandName, resourceName, seconds)
 						outputChatBox("* It may take up to a minute before your inventory re-appears. *", root, 255, 0, 0)
 					end
 
+				elseif resourceName:lower() == "interior_load" then
+					if (not getElementData(thePlayer, "resconfirmed") and not exports.integration:isPlayerScripter(thePlayer)) then
+						outputChatBox("Are you sure you want to restart the interior load system? All interiors will be reloaded.", thePlayer)
+						setElementData(thePlayer, "resconfirmed", true)
+						setTimer(function ()
+								setElementData(thePlayer, "resconfirmed", false)
+							end, 10000, 1)
+						return false
+					else
+						outputChatBox("* Interior system is restarting in "..seconds.." seconds! *", root, 255, 0, 0)
+						outputChatBox("* Please exit interiors as fast as possible.. *", root, 255, 0, 0)
+						outputChatBox("* There will be a short Network Trouble during the time, please standby.. *", root, 255, 0, 0)
+					end
+
+				elseif resourceName:lower() == "vehicle_load" then
+					if (not getElementData(thePlayer, "resconfirmed") and not exports.integration:isPlayerScripter(thePlayer)) then
+						outputChatBox("Are you sure you want to restart the vehicle load system? All vehicles will be reloaded.", thePlayer)
+						setElementData(thePlayer, "resconfirmed", true)
+						setTimer(function ()
+								setElementData(thePlayer, "resconfirmed", false)
+							end, 10000, 1)
+						return false
+					else
+						outputChatBox("* Vehicle system is restarting in "..seconds.." seconds! *", root, 255, 0, 0)
+						outputChatBox("* Please exit vehicles as fast as possible.. *", root, 255, 0, 0)
+						outputChatBox("* There will be a short Network Trouble during the time, please standby.. *", root, 255, 0, 0)
+					end
+
+				--[[elseif resourceName:lower() == "modloader" then
+					if (not getElementData(thePlayer, "resconfirmed") and not exports.integration:isPlayerScripter(thePlayer)) then
+						outputChatBox("Are you sure you want to restart the model system? All models will be reloaded.", thePlayer)
+						setElementData(thePlayer, "resconfirmed", true)
+						setTimer(function ()
+								setElementData(thePlayer, "resconfirmed", false)
+							end, 10000, 1)
+						return false
+					else
+						outputChatBox("* Model system is restarting in "..seconds.." seconds! *", root, 255, 0, 0)
+						outputChatBox("* There will be a long Network Trouble during the time, please standby.. *", root, 255, 0, 0)
+					end--]]
+
+				elseif resourceName:lower() == "apps" then
+					if (not getElementData(thePlayer, "resconfirmed") and not exports.integration:isPlayerScripter(thePlayer)) then
+						outputChatBox("Are you sure you want to restart the apps system? If someone is doing their application currently, the progress will be lost.", thePlayer)
+						setElementData(thePlayer, "resconfirmed", true)
+						setTimer(function ()
+								setElementData(thePlayer, "resconfirmed", false)
+							end, 10000, 1)
+						return false
+					else
+						delayTime = 5*1000
+					end
+
 				elseif resourceName:lower() == "npc" then
 					if (not getElementData(thePlayer, "resconfirmed") and not exports.integration:isPlayerScripter(thePlayer)) then
 						outputChatBox("Are you sure you want to restart the NPC system? It will be causing massive lag. Re-type it if you are sure.", thePlayer)
