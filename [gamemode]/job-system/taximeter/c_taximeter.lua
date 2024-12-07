@@ -3,11 +3,6 @@
 --Last updated 05.05.2014 by Exciter
 --Released as open source. This header should remain intact. Otherwise no use restrictions.
 
---[[ For standalone only:
-bindKey("m", "down", function()
-	showCursor(not isCursorShowing())
-end )
---]]
 --set vars
 local gui_base = nil
 local meterRunning = false

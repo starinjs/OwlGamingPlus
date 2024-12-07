@@ -307,3 +307,8 @@ addEventHandler("account:showMusicLabel", root, function()
 		end
 	end, false)
 end)
+
+-- Show mouse on M key
+bindKey("m", "down", function()
+	showCursor(not isCursorShowing())
+end )
