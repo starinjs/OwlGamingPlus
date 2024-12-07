@@ -309,6 +309,30 @@ addEventHandler("account:showMusicLabel", root, function()
 end)
 
 -- Show mouse on M key
-bindKey("m", "down", function()
-	showCursor(not isCursorShowing())
-end )
+function toggleCursor()
+	if (isCursorShowing()) then
+		exports.rightclick:destroy()
+		showCursor(false)
+	else
+		showCursor(true)
+	end
+end
+addCommandHandler("togglecursor", toggleCursor)
+bindKey("m", "down", "togglecursor")
+
+function onPlayerSpawn()
+	showCursor(false)
+end
+addEventHandler("onClientPlayerSpawn", getLocalPlayer(), onPlayerSpawn)
+
+function cursorHide()
+	showCursor(false)
+end
+addEvent("cursorHide", false)
+addEventHandler("cursorHide", getRootElement(), cursorHide)
+
+function cursorShow()
+	showCursor(true)
+end
+addEvent("cursorShow", false)
+addEventHandler("cursorShow", getRootElement(), cursorShow)

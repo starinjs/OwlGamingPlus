@@ -9,6 +9,9 @@
 	<script src="s_friends.lua" type="server" />
 	<script src="c_friends.lua" type="client" />
 	
+	<script src="s_old_friends.lua" type="server"/>
+	<script src="c_old_friends.lua" type="client"/>
+	
 	<script src="s_player_rightclick.lua" type="server"/>
 	<script src="c_player_rightclick.lua" type="client"/>
 
