@@ -110,7 +110,6 @@
 	-->
     <file src="images/achievement/achievement.png" />
     <file src="nametags0.ttf" />
-    <file src="old_school_united_stencil.ttf" />
 
     <script src="blur/blur_c.lua" type="client" />
     <file src="blur/blurshader.fx" type="client" />
