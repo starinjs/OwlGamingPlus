@@ -885,6 +885,7 @@ addEvent( "tellTransfersHistory", true )
 addEventHandler( "tellTransfersHistory", getRootElement(), tellTransfersHistory )
 
 function tellATMTransfers(source, cardInfo, event)
+	if client then source = client end
 	local accountName = tostring(cardInfo[1]):gsub("'", "''")
 	local where = "( `from` = '" ..accountName.. "' OR `to` = '" .. accountName .. "' )"
 	--where = where .. " AND type != 4 AND type != 5"
