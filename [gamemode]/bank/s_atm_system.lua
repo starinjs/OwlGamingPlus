@@ -4,6 +4,7 @@ local cooldown = {}
 
 
 function checkInsideATMMachine(theATM, absX, absY)
+	if client then source = client end
 	local foundAnATMCard = getATMCardFromATMMachine(theATM)
 	if not foundAnATMCard then
 		exports.hud:sendBottomNotification(source,"ATM Card is required!", "Please insert your ATM card into the ATM machine's slot.")
@@ -40,6 +41,7 @@ function isAltToAlt(source, item)
 end
 
 function takeOutATMCard(theATM, item)
+	if client then source = client end
 	local v = split( item[2], ";" )[2]
 	if tonumber(v) ~= tonumber(getElementData(source, "account:character:id")) then
 		if isAltToAlt(source, v) then
@@ -68,6 +70,7 @@ addEventHandler( "bank:takeOutATMCard", getRootElement(), takeOutATMCard )
 local cooldownSec = 5000
 
 function applyForNewATMCard(replacingOldATMCard, limitType)
+	if client then source = client end
 	local playerName = getPlayerName(source)
 	local playerGender = (getElementData(source,"gender") == 0) and "sir" or "madam"
 	local charID = getElementData(source,"dbid")
@@ -163,6 +166,7 @@ addEvent( "bank:applyForNewATMCard", true )
 addEventHandler( "bank:applyForNewATMCard", getRootElement(), applyForNewATMCard )
 
 function lockATMCard()
+	if client then source = client end
 	local playerName = getPlayerName(source)
 	local playerGender = (getElementData(source,"gender") == 0) and "sir" or "madam"
 	local charID = getElementData(source,"dbid")
@@ -201,6 +205,7 @@ addEvent( "bank:lockATMCard", true )
 addEventHandler( "bank:lockATMCard", getRootElement(), lockATMCard )
 
 function unlockATMCard()
+	if client then source = client end
 	local playerName = getPlayerName(source)
 	local playerGender = (getElementData(source,"gender") == 0) and "sir" or "madam"
 	local charID = getElementData(source,"dbid")
@@ -239,6 +244,7 @@ addEvent( "bank:unlockATMCard", true )
 addEventHandler( "bank:unlockATMCard", getRootElement(), unlockATMCard )
 
 function recoverATMCard()
+	if client then source = client end
 	local playerName = getPlayerName(source)
 	local playerGender = (getElementData(source,"gender") == 0) and "sir" or "madam"
 	local charID = getElementData(source,"dbid")
@@ -293,6 +299,7 @@ addEvent( "bank:recoverATMCard", true )
 addEventHandler( "bank:recoverATMCard", getRootElement(), recoverATMCard )
 
 function cancelATMCard(replacingOldATMCard)
+	if client then source = client end
 	local playerName = getPlayerName(source)
 	local playerGender = (getElementData(source,"gender") == 0) and "Sir" or "Ma'am"
 	local charID = getElementData(source,"dbid")
@@ -336,6 +343,7 @@ addEventHandler( "bank:cancelATMCard", getRootElement(), cancelATMCard )
 
 local retryPIN = {}
 function checkPINCode(theATM, enteredCode)
+	if client then source = client end
 	local playerName = getPlayerName(source)
 	local playerGender = (getElementData(source,"gender") == 0) and "sir" or "madam"
 
@@ -389,6 +397,7 @@ addEventHandler( "bank:checkPINCode", getRootElement(), checkPINCode )
 
 function ejectATMCard(theATM, player)
 	if player then source = player end
+	if client then source = client end
 	local foundAnATMCard = getATMCardFromATMMachine(theATM)
 	if not foundAnATMCard then
 		exports.hud:sendBottomNotification(source,"ATM Machine is not working properly!", "This is really weird, the card you've just inserted, It's gone magically!")
@@ -412,6 +421,7 @@ addEvent( "bank:ejectATMCard", true )
 addEventHandler( "bank:ejectATMCard", getRootElement(), ejectATMCard )
 
 function changePIN(theATM, enteredCode)
+	if client then source = client end
 	local foundAnATMCard = getATMCardFromATMMachine(theATM)
 	if not foundAnATMCard then
 		exports.hud:sendBottomNotification(source,"ATM Machine is not working properly!", "This is really weird, the card you've just inserted, It's gone magically!")
