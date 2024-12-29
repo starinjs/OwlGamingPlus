@@ -126,6 +126,7 @@ end
 addCommandHandler("togpick" ,toggleDropPick)
 
 function dropItem(itemID, x, y, z, ammo, keepammo, cancelAnim)
+	if client then source = client end
 	if disableCanDropPick then
 		outputChatBox("Item dropping is currently disabled. While our scripters are investigating the issue.", source, 255, 0, 0)
 		triggerClientEvent( source, "finishItemDrop", source )
