@@ -43,7 +43,7 @@ local function updateLibraryGrid(vehs)
 	for i = 1, #vehs do
 		local row = guiGridListAddRow(VehLibGrid)
 		guiGridListSetItemText(VehLibGrid, row, col.id, vehs[i].id or "", false, true)
-		guiGridListSetItemText(VehLibGrid, row, col.enabled, ((vehs[i].enabled == "1") and "Yes" or "No"), false, true)
+		guiGridListSetItemText(VehLibGrid, row, col.enabled, ((vehs[i].enabled == 1) and "Yes" or "No"), false, true)
 		guiGridListSetItemText(VehLibGrid, row, col.mtamodel, getVehicleNameFromModel(tonumber(vehs[i].vehmtamodel)).." ("..vehs[i].vehmtamodel..")", false, false)
 		guiGridListSetItemText(VehLibGrid, row, col.brand, vehs[i].vehbrand, false, false)
 		guiGridListSetItemText(VehLibGrid, row, col.model, vehs[i].vehmodel, false, false)
