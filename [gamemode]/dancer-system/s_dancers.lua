@@ -20,39 +20,35 @@ local dancingcycles =
 	}
 }
 
-addEventHandler( "onResourceStart", getResourceRootElement( ),
+addEventHandler( "onResourceStart", resourceRoot,
 	function( )
-		local result = mysql:query("SELECT id, x, y, z, rotation, skin, type, interior, dimension, offset FROM dancers" )
-		local continue = true
-		while continue do
-			local row = mysql:fetch_assoc(result)
-			if not row then break end
-			
-			local id = tonumber( row["id"] )
-			local x = tonumber( row["x"] )
-			local y = tonumber( row["y"] )
-			local z = tonumber( row["z"] )
-			local rotation = tonumber( row["rotation"] )
-			local skin = tonumber( row["skin"] )
-			local type = tonumber( row["type"] )
-			local interior = tonumber( row["interior"] )
-			local dimension = tonumber( row["dimension"] )
-			local offset = tonumber( row["offset"] )
-			
-			local ped = createPed( skin, x, y, z )
-			exports.anticheat:changeProtectedElementDataEx( ped, "dbid", id, false )
-			exports.anticheat:changeProtectedElementDataEx( ped, "position", { x, y, z, rotation }, false )
-			setPedRotation( ped, rotation )
-			setElementInterior( ped, interior )
-			setElementDimension( ped, dimension )
-			setElementFrozen(ped, true)
-			
-			peds[ ped ] = { type, offset }
-		end
-		mysql:free_result( result )
-		
-		setTimer( updateDancing, 50, 1 )
-		setTimer( updateDancing, 12000, 0 )
+		dbQuery(function (qh)
+			local result = dbPoll(qh, 0)
+			if result then
+				for _, row in pairs(result) do
+					local id = tonumber( row["id"] )
+					local x = tonumber( row["x"] )
+					local y = tonumber( row["y"] )
+					local z = tonumber( row["z"] )
+					local rotation = tonumber( row["rotation"] )
+					local skin = tonumber( row["skin"] )
+					local type = tonumber( row["type"] )
+					local interior = tonumber( row["interior"] )
+					local dimension = tonumber( row["dimension"] )
+					local offset = tonumber( row["offset"] )
+
+					local ped = createPed( skin, x, y, z )
+					exports.anticheat:changeProtectedElementDataEx( ped, "dbid", id, false )
+					exports.anticheat:changeProtectedElementDataEx( ped, "position", { x, y, z, rotation }, false )
+					setElementRotation( ped, 0, 0, rotation, "default", true )
+					setElementInterior( ped, interior )
+					setElementDimension( ped, dimension )
+					setElementFrozen( ped, true )
+
+					peds[ ped ] = { type, offset }
+				end
+			end
+		end, mysql:getConn("mta"), "SELECT * FROM dancers")
 	end
 )
 
