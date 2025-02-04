@@ -33,12 +33,16 @@ REPLACE INTO `settings` (`id`, `name`, `value`) VALUES
 	(8, 'lottery', '0'),
 	(9, 'lotteryNumber', '13');
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
-
-INSERT INTO `factions` (`id`, `name`, `bankbalance`, `type`, `rank_order`, `motd`, `note`, `fnote`, `phone`, `max_interiors`, `max_vehicles`, `free_custom_ints`, `free_custom_skins`, `before_tax_value`, `before_wage_charge`) VALUES
-(1,	'San Andreas Police Department',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	20,	40,	0,	0,	0,	0),
-(2,	'San Andreas Emergency Services',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	20,	40,	0,	0,	0,	0),
-(3,	'Government of Los Santos',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	20,	40,	0,	0,	0,	0),
-(64,	'San Andreas Public Transport',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	20,	40,	0,	0,	0,	0);
+	
+INSERT INTO `faction_ranks` (`id`, `faction_id`, `name`, `permissions`, `isDefault`, `isLeader`, `wage`) VALUES
+	(1, 1, 'Leader Rank', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18', 0, 1, 0),
+	(2, 1, 'Default Rank', '', 1, 0, 0),
+	(3, 2, 'Leader Rank', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18', 0, 1, 0),
+	(4, 2, 'Default Rank', '', 1, 0, 0),
+	(5, 3, 'Leader Rank', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18', 0, 1, 0),
+	(6, 3, 'Default Rank', '', 1, 0, 0),
+	(7, 64, 'Leader Rank', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18', 0, 1, 0),
+	(8, 64, 'Default Rank', '', 1, 0, 0);
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
