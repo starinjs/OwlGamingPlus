@@ -29,9 +29,6 @@
     <script src="s_create_character.lua" type="server" />
 
     <script src="c_options.lua" type="client" />
-
-    <script src="c_update.lua" type="client" />
-
 	<script src="f10-settings\c_f10_settings.lua" type="client" />
 	<script src="f10-settings\s_f10_settings.lua" type="server" />
 

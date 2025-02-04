@@ -67,32 +67,24 @@ function changeProtectedElementData(thePlayer, index, newvalue)
 	end
 end
 
-function changeProtectedElementDataEx(thePlayer, index, newvalue, sync, nosyncatall)
-	if (thePlayer) and (index) then
-		if not newvalue then
-			newvalue = nil
-		end
+function changeProtectedElementDataEx(thePlayer, index, newvalue, sync)
+    if (thePlayer) and (index) then
+        if not newvalue then
+            newvalue = nil
+        end
 
-		if allowElementData(thePlayer, index) then
-			local set = setElementData(thePlayer, index, newvalue, sync)
-			if set then
-				if not sync then
-					if not nosyncatall then
-						if getElementType(thePlayer) == "player" then
-							triggerClientEvent(thePlayer, "edu", getRootElement(), thePlayer, index, newvalue)
-						end
-					end
-				end
-			end
-
-			if protectElementData(thePlayer, index) then
-				return set
-			end
-		end
-		return false
-	end
-	return false
+        if allowElementData(thePlayer, index) then
+            local set = setElementData(thePlayer, index, newvalue, sync)
+			
+            if protectElementData(thePlayer, index) then
+                return set
+            end
+        end
+        return false
+    end
+    return false
 end
+
 
 function setEld(thePlayer, index, newvalue, sync)
 	local sync2 = false
