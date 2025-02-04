@@ -29,7 +29,7 @@ local function filterNearByPlayers()
 end
 
 function onClientLookAtRender()
-	if not isPedOnFire(localPlayer) then
+	if not isElementOnFire(localPlayer) then
 		local x, y, z = getWorldFromScreenPosition(sx, sy, viewDistance)
 		setPedLookAt(localPlayer, x, y, z, -1, 500)
 		-- sync local head to near by players
