@@ -45,11 +45,6 @@ function startEngine( players, veh )
 			exports.anticheat:setEld( veh, "engine", 1 )
 			exports.anticheat:setEld( veh, "vehicle:radio", tonumber(getElementData(veh, "vehicle:radio:old")), 'all' )
 
-			if exports.global:hasItem(client, 3, vehID) and exports.global:hasSpaceForItem(veh, 3, vehID) then -- Take key and place in vehicle
-				exports.global:takeItem(client, 3, vehID)
-				exports.global:giveItem(veh, 3, vehID)
-			end
-
 			-- inactivity scanner stuff
 			local vid = getElementData( veh, 'dbid' )
 			if vid > 0 then
@@ -116,11 +111,6 @@ function stopEngine( veh )
 	local vehID = getElementData(veh, "dbid")
 	setVehicleEngineState( veh, false )
 	exports.anticheat:setEld( veh, 'engine', 0 )
-
-	if exports.global:hasItem(veh, 3, vehID) and exports.global:hasSpaceForItem(client, 3, vehID) then
-		exports.global:takeItem(veh, 3, vehID)
-		exports.global:giveItem(client, 3, vehID)
-	end
 end
 addEvent( 'vehicle:engine:stop', true )
 addEventHandler( 'vehicle:engine:stop', resourceRoot, stopEngine )
