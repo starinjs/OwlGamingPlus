@@ -594,15 +594,15 @@ end
 addCommandHandler("delefromint", delElevatorsFromInterior, false, false)
 addCommandHandler("delelevatorsfrominterior", delElevatorsFromInterior, false, false)
 
-function SmallestElevatorID( ) -- finds the smallest ID in the SQL instead of auto increment
-	local result = mysql:query_fetch_assoc("SELECT MIN(e1.id+1) AS nextID FROM elevators AS e1 LEFT JOIN elevators AS e2 ON e1.id +1 = e2.id WHERE e2.id IS NULL")
-	if result then
-		return tonumber(result["nextID"])
-	else -- this will fix if there's no data in `elevators` so the new elevator's id is 1
-		return 1
-	end
-	return false
+function SmallestElevatorID()
+    local result = mysql:query_fetch_assoc("SELECT IFNULL((SELECT MIN(id)+1 FROM elevators WHERE (id+1) NOT IN (SELECT id FROM elevators)), 1) AS nextID")
+    if result and result["nextID"] then
+        return tonumber(result["nextID"])
+    else
+        return 1 -- Fallback to 1 if something goes wrong
+    end
 end
+
 
 addEvent( "toggleCarTeleportMode", false )
 addEventHandler( "toggleCarTeleportMode", getRootElement(),
