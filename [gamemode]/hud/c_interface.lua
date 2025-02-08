@@ -189,7 +189,12 @@ function drawWindowGUI(element, windowTexture)
 				end
 			end
 
-			dxDrawImage(x, y, width, height, windowTexture)
+			local windowTexture = getElementData(element, "renderTarget")
+			if isElement(windowTexture) then
+				dxDrawImage(x, y, width, height, windowTexture)
+			else
+				dxDrawRectangle(x, y, width, height, tocolor(255, 0, 0, 180))
+			end
 		end
 	end
 end
