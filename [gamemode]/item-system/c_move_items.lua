@@ -277,7 +277,7 @@ local function openElementInventory( ax, ay )
 		ax = math.max( 10, math.min( sx - 410, ax ) )
 		ay = math.max( 10, math.min( sy - 310, ay ) )
 
-		wInventory = guiCreateStaticImage(ax-w/2, ay-h/2, w, h, ":resources/window_body.png",false)--elementtype .. " Inventory", false)
+		wInventory = guiCreateStaticImage(ax-w/2, ay-h/2, w, h, ":resources/assets/window_body.png",false)--elementtype .. " Inventory", false)
 		--guiWindowSetSizable(wInventory, false)
 		lYou = guiCreateLabel(0.05, 0.1, 0.45, 0.05, "YOU "..getCarriedWeight(localPlayer).."/"..getMaxWeight(localPlayer).."kg", true, wInventory)
 		guiSetFont(lYou, "default-bold-small")
