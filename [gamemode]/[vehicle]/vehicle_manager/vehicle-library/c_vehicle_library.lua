@@ -549,7 +549,8 @@ function addNewVehicle(veh)
 		end
 	end)
 
-	triggerEvent("hud:convertUI", localPlayer, addVehWindow)
+	--triggerEvent("hud:convertUI", localPlayer, addVehWindow) 
+	-- ( if its enabled then the stock and spawn rate buttons dont show, temporarily we removed it. )
 end
 addEvent("vehlib:showEditVehicleRecord", true)
 addEventHandler("vehlib:showEditVehicleRecord",getLocalPlayer(), addNewVehicle)
