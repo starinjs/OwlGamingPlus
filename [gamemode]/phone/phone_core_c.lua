@@ -13,7 +13,7 @@ posX, posY = sx-w-margin+xoffset, sy-h-100
 curX, curY = posX, posY
 slidingSpeed = 20
 contactListLimit = {}
-font1 = guiCreateFont ( ":resources/fonts/cartwheel.otf", 12 )
+font1 = guiCreateFont (":resources/fonts/cartwheel.otf", 12 )
 curEditPhoneNumber = ""
 
 function drawPhoneGUI()
@@ -117,7 +117,7 @@ function triggerSlidingPhoneIn(thePhoneNumber, popOutOnPhoneCall, callingNumberF
 	end
 
 	if not font1 then
-		font1 = guiCreateFont ( ":resources/fonts/cartwheel.otf", 12 )
+		font1 = guiCreateFont (":resources/fonts/cartwheel.otf", 12 )
 	end
 
 	if thePhoneNumber and tonumber(thePhoneNumber) then

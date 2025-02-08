@@ -72,7 +72,7 @@ end
 
 --MAXIME
 
-local BizNoteFont18 = dxCreateFont ( ":resources/fonts/BizNote.ttf" , 18 )
+local BizNoteFont18 = dxCreateFont (":resources/fonts/BizNote.ttf" , 18 )
 
 fontType = {-- (1)font (2)scale offset
 	["default"] = {"default", 1},

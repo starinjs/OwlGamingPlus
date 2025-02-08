@@ -16,7 +16,7 @@ local function removeRender()
 end
 
 local function makeFonts()
-	BizNoteFont18 = BizNoteFont18 or dxCreateFont ( ":resources/fonts/BizNote.ttf" , 18 )
+	BizNoteFont18 = BizNoteFont18 or dxCreateFont (":resources/fonts/BizNote.ttf" , 18 )
 end
 
 function isEventHandlerAdded( sEventName, pElementAttachedTo, func )

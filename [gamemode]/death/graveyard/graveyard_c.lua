@@ -4,7 +4,7 @@ local showing = false
 local viewDistance = 20
 local heightOffset = -1
 local refreshRate = 30 -- minutes
-local font = dxCreateFont ( "graveyard/tombstone.ttf" , 20 ) or false
+local font = dxCreateFont ("graveyard/tombstone.ttf" , 20 ) or false
 
 function drawTombPlates()
 	if getKeyState('lalt') then

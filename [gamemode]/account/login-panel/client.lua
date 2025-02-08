@@ -50,7 +50,7 @@ function open_log_reg_pannel()
 		local Width,Height = 350,350
 		local X = (sw/2) - (Width/2)
 		local Y = (sh/2) - (Height/2)
-		ufont = ufont or guiCreateFont( ':interior_system/intNameFont.ttf', 11 )
+		ufont = ufont or guiCreateFont(':interior_system/intNameFont.ttf', 11 )
 
 		panel.login.main = guiCreateStaticImage( X, Y, 350, 350, "/login-panel/login_window.png", false )
 		guiSetEnabled (panel.login.main, false)

@@ -7,7 +7,7 @@ local sx, sy = guiGetScreenSize()
 local content = {}
 local line = 15
 local thisResourceElement = getResourceRootElement(getThisResource())
-local BizNoteFont18 = dxCreateFont ( ":resources/fonts/BizNote.ttf" , 18 )
+local BizNoteFont18 = dxCreateFont (":resources/fonts/BizNote.ttf" , 18 )
 
 function updateOverlay(info, widthNew, woffsetNew, hoffsetNew)
 	if showExternalReportBox(localPlayer) then

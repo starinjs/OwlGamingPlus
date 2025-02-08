@@ -15,7 +15,7 @@ local refreshingInterval = 2
 local showing = false
 local timerRefresh = nil
 
-local BizNoteFont18 = dxCreateFont ( ":resources/fonts/BizNote.ttf" , 18 )
+local BizNoteFont18 = dxCreateFont (":resources/fonts/BizNote.ttf" , 18 )
 
 fontType = {-- (1)font (2)scale offset
 	["default"] = {"default", 1},
@@ -107,7 +107,7 @@ function showNearbyProD()
 				fontElement = fontString
 				if fontElement == "BizNoteFont18" then
 					if not BizNoteFont18 then
-						BizNoteFont18 = dxCreateFont ( ":resources/fonts/BizNote.ttf" , 18 )
+						BizNoteFont18 = dxCreateFont (":resources/fonts/BizNote.ttf" , 18 )
 					end
 					fontElement = BizNoteFont18
 				end
@@ -154,7 +154,7 @@ function togglePin()
 					fontElement = fontString
 					if fontElement == "BizNoteFont18" then
 						if not BizNoteFont18 then
-							BizNoteFont18 = dxCreateFont ( ":resources/fonts/BizNote.ttf" , 18 )
+							BizNoteFont18 = dxCreateFont (":resources/fonts/BizNote.ttf" , 18 )
 						end
 						fontElement = BizNoteFont18
 					end

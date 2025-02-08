@@ -103,8 +103,8 @@ local margin = 3
 local textShadowDistance = 3
 local intNameFont, BizNoteFont
 local function makeFonts()
-    intNameFont = intNameFont or dxCreateFont( "intNameFont.ttf", 30 ) or "default-bold"
-    BizNoteFont = BizNoteFont or dxCreateFont( ":resources/fonts/BizNote.ttf", 21 ) or "default-bold"
+    intNameFont = intNameFont or dxCreateFont("intNameFont.ttf", 30 ) or "default-bold"
+    BizNoteFont = BizNoteFont or dxCreateFont(":resources/fonts/BizNote.ttf", 21 ) or "default-bold"
 end
 
 function renderInteriorName()

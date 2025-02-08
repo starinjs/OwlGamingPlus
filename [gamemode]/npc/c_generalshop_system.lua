@@ -12,9 +12,9 @@ bSend, tBizManagement, tGoodBye = nil
 shop = nil
 shop_type = nil
 
-BizNoteFont = guiCreateFont( ":resources/fonts/BizNote.ttf", 30 )
-BizNoteFont18 = guiCreateFont( ":resources/fonts/BizNote.ttf", 18 )
-BizNoteFont2 = guiCreateFont( ":resources/fonts/clbold.ttf", 11 )
+BizNoteFont = guiCreateFont(":resources/fonts/BizNote.ttf", 30 )
+BizNoteFont18 = guiCreateFont(":resources/fonts/BizNote.ttf", 18 )
+BizNoteFont2 = guiCreateFont(":resources/fonts/clbold.ttf", 11 )
 
 coolDownSend = 1 -- Minutes
 

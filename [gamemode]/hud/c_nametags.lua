@@ -2,8 +2,8 @@ local localPlayer = getLocalPlayer()
 local badges = {}
 masks = {}
 local font =  "default-bold"
-local newfont = dxCreateFont ( "nametags0.ttf" , 12)
-local moneyFont = dxCreateFont ( ":resources/fonts/clbold.ttf" , 16) 
+local newfont = dxCreateFont ("nametags0.ttf" , 12)
+local moneyFont = dxCreateFont (":resources/fonts/clbold.ttf" , 16) 
 local moneyFloat = {}
 local maxIconsPerLine = 6
 function moneyUpdateFX(state, amount, toEachother)

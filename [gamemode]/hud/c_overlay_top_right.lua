@@ -5,7 +5,7 @@ local sx, sy = guiGetScreenSize()
 local content = {}
 local timerClose = nil
 local cooldownTime = 20 --seconds
-local BizNoteFont20 = dxCreateFont ( ":resources/fonts/BizNote.ttf" , 20 )
+local BizNoteFont20 = dxCreateFont (":resources/fonts/BizNote.ttf" , 20 )
 local toBeDrawnWidth = width
 local justClicked = false
 function drawOverlayTopRight(info, widthNew, posXOffsetNew, posYOffsetNew, cooldown)
@@ -93,7 +93,7 @@ addEventHandler("onClientRender",getRootElement(), function ()
 					
 					if i == 1 or content[i][7] == "title" then --Title
 						if not BizNoteFont20 then
-							BizNoteFont20 = dxCreateFont ( ":resources/fonts/BizNote.ttf" , 20 )
+							BizNoteFont20 = dxCreateFont (":resources/fonts/BizNote.ttf" , 20 )
 						end
 						dxDrawText( content[i][1] or "" , sx-toBeDrawnWidth+20+posXOffset, (16*i)+posYOffset, toBeDrawnWidth-5, 15, tocolor (content[i][2] or 70,content[i][3] or 200,content[i][4] or 14, content[i][5] or 255), 1, BizNoteFont20 )
 					else
