@@ -380,7 +380,7 @@ function showInfoPanel(state, cost)
 		content = "You can spend "..cost.." Game Coin to remove VIN from your vehicle, get it ready for some dirty business.\n\nPlease visit DMV to activate this perk."
 		confirmBtnText = "Activate"
 	elseif state == 28 then -- radio
-		length = 230
+		length = 100
 		content = "You can purchase and own unlimited number of stations ("..cost.." GCs each) to stream your own sound, voice or music channel in game.\n\nOnce the perk is purchased, you will be able set up your station, renew or purchase more stations, rename or change your station's streaming URL any time you like in Radio Station Manager under F10 menu.\n\nTo purchase stations, please visit F10 menu -> Radio Station Manager -> Donor's Station -> Create new station."
 	elseif state == 33 then-- Cellphone Private Number
 		length = 0
@@ -878,7 +878,7 @@ function showConfirmSpend(perkName, perkDur, perkCost, perkID)
 
 
 	if perkID == 24 or perkID == 25 or perkID == 26 then
-		guiCreateStaticImage(20, 45+15*4, windowWidth-40, previewHeight, ":resources/selectionScreenID"..perkID..".jpg", false, wPhone)
+		guiCreateStaticImage(20, 45+15*4, windowWidth-40, previewHeight, ":resources/images/selectionScreenID"..perkID..".jpg", false, wPhone)
 	end
 
 	gui["lblText2"] = guiCreateLabel(20, 45+15*3+shiftDown, windowWidth-40, 55+15*(length), btmText, false, wPhone)
@@ -937,7 +937,7 @@ function showConfirmRemovePerk(aName, aExpireDate, aID)
 		gui["lblVehicleCost"] = guiCreateLabel(20, 45+15+5, windowWidth-40, 13, "Expire Date: "..aExpireDate, false, wPhone)
 		--guiSetFont(gui["lblVehicleCost"], "default-bold-small")
 
-		guiCreateStaticImage(20, 45+15*3+5, windowWidth-40, 150, ":resources/selectionScreenID"..aID..".jpg", false, wPhone)
+		guiCreateStaticImage(20, 45+15*3+5, windowWidth-40, 150, ":resources/images/selectionScreenID"..aID..".jpg", false, wPhone)
 
 		local hasThisPerk, thisPerkValue = hasPlayerPerk(localPlayer, aID)
 		if hasThisPerk and tonumber(thisPerkValue) == 1 then
