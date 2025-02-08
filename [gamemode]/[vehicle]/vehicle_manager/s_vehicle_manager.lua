@@ -115,11 +115,6 @@ function checkVeh(thePlayer, commandName, vehID)
 				return false
 			end
 
-			if row["vjob"] ~= "-1" then
-				outputChatBox("You can't /checkveh on a city hall job's vehicle.", thePlayer, 255, 0, 0)
-				return false
-			end
-
 			--                            1            2              3            4             5             6              7
 			table.insert(result, { row["vID"], row["vModel"], row["vPosX"], row["vPosY"], row["vPosZ"], row["vFuel"], row["vPaintjob"],
 			--   8              9				10					11   				12					13						14
