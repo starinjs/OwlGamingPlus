@@ -241,10 +241,11 @@ whiteFemales = {12, 31, 38, 39, 40, 41, 53, 54, 55, 56, 64, 75, 77, 85, 86, 87, 
 asianFemales = {38, 53, 54, 55, 56, 88, 141, 169, 178, 224, 225, 226, 263}
 
 local screenX, screenY = guiGetScreenSize( )
-local label = guiCreateLabel( 0, 0, screenX, 15, "oG Script Version "..exports.global:getScriptVersion().."", false )
+local label = guiCreateLabel( 0, 0, screenX, 15, "OG+ V"..exports.global:getScriptVersion().."", false )
 guiSetSize( label, guiLabelGetTextExtent( label ) + 5, 14, false )
 guiSetPosition( label, screenX - guiLabelGetTextExtent( label ) - 5, screenY - 27, false )
-guiSetAlpha( label, 0.5 )
+guiSetAlpha( label, 0.8 )
+guiLabelSetColor(label, 0, 170, 255 )
 
 addEventHandler('onClientMouseEnter', label, function()
 	guiSetAlpha(label, 1)
