@@ -52,7 +52,7 @@ function saveItemProperties(object, use, useData, move, moveData, pickup, pickup
 			local permissions = {use = use, move = move, pickup = pickup, useData = fromJSON(useData), moveData = fromJSON(moveData), pickupData = fromJSON(pickupData)}
 			exports.anticheat:changeProtectedElementDataEx(object, "worlditem.permissions", permissions)
 
-			local result = dbExec(mysql:getConn(), "UPDATE `worlditems` SET perm_use=?,perm_move=?,perm_pickup=?,perm_use_data=?,perm_move_data=?,perm_pickup_data=?,useExactValues=? WHERE id = ?", use, move, pickup, useData, moveData, pickupData, exactValues, id)
+			local result = dbExec(mysql:getConn('mta'), "UPDATE `worlditems` SET perm_use=?,perm_move=?,perm_pickup=?,perm_use_data=?,perm_move_data=?,perm_pickup_data=?,useExactValues=? WHERE id = ?", use, move, pickup, useData, moveData, pickupData, exactValues, id)
 			if result then
 				outputChatBox("Saved properties for '"..tostring(itemName).."'.", client, 0,255,0)
 			else

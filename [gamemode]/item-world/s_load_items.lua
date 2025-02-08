@@ -134,14 +134,14 @@ function loadWorldItems()
 	if itemInactivityScannerMode then
 		if itemInactivityScannerMode == 1 then
 			outputDebugString("Deleting all unprotected 30+ days old exterior and interior items (mode 1)")
-			dbExec(mysql:getConn(), "DELETE FROM `worlditems` WHERE `protected`='0' AND `itemID` NOT IN(81, 103, 169, 223, 231) AND ( (DATEDIFF(NOW(), creationdate) > 30 ) OR (DATEDIFF(NOW(), creationdate) > 3 AND `itemID` = 72) ) " )
+			dbExec(mysql:getConn('mta'), "DELETE FROM `worlditems` WHERE `protected`='0' AND `itemID` NOT IN(81, 103, 169, 223, 231) AND ( (DATEDIFF(NOW(), creationdate) > 30 ) OR (DATEDIFF(NOW(), creationdate) > 3 AND `itemID` = 72) ) " )
 		elseif itemInactivityScannerMode == 2 then
 			outputDebugString("Deleting all unprotected 30+ days old exterior items (mode 2)")
-			dbExec(mysql:getConn(), "DELETE FROM `worlditems` WHERE `protected`='0' AND `itemID` NOT IN(81, 103, 169, 223, 231) AND (interior=0) AND ( (DATEDIFF(NOW(), creationdate) > 30 ) OR (DATEDIFF(NOW(), creationdate) > 3 AND `itemID` = 72) ) " )
+			dbExec(mysql:getConn('mta'), "DELETE FROM `worlditems` WHERE `protected`='0' AND `itemID` NOT IN(81, 103, 169, 223, 231) AND (interior=0) AND ( (DATEDIFF(NOW(), creationdate) > 30 ) OR (DATEDIFF(NOW(), creationdate) > 3 AND `itemID` = 72) ) " )
 		end
 	end
 
-	dbExec(mysql:getConn(), "DELETE FROM `worlditems` WHERE `protected`='0' AND `itemID` NOT IN(81, 103, 169) AND (interior=0) AND ( (DATEDIFF(NOW(), creationdate) > 30 ) OR (DATEDIFF(NOW(), creationdate) > 3 AND `itemID` = 72) ) " )
+	dbExec(mysql:getConn('mta'), "DELETE FROM `worlditems` WHERE `protected`='0' AND `itemID` NOT IN(81, 103, 169) AND (interior=0) AND ( (DATEDIFF(NOW(), creationdate) > 30 ) OR (DATEDIFF(NOW(), creationdate) > 3 AND `itemID` = 72) ) " )
 	dbQuery(function(qh)
 		local res, rows, err = dbPoll(qh,0)
 		if rows > 0 then
@@ -152,6 +152,6 @@ function loadWorldItems()
 			end
 			outputDebugString("[ITEM WORLD] Loading "..(timerDelay/50-1).." world items will be finished in approximately "..tostring(math.ceil((timerDelay/1000)/60)).." minutes.")
 		end
-	end, mysql:getConn(), "SELECT * FROM worlditems")
+	end, mysql:getConn('mta'), "SELECT * FROM worlditems")
 end
 addEventHandler("onResourceStart", resourceRoot, loadWorldItems)

@@ -1103,6 +1103,7 @@ addEventHandler("finishItemDrop", getLocalPlayer(),
 	function( )
 		waitingForItemDrop = false
 		inventory = false
+		--playSound(":resources/item_drop.mp3")
 	end
 )
 
@@ -1212,11 +1213,11 @@ function explode(div,str)
 end
 
 function playSoundInvOpen()
-	setSoundVolume(playSound(":resources/sounds/inv_open.mp3"), 0.3)
+	setSoundVolume(playSound(":resources/inv_open.mp3"), 0.3)
 end
 
 function playSoundInvClose()
-	setSoundVolume(playSound(":resources/sounds/inv_close.mp3"), 0.3)
+	setSoundVolume(playSound(":resources/inv_close.mp3"), 0.3)
 end
 
 function isLikelyStandingOn(player, object)

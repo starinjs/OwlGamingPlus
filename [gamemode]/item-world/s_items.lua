@@ -17,7 +17,7 @@ function createItem(id, itemID, itemValue, ...)
 
 		return o
 	else
-		if dbExec(mysql:getConn(), "DELETE FROM `worlditems` WHERE `id` = ?", id) then
+		if dbExec(mysql:getConn('mta'), "DELETE FROM `worlditems` WHERE `id` = ?", id) then
 			outputDebugString("Deleted bugged Item ID #"..id)
 		else
 			outputDebugString("Failed to delete bugged Item ID #"..id)
@@ -29,7 +29,7 @@ end
 function updateItemValue(element, newValue)
 	if getElementParent(getElementParent(element)) == getResourceRootElement(getThisResource()) then
 		local id = tonumber(getElementData(element, "id")) or 0
-		if dbExec(mysql:getConn(), "UPDATE `worlditems` SET `itemvalue`=? WHERE `id`=?",newValue,id) then
+		if dbExec(mysql:getConn('mta'), "UPDATE `worlditems` SET `itemvalue`=? WHERE `id`=?",newValue,id) then
 			anticheat:changeProtectedElementDataEx(element, "itemValue", newValue)
 			return true
 		end
@@ -43,7 +43,7 @@ function setData(element, key, value)
 		local metadata = getElementData(element, "metadata") or {}
 		metadata[key] = value
 
-		if dbExec(mysql:getConn(), "UPDATE `worlditems` SET `metadata`=? WHERE `id`=?", toJSON(metadata), id) then
+		if dbExec(mysql:getConn('mta'), "UPDATE `worlditems` SET `metadata`=? WHERE `id`=?", toJSON(metadata), id) then
 			--anticheat:changeProtectedElementDataEx(element, "worlditemData."..tostring(key), value)
 			anticheat:changeProtectedElementDataEx(element, "metadata", metadata)
 			return true
@@ -113,7 +113,7 @@ function deleteOne( dbid, no_sql )
 	if object then
 		destroyed = destroyElement( object ) 
 		if destroyed and not no_sql then
-			dbExec( exports.mysql:getConn(), "DELETE FROM worlditem WHERE id=? ", dbid )
+			dbExec( exports.mysql:getConn('mta'), "DELETE FROM worlditem WHERE id=? ", dbid )
 		end
 	end
 	return destroyed
@@ -133,7 +133,7 @@ function deleteAll( id, value, no_sql )
 		end
 	end
 	if count > 0 and not no_sql then
-		dbExec( exports.mysql:getConn(), "DELETE FROM worlditems WHERE itemid=? "..( value and "AND itemvalue=? " or "" ) , id, value or nil )
+		dbExec( exports.mysql:getConn('mta'), "DELETE FROM worlditems WHERE itemid=? "..( value and "AND itemvalue=? " or "" ) , id, value or nil )
 	end
 	return count
 end

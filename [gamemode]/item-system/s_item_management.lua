@@ -183,7 +183,7 @@ function loadItems( element, force )
 						tonumber( row.itemValue ) or row.itemValue,
 						tonumber( row.index ),
 						tonumber( row.protected ),
-						row.metadata ~= nil and fromJSON(row.metadata) or nil
+						row.metadata and fromJSON(row.metadata) or nil
 					}
 				end
 			until not row
@@ -295,7 +295,7 @@ function giveItem( element, itemID, itemValue, itemIndex, isThisFromSplittingOrA
 		end
 
 		if not itemIndex then
-			local result = mysql:query_free("INSERT INTO items (type, owner, itemID, itemValue, metadata) VALUES (" .. getType( element ) .. "," .. getID( element ) .. "," .. itemID .. ",'" .. mysql:escape_string(itemValue) .. "', " .. (metadata and ("'" .. mysql:escape_string(toJSON(metadata)) .. "'") or 'NULL') .. ")")
+			local result = mysql:query("INSERT INTO items (type, owner, itemID, itemValue, metadata) VALUES (" .. getType( element ) .. "," .. getID( element ) .. "," .. itemID .. ",'" .. mysql:escape_string(itemValue) .. "', " .. (metadata and ("'" .. mysql:escape_string(toJSON(metadata)) .. "'") or 'NULL') .. ")")
 			if result then
 				itemIndex = mysql:insert_id( )
 				if itemID == 178 then
@@ -354,8 +354,10 @@ function takeItemFromSlot(element, slot, nosqlupdate, no_update_guns)
 	if success then
 		if saveditems[element][slot] then
 			local itemID = saveditems[element][slot][1]
+			local itemValue = saveditems[element][slot][2]
 			local index = saveditems[element][slot][3]
-			success = true
+			iprint(saveditems[element][slot])
+			local success = true
 			if not nosqlupdate then
 				local result = mysql:query( "DELETE FROM items WHERE `index` = " .. index .. " LIMIT 1" )
 				--[[if itemID == 178 then
@@ -392,7 +394,7 @@ function updateItemValue(element, slot, itemValue)
 				local itemIndex = saveditems[element][slot][3]
 				saveditems[element][slot][2] = itemValue
 				notify( element )
-				dbExec( exports.mysql:getConn(), "UPDATE items SET itemValue=? WHERE `index`=? ", itemValue, itemIndex )
+				dbExec( exports.mysql:getConn('mta'), "UPDATE items SET itemValue=? WHERE `index`=? ", itemValue, itemIndex )
 				return true
 			else
 				return false, "Invalid ItemValue"
@@ -459,9 +461,9 @@ function updateMetadata(element, slot, key, value)
 			saveditems[element][slot][5] = metadata
 			notify( element )
 			if metadata == nil then
-				dbExec( exports.mysql:getConn(), "UPDATE items SET metadata=NULL WHERE `index`=? ", itemIndex )
+				dbExec( exports.mysql:getConn('mta'), "UPDATE items SET metadata=NULL WHERE `index`=? ", itemIndex )
 			else
-				dbExec( exports.mysql:getConn(), "UPDATE items SET metadata=? WHERE `index`=? ", toJSON(metadata), itemIndex )
+				dbExec( exports.mysql:getConn('mta'), "UPDATE items SET metadata=? WHERE `index`=? ", toJSON(metadata), itemIndex )
 			end
 			return true
 		else
@@ -705,7 +707,7 @@ function deleteAll( itemID, itemValue )
 		itemValue = tonumber(itemValue) or itemValue
 
 		-- make sure it's erased from the db
-		dbExec( exports.mysql:getConn(), "DELETE FROM items WHERE itemID=? "..( itemValue and "AND itemValue=? " or "" ), itemID, itemValue or nil )
+		dbExec( exports.mysql:getConn('mta'), "DELETE FROM items WHERE itemID=? "..( itemValue and "AND itemValue=? " or "" ), itemID, itemValue or nil )
 
 		-- delete from all storages
 		if saveditems then
@@ -806,7 +808,7 @@ function convertGenerics(world)
 						metadata['url'] = "http://" .. itemValue[4]
 						metadata['texture'] = itemValue[5]
 					end
-					dbExec(mysql:getConn(), updateStr, toJSON(metadata), row[idValue])
+					dbExec(mysql:getConn('mta'), updateStr, toJSON(metadata), row[idValue])
 				end
 			end
 			
@@ -822,7 +824,7 @@ function convertGenerics(world)
 			end
 			addEventHandler("onResourceStart", getRootElement(), outputItemWorldStart)
 		end
-	end, mysql:getConn(), queryStr)
+	end, mysql:getConn('mta'), queryStr)
 end
 
 function commandConvertGenerics(player, cmd)

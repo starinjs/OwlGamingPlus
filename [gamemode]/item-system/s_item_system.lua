@@ -248,7 +248,7 @@ function useItem(itemSlot, additional)
 			if clothingid or fits then
 				setElementModel(source, skin)
 				exports.anticheat:setEld(source, "clothing:id", clothingid, 'all')
-				dbExec ( exports.mysql:getConn() , "UPDATE characters SET skin=?, clothingid="..( clothingid or 'NULL' ) .. " WHERE id=?", skin, getElementData( source, "dbid" ) )
+				dbExec ( exports.mysql:getConn('mta') , "UPDATE characters SET skin=?, clothingid="..( clothingid or 'NULL' ) .. " WHERE id=?", skin, getElementData( source, "dbid" ) )
 				triggerEvent('sendAme', source, "changes their clothes.")
 			else
 				outputChatBox("These clothes do not fit you.", source, 255, 0, 0)
@@ -449,7 +449,7 @@ function useItem(itemSlot, additional)
 					pos[3] = pos[3] - 0.5
 					rot = rot + 180
 					if exports.vehicle:addSafe( vid, unpack( pos ), rot, int ) then
-						dbExec( exports.mysql:getConn(), "UPDATE vehicles SET safepositionX=?, safepositionY=?, safepositionZ=?, safepositionRZ=? WHERE id=? ", unpack( pos ), rot, vid )
+						dbExec( exports.mysql:getConn('mta'), "UPDATE vehicles SET safepositionX=?, safepositionY=?, safepositionZ=?, safepositionRZ=? WHERE id=? ", unpack( pos ), rot, vid )
 					end
 				end
 			-- temp vehicle interiors

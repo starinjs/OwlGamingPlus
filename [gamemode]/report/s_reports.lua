@@ -167,10 +167,10 @@ function updateReportCount()
 	for key, value in ipairs(getElementsByType("player")) do
 		if exports.integration:isPlayerStaff(value) then
 			if exports.integration:isPlayerTrialAdmin(value) then
-				--str = ":: "..gmduty.."/"..gm.." SUP :: " .. duty .."/".. online .." admins"
-				str = ":: " .. duty .."/".. online .." admins"
+				--str = ""..gmduty.."/"..gm.." SUP " .. duty .."/".. online .." admins"
+				str = "" .. duty .."/".. online .." admins"
 			elseif exports.integration:isPlayerSupporter(value) then
-				str = ":: "..gmduty.."/"..gm.." SUP"
+				str = ""..gmduty.."/"..gm.." SUP"
 			else
 				str = ""
 			end
