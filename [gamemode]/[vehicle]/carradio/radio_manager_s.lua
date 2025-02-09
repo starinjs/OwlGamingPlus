@@ -58,7 +58,7 @@ function createNewStation(name, ip, donorStation)
 			setElementData(client, "gui:ViewingRadioManager", true, true)
 			forceUpdateClientsGUI()
 		else
-			if not exports.integration:isPlayerLeadAdmin(thePlayer) then return end
+			if not exports.integration:isPlayerLeadAdmin(client) then return end
 			local maxStations = mysql:query_fetch_assoc("SELECT COUNT(*) AS `max` FROM `radio_stations` WHERE `owner`='0' ")
 			if tonumber(maxStations["max"]) >= 30 then
 				exports.hud:sendBottomNotification(client, "Radio Station Manager", "Server's max default stations has reach limit of 30. Delete some before adding more.")
