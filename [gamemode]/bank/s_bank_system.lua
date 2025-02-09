@@ -46,25 +46,32 @@ addEvent( "bank:showGeneralServiceGUI", true )
 addEventHandler( "bank:showGeneralServiceGUI", getRootElement(), showGeneralServiceGUI )
 
 function withdrawMoneyPersonal(amount)
-	local state = tonumber(getElementData(client, "loggedin")) or 0
-	if (state == 0) then
-		return
-	end
-	
-	local money = getElementData(client, "bankmoney") - amount
-	if money >= 0 then
-		exports.global:giveMoney(client, amount, true)
-		
-		setElementDataEx(client, "bankmoney", money, true)
-		saveBank(client)
-		
-		mysql:query_free("INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (" .. mysql:escape_string(getElementData(client, "dbid")) .. ", 0, " .. mysql:escape_string(amount) .. ", '', 0)" )
+    local state = tonumber(getElementData(client, "loggedin")) or 0
+    if state == 0 then
+        return
+    end
 
-		outputChatBox("You withdrew $" .. exports.global:formatMoney(amount) .. " from your personal account.", client, 255, 194, 14)
-		exports.logs:dbLog(client, 25, client, "WITHDRAW " .. amount.. " - REMAINING $"..money)
-	else
-		outputChatBox( "No.", client, 255, 0, 0 )
-	end
+    if not amount or type(amount) ~= "number" or amount <= 0 or math.ceil(amount) ~= amount then
+        outputChatBox("Hey, you almost got us, why don’t you try something else, maybe it will work, who knows, right?", client, 255, 0, 0)
+        return
+    end
+
+    local money = getElementData(client, "bankmoney") or 0
+    if money < amount then
+        outputChatBox("No.", client, 255, 0, 0)
+        return
+    end
+
+    setElementDataEx(client, "bankmoney", money - amount, true)
+    exports.global:giveMoney(client, amount, true)
+    saveBank(client)
+
+    mysql:query_free("INSERT INTO wiretransfers (`from`, `to`, `amount`, `reason`, `type`) VALUES (" 
+        .. mysql:escape_string(getElementData(client, "dbid")) 
+        .. ", 0, " .. mysql:escape_string(amount) .. ", '', 0)")
+
+    outputChatBox("You withdrew $" .. exports.global:formatMoney(amount) .. " from your personal account.", client, 255, 194, 14)
+    exports.logs:dbLog(client, 25, client, "WITHDRAW " .. amount .. " - REMAINING $" .. (money - amount))
 end
 addEvent("withdrawMoneyPersonal", true)
 addEventHandler("withdrawMoneyPersonal", getRootElement(), withdrawMoneyPersonal)
