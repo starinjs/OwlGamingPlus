@@ -52,20 +52,22 @@ end
 addEvent("onJoin", true)
 addEventHandler("onJoin", getRootElement(), clientReady)
 
-addEventHandler("accounts:login:request", getRootElement(),
-	function ()
-		local seamless = getElementData(client, "account:seamless:validated")
-		if seamless == true then
+addEventHandler("accounts:login:request", root,
+    function ()
+        local player = source
+        local seamless = getElementData(player, "account:seamless:validated")
 
-			-- outputChatBox("-- Migrated your session after a system restart", client, 0, 200, 0)
-			setElementData(client, "account:seamless:validated", false, false, true)
-			triggerClientEvent(client, "accounts:options", client)
-			triggerClientEvent(client, "item:updateclient", client)
-			return
-		end
-		triggerClientEvent(client, "accounts:login:request", client)
-	end
-);
+        if seamless then
+            setElementData(player, "account:seamless:validated", false, true) -- Fixed
+            triggerClientEvent(player, "accounts:options", player)
+            triggerClientEvent(player, "item:updateclient", player)
+            return
+        end
+
+        triggerClientEvent(player, "accounts:login:request", player)
+    end
+)
+
 
 function quitPlayer(quitReason, reason)
 	local accountID = tonumber(getElementData(source, "account:id"))
