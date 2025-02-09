@@ -11,9 +11,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
-
-
-
 -- Dumping structure for table mta.settings
 CREATE TABLE IF NOT EXISTS `settings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -52,6 +49,22 @@ INSERT INTO `faction_ranks` (`id`, `faction_id`, `name`, `permissions`, `isDefau
 	(8, 64, 'Default Rank', '', 1, 0, 0),
 	(9, 4, 'Leader Rank', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18', 0, 1, 0),
 	(10, 4, 'Default Rank', '', 1, 0, 0);
+
+INSERT INTO `admin_teleports` (`id`, `location_value`, `location_description`, `location_creator`, `posX`, `posY`, `posZ`, `rot`, `int`, `dim`) VALUES
+(1, 'GROTTI', 'Vehicle dealership', 1, 549.908203, -1264.188477, 17.242188, 301.560089, 0, 0),
+(2, 'JEFFERSON', 'Vehicle dealership', 1, 2152.541016, -1129.187500, 25.621561, 84.098877, 0, 0),
+(3, 'IGS', 'Gas station', 1, 1924.423828, -1760.259766, 13.546875, 270.243073, 0, 0),
+(4, 'PD', 'Police dep.', 1, 1537.124023, -1695.208008, 13.546875, 358.937042, 0, 0),
+(5, 'SANDRO', 'Vehicle dealership', 1, 2109.001953, -2118.709961, 13.546875, 266.013275, 0, 0),
+(6, 'INDUS', 'Vehicle dealership', 1, 2106.848633, -2102.834961, 13.546875, 264.321350, 0, 0),
+(7, 'BIKES', 'Bike dealership', 1, 1879.936523, -1838.956055, 13.568646, 253.296402, 0, 0),
+(8, 'BOATS', 'Boat shop', 1, 159.583984, -1895.516602, 3.773438, 179.544067, 0, 0),
+(9, 'HOSPITAL', 'LS Hospital', 1, 1188.115234, -1328.659180, 13.560261, 0.216980, 0, 0),
+(10, 'DMV', 'LS DMV', 1, 1095.172852, -1779.828125, 13.584138, 89.240540, 0, 0),
+(11, 'BANK', 'LS Grotti Bank', 1, 594.695312, -1236.123047, 17.984421, 108.444946, 0, 0),
+(12, 'SKATEPARK', 'LS Skatepark', 1, 1866.978516, -1400.149414, 13.496458, 3.392090, 0, 0),
+(13, 'CITYHALL', 'LS City hall', 1, 1486.916016, -1739.383789, 13.546875, 91.360962, 0, 0),
+(14, 'LSAIRPORT', 'Los Santos airport', 1, 1682.822266, -2243.730469, 13.542178, 179.747314, 0, 0);
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;

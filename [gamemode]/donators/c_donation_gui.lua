@@ -132,28 +132,29 @@ function updateAvailablePerks()
 	for perkID, perkArr in ipairs(available) do
 		if (perkArr[1] ~= nil) and (perkArr[2] ~= 0) then
 			local row = guiGridListAddRow(grid.availableItems)
-
 			guiGridListSetItemText(grid.availableItems, row, col.name, perkArr[1], false, false)
-
 			guiGridListSetItemText(grid.availableItems, row, col.duration, ( perkArr[3] > 1 and (perkArr[3] .." days") or "Permanent") , false, false)
-
 			if perkArr[4] == 13 then--GCs Transfer
 				guiGridListSetItemText(grid.availableItems, row, col.price, "Fee "..perkArr[2].."%", false, false)
 				gcTransferFee = tonumber(perkArr[2]) or 0
-			elseif perkArr[4] == 14 then--max ints
-				local nextIntCap = tonumber( getElementData(localPlayer, "maxinteriors") )+1
-				if credits >= perkArr[2]*(nextIntCap-10)*2 then
-					guiGridListSetItemText(grid.availableItems, row, col.price, perkArr[2]*(nextIntCap-10)*2 .." GC" , false, false)
-				else
-					guiGridListSetItemText(grid.availableItems, row, col.price, perkArr[2]*(nextIntCap-10)*2 .." GC (not enough)", false, false)
-				end
-			elseif perkArr[4] == 15 then--max veh
-				local currentMaxVehicles = tonumber( getElementData(localPlayer, "maxvehicles") )+1
-				if credits >= perkArr[2]*(currentMaxVehicles-5)*2 then
-					guiGridListSetItemText(grid.availableItems, row, col.price, perkArr[2]*(currentMaxVehicles-5)*2 .." GC" , false, false)
-				else
-					guiGridListSetItemText(grid.availableItems, row, col.price, perkArr[2]*(currentMaxVehicles-5)*2 .." GC (not enough)", false, false)
-				end
+            elseif perkArr[4] == 14 then -- max interiors
+                local maxInteriors = tonumber(getElementData(localPlayer, "maxinteriors")) or 10 -- Default to 10 if nil
+                local nextIntCap = maxInteriors + 1
+                local cost = perkArr[2] * (nextIntCap - 10) * 2
+            if credits >= cost then
+                guiGridListSetItemText(grid.availableItems, row, col.price, cost .. " GC", false, false)
+            else
+                guiGridListSetItemText(grid.availableItems, row, col.price, cost .. " GC (not enough)", false, false)
+            end
+            elseif perkArr[4] == 15 then -- max vehicles
+                local maxVehicles = tonumber(getElementData(localPlayer, "maxvehicles")) or 5 -- Default to 5 if nil
+                local currentMaxVehicles = maxVehicles + 1
+                local cost = perkArr[2] * (currentMaxVehicles - 5) * 2
+            if credits >= cost then
+                guiGridListSetItemText(grid.availableItems, row, col.price, cost .. " GC", false, false)
+            else
+                guiGridListSetItemText(grid.availableItems, row, col.price, cost .. " GC (not enough)", false, false)
+            end
 			else
 				if credits >= perkArr[2] then
 					guiGridListSetItemText(grid.availableItems, row, col.price, perkArr[2] .." GC" , false, false)
