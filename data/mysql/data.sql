@@ -38,6 +38,7 @@ INSERT INTO `factions` (`id`, `name`, `bankbalance`, `type`, `rank_order`, `motd
 (1,	'San Andreas Police Department',	NULL,	2,	'1,2,',	NULL,	NULL,	NULL,	NULL,	20,	40,	0,	0,	0,	0),
 (2,	'San Andreas Emergency Services',	NULL,	4,	'3,4,',	NULL,	NULL,	NULL,	NULL,	20,	40,	0,	0,	0,	0),
 (3,	'Government of Los Santos',	NULL,	3,	'5,6,',	NULL,	NULL,	NULL,	NULL,	20,	40,	0,	0,	0,	0),
+(4,	'Rapid Towing',	NULL,	5,	'9,10,',	NULL,	NULL,	NULL,	NULL,	20,	40,	0,	0,	0,	0),
 (64,	'San Andreas Public Transport',	NULL,	5,	'7,8,',	NULL,	NULL,	NULL,	NULL,	20,	40,	0,	0,	0,	0);
 
 INSERT INTO `faction_ranks` (`id`, `faction_id`, `name`, `permissions`, `isDefault`, `isLeader`, `wage`) VALUES
@@ -48,7 +49,9 @@ INSERT INTO `faction_ranks` (`id`, `faction_id`, `name`, `permissions`, `isDefau
 	(5, 3, 'Leader Rank', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18', 0, 1, 0),
 	(6, 3, 'Default Rank', '', 1, 0, 0),
 	(7, 64, 'Leader Rank', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18', 0, 1, 0),
-	(8, 64, 'Default Rank', '', 1, 0, 0);
+	(8, 64, 'Default Rank', '', 1, 0, 0),
+	(9, 4, 'Leader Rank', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18', 0, 1, 0),
+	(10, 4, 'Default Rank', '', 1, 0, 0);
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
