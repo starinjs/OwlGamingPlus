@@ -1,12 +1,3 @@
---[[
-* ***********************************************************************************************************************
-* Copyright (c) 2015 OwlGaming Community - All Rights Reserved
-* All rights reserved. This program and the accompanying materials are private property belongs to OwlGaming Community
-* Unauthorized copying of this file, via any medium is strictly prohibited
-* Proprietary and confidential
-* ***********************************************************************************************************************
-]]
-
 local function canPlayerStartEngine( veh, player )
 	-- civ vehicles
 	local dbid = getElementData(veh, "dbid") or -1
@@ -48,23 +39,21 @@ local function canPlayerStartEngine( veh, player )
 	return exports.global:hasItem( player, 3, dbid ) or exports.global:hasItem( veh, 3, dbid )
 end
 
-function toggleEngine( )
+function toggleEngine()
 	local veh = getPedOccupiedVehicle( localPlayer )
-	if veh and getElementData( localPlayer, "realinvehicle" ) == 1 then
-		if getPedOccupiedVehicleSeat( localPlayer ) == 0 then
-			if not enginelessVehicle[ getElementModel( veh ) ] then
-				if getVehicleEngineState( veh ) then
-					setVehicleEngineState( veh, false ) -- client side, need to do once more on server to sync.
-					triggerServerEvent( 'vehicle:engine:stop', resourceRoot, veh )
-					toggleControl( 'accelerate', false )
-					toggleControl( 'brake_reverse', false )
+	if veh and getPedOccupiedVehicleSeat( localPlayer ) == 0 then
+		if not enginelessVehicle[ getElementModel( veh ) ] then
+			if getVehicleEngineState( veh ) then
+				setVehicleEngineState( veh, false )
+				triggerServerEvent( 'vehicle:engine:stop', resourceRoot, veh )
+				toggleControl( 'accelerate', false )
+				toggleControl( 'brake_reverse', false )
+			else
+				if canPlayerStartEngine( veh, localPlayer ) then
+					triggerServerEvent( 'vehicle:engine:start', resourceRoot, localPlayer, veh ) -- Fixed this
 				else
-					if canPlayerStartEngine( veh, localPlayer ) then
-						triggerServerEvent( 'vehicle:engine:start', resourceRoot, exports.global:getNearbyElements( veh, 'player' ), veh )
-					else
-						exports.hud:sendBottomNotification( localPlayer, exports.global:getVehicleName( veh ), "You require a key to start this vehicle." )
-						playSoundFrontEnd(4)
-					end
+					exports.hud:sendBottomNotification( localPlayer, exports.global:getVehicleName( veh ), "You require a key to start this vehicle." )
+					playSoundFrontEnd(4)
 				end
 			end
 		end
@@ -77,21 +66,7 @@ addEventHandler( 'onClientResourceStart', resourceRoot, function()
 	bindKey( "j", "down", toggleEngine )
 end)
 
--- Disable engine and vehicle control state as soon as player starts getting in or get in vehicles. Because by default in GTA, vehicle get started automatically when player gets in.
--- Disable them first then enable them from server as soon as possible.
-addEventHandler( 'onClientVehicleStartEnter', root, function( player, seat, door )
-	if player == localPlayer and seat == 0 then
-		if enginelessVehicle[ getElementModel(source) ] then
-			toggleControl( 'accelerate', true )
-			toggleControl( 'brake_reverse', true )
-		else
-			toggleControl( 'accelerate', false )
-			toggleControl( 'brake_reverse', false )
-		end
-	end
-end)
-
-addEventHandler( 'onClientVehicleEnter', root, function( player , seat )
+addEventHandler( 'onClientVehicleEnter', root, function( player, seat )
 	if player == localPlayer and seat == 0 and not enginelessVehicle[ getElementModel(source) ] then
 		setVehicleEngineState( source, false )
 	end

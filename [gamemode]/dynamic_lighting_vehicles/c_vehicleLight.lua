@@ -260,7 +260,7 @@ addEventHandler ( "onClientElementDataChange", root, function(dataName)
 		local new_state = getElementData(source, 'lights') or 0
 		-- play sound to driver and passengers
 		if getPedOccupiedVehicle(localPlayer) == source then
-			local sound = playSound(':resources/headlight_'..(new_state == 0 and 'up' or 'down')..'.mp3')
+			local sound = playSound(":resources/headlight_"..(new_state == 0 and 'up' or 'down')..'.mp3')
 			setElementInterior( sound, getElementInterior(source) )
 			setElementDimension( sound, getElementDimension(source) )
 		end

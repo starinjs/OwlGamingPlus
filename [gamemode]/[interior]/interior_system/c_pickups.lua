@@ -217,7 +217,7 @@ function renderInteriorName()
                         intOwner = "For sale: $"..intPrice
                         intInst = "Press F to purchase"
                         local url = getElementData(theInterior, 'interior_id') and exports.cache:getImage(-tonumber(getElementData(theInterior, 'interior_id')))
-                        dxDrawImage ( img_l, img_t, img_w, img_h, url and url.tex or ':resources/images/loading.jpg' )
+                        dxDrawImage (img_l, img_t, img_w, img_h, url and url.tex or ":resources/images/loading.jpg")
                     end
                 end
                 local intOwner_width = dxGetTextWidth ( intOwner, 1, "default" )

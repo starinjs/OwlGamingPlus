@@ -580,8 +580,8 @@ local function getHoverElement()
 	end
 end
 
-local font1 = dxCreateFont(':resources/fonts/clbold.ttf') or "default-bold"
-local font2 = dxCreateFont(':interior_system/intNameFont.ttf') or "default-bold"
+local font1 = dxCreateFont(":resources/fonts/clbold.ttf") or "default-bold"
+local font2 = dxCreateFont(":interior_system/intNameFont.ttf") or "default-bold"
 function characterMouseOver()
 	local cursorX, cursorY
 	if isCursorShowing( ) then
@@ -600,7 +600,7 @@ function characterMouseOver()
 			end
 			local text = "■ Race: "..tRace.."\n■ Gender: "..(getElementData(ped, "account:charselect:gender") == 0 and "Male" or "Female").."\n■ Status: "..(getElementData(ped, "account:charselect:cked") > 0 and "#FF0000Dead" or "#00FF00Alive").."\n#FFFFFF■ Age: "..getElementData(ped, "account:charselect:age").."\n■ Height: "..getElementData(ped, "account:charselect:height").."cm\n■ Weight: "..getElementData(ped, "account:charselect:weight").."kg\n■ Played: "..getElementData(ped, "account:charselect:hoursplayed").."h"
 			local text2 = "■ Race: "..tRace.."\n■ Gender: "..(getElementData(ped, "account:charselect:gender") == 0 and "Male" or "Female").."\n■ Status: "..(getElementData(ped, "account:charselect:cked") > 0 and "Dead" or "Alive").."\n■ Age: "..getElementData(ped, "account:charselect:age").."\n■ Height: "..getElementData(ped, "account:charselect:height").."cm\n■ Weight: "..getElementData(ped, "account:charselect:weight").."kg\n■ Played: "..getElementData(ped, "account:charselect:hoursplayed").."h"
-			if not font1 then font1 = dxCreateFont(':resources/fonts/clbold.ttf') end
+			if not font1 then font1 = dxCreateFont(":resources/fonts/clbold.ttf") end
 			dxDrawText(text2, 915+ox, 433+oy, 1050+ox, 538+oy, tocolor(0, 0, 0, 255), 1.00, font1 or "default", "left", "top", true, false, true, true, false)
 			dxDrawText(text2, 915+ox, 431+oy, 1050+ox, 536+oy, tocolor(0, 0, 0, 255), 1.00, font1 or "default", "left", "top", true, false, true, true, false)
 			dxDrawText(text2, 913+ox, 433+oy, 1048+ox, 538+oy, tocolor(0, 0, 0, 255), 1.00, font1 or "default", "left", "top", true, false, true, true, false)
