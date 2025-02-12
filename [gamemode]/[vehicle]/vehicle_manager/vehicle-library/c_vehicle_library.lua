@@ -44,8 +44,13 @@ local function updateLibraryGrid(vehs)
 		local row = guiGridListAddRow(VehLibGrid)
 		guiGridListSetItemText(VehLibGrid, row, col.id, vehs[i].id or "", false, true)
 		guiGridListSetItemText(VehLibGrid, row, col.enabled, ((vehs[i].enabled == "1") and "Yes" or "No"), false, true)
-
-		guiGridListSetItemText(VehLibGrid, row, col.mtamodel, getVehicleNameFromModel(tonumber(vehs[i].vehmtamodel)).." ("..vehs[i].vehmtamodel..")", false, false)
+		local vehMtaModel = "-"
+		if tonumber(vehs[i].vehmtamodel) > 611 then
+			vehMtaModel = "Newmodels"
+		else
+			vehMtaModel = getVehicleNameFromModel(tonumber(vehs[i].vehmtamodel))
+		end
+		guiGridListSetItemText(VehLibGrid, row, col.mtamodel, vehMtaModel.." ("..vehs[i].vehmtamodel..")", false, false)
 		guiGridListSetItemText(VehLibGrid, row, col.brand, vehs[i].vehbrand, false, false)
 		guiGridListSetItemText(VehLibGrid, row, col.model, vehs[i].vehmodel, false, false)
 		guiGridListSetItemText(VehLibGrid, row, col.year, vehs[i].vehyear, false, false)
