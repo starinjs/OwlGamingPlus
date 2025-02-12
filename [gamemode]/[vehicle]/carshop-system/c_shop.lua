@@ -27,7 +27,6 @@ function carshop_showInfo(carPrice, taxPrice)
 		end
 		table.insert(content, {"   - Price: $"..exports.global:formatMoney(carPrice)  } )
 		table.insert(content, {"   - Tax: $"..exports.global:formatMoney(taxPrice) } )
-		table.insert(content, {"   (( MTA Model: "..getVehicleNameFromModel( getElementModel( source ) ).."))" } )
 		table.insert(content, {"Press 'F' or 'Enter' to purchase!" } )
 		exports.hud:sendTopRightNotification( content, localPlayer, 240)
 	end

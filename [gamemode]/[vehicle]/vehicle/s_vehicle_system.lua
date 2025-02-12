@@ -119,7 +119,7 @@ function createPermanentVehicle(player, command, ...)
 		local plate = letter1 .. letter2 .. math.random(0, 9) .. " " .. math.random(1000, 9999)
 
 		-- create a vehicle temporarily so we can get its name, colors and validate that it is an actual vehicle.
-		local veh = createVehicle(id, x, y, z, 0, 0, r, plate)
+		local veh = exports["newmodels_reborn"]:createVehicle(id, x, y, z, 0, 0, r, plate)
 		if not veh then
 			outputChatBox("Invalid MTA vehicle model specified in vehlib.", player, 255, 100, 100)
 			return
@@ -246,7 +246,7 @@ function createCivilianPermVehicle(thePlayer, commandName, ...)
 			local letter2 = string.char(math.random(65,90))
 			local plate = letter1 .. letter2 .. math.random(0, 9) .. " " .. math.random(1000, 9999)
 
-			local veh = createVehicle(id, x, y, z, 0, 0, r, plate)
+			local veh = exports["newmodels_reborn"]:createVehicle(id, x, y, z, 0, 0, r, plate)
 			if not (veh) then
 				outputChatBox("Invalid Vehicle ID.", thePlayer, 255, 0, 0)
 			else
@@ -273,14 +273,14 @@ end
 addCommandHandler("makecivveh", createCivilianPermVehicle, false, false)
 
 function reloadVehicle( id )
-	local theVehicle = exports.pool:getElement("vehicle", tonumber(id) )
-	if theVehicle then
-		removeSafe(tonumber(id))
-		exports.vehicle:saveVehicle( theVehicle )
-		destroyElement( theVehicle )
-	end
-	exports.vehicle_load:loadOneVehicle( id )
-	return true
+    local theVehicle = exports.pool:getElement("vehicle", tonumber(id) )
+    if theVehicle then
+        removeSafe(tonumber(id))
+        exports.vehicle:saveVehicle( theVehicle )
+        destroyElement( theVehicle )
+    end
+    exports.vehicle_load:loadOneVehicle( id )
+    return true
 end
 
 function vehicleExploded()

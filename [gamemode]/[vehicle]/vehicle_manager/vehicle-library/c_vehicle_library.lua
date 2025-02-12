@@ -43,7 +43,14 @@ local function updateLibraryGrid(vehs)
 	for i = 1, #vehs do
 		local row = guiGridListAddRow(VehLibGrid)
 		guiGridListSetItemText(VehLibGrid, row, col.id, vehs[i].id or "", false, true)
-		guiGridListSetItemText(VehLibGrid, row, col.enabled, ((vehs[i].enabled == 1) and "Yes" or "No"), false, true)
+		guiGridListSetItemText(VehLibGrid, row, col.enabled, ((vehs[i].enabled == "1") and "Yes" or "No"), false, true)
+		
+		if tonumber(vehs[i].vehmtamodel) > 89999 then
+			local data = exports["newmodels_reborn"]:getModDataFromID(tonumber(vehs[i].vehmtamodel))
+            if not data then outputChatBox("VEHLIB ERROR: Newmodels can't unsync.", 200, 0, 0) return end
+			vehs[i].vehmtamodel = data.base_id
+		end
+
 		guiGridListSetItemText(VehLibGrid, row, col.mtamodel, getVehicleNameFromModel(tonumber(vehs[i].vehmtamodel)).." ("..vehs[i].vehmtamodel..")", false, false)
 		guiGridListSetItemText(VehLibGrid, row, col.brand, vehs[i].vehbrand, false, false)
 		guiGridListSetItemText(VehLibGrid, row, col.model, vehs[i].vehmodel, false, false)
@@ -687,8 +694,8 @@ function validateCreateVehicle(data)
 		local allGood = true
 		--VALIDATE MTA MODEL
 		local input = guiGetText(edits[1])
-		local vehName = getVehicleNameFromModel(input)
-		local vehModel = getVehicleModelFromName(input)
+		local vehName = getVehicleNameFromModel(input) or "Newmodels"
+		local vehModel = getVehicleModelFromName(input) or "No Brand"
 		if input == "584" or input == "611" or input == "606" or input == "607" or input == "608" or input == "450" then
 			guiSetText(labels[1], "MTA Vehicle Model (OK!):")
 			guiLabelSetColor(labels[1], 0, 255,0)

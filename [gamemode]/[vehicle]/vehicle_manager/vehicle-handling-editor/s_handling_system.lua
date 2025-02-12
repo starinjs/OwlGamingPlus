@@ -482,7 +482,7 @@ function createTestVehicle(vehShopID, thePed, fromVehLib)
 	local x, y, z = destination.x, destination.y, destination.z --destination.rot---2063, -112.1552734375, 35.010520935059
 	local r = destination.rot
 
-	local veh = createVehicle(vehicleID, x, y, z , 0, 0, 180, plate)
+	local veh = exports["newmodels_reborn"]:createVehicle(vehicleID, x, y, z , 0, 0, 180, plate)
 	if not (veh) then
 		outputChatBox("Invalid Vehicle ID.", client, 255, 0, 0)
 		return false

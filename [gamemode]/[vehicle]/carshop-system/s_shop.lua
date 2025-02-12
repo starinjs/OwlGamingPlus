@@ -99,7 +99,7 @@ function carshop_updateVehicles( forceUpdate )
 					local model = tonumber(vehicleData.vehmtamodel)
 					--getVehicleModelFromName(data[1]) or tonumber(data[1])
 
-					local vehicle = createVehicle( model , v[1], v[2], v[3], v[4], v[5], v[6], plate  )
+					local vehicle = exports["newmodels_reborn"]:createVehicle( model , v[1], v[2], v[3], v[4], v[5], v[6], plate  )
 					local vehBrand = vehicleData["vehbrand"]
 					local vehModel = vehicleData["vehmodel"]
 					local vehPrice = tonumber(vehicleData["vehprice"])
@@ -335,7 +335,7 @@ function carshop_buyVehicle(paymentMethod)
 		destroyElement(tempPickup)
 	end
 	destroyElement(source)
-	exports.vehicle:reloadVehicle(insertid)
+    exports.vehicle:reloadVehicle(insertid)
 
 	local license = (getElementData(client, "license.car") == 1) and "" or "You don't have a drivers license. You better not drive this on the street."
 

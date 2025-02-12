@@ -370,7 +370,7 @@ function createTempVehicle(thePlayer, commandName, vehShopID)
 			end
 		end
 
-		local veh = createVehicle(vehicleID, x, y, z, 0, 0, r, plate)
+		local veh = exports["newmodels_reborn"]:createVehicle(vehicleID, x, y, z, 0, 0, r, plate)
 
 		if not (veh) then
 			outputDebugString("VEHICLE MANAGER / createTempVehicle / FAILED TO FETCH VEHSHOP DATA")
