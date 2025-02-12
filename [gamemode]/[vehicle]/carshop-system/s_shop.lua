@@ -98,8 +98,13 @@ function carshop_updateVehicles( forceUpdate )
 					local plate = letter1 .. letter2 .. math.random(0, 9) .. " " .. math.random(1000, 9999)
 					local model = tonumber(vehicleData.vehmtamodel)
 					--getVehicleModelFromName(data[1]) or tonumber(data[1])
-
-					local vehicle = exports["newmodels_reborn"]:createVehicle( model , v[1], v[2], v[3], v[4], v[5], v[6], plate  )
+					local vehicle
+					if model > 611 and getResourceFromName("newmodels_reborn") and getResourceState(getResourceFromName("newmodels_reborn")) == "running" then
+						vehicle = createVehicle( 562 , v[1], v[2], v[3], v[4], v[5], v[6], plate  )
+						exports["newmodels_reborn"]:setElementModel(vehicle, model)
+					else
+						vehicle = createVehicle( model , v[1], v[2], v[3], v[4], v[5], v[6], plate  )
+					end
 					local vehBrand = vehicleData["vehbrand"]
 					local vehModel = vehicleData["vehmodel"]
 					local vehPrice = tonumber(vehicleData["vehprice"])
@@ -304,7 +309,7 @@ function carshop_buyVehicle(paymentMethod)
 	end
 
 	local dbid = getElementData(client, "account:character:id")
-	local modelID = exports["newmodels_reborn"]:getElementModel(source)
+	local modelID = exports["newmodels_reborn"]:getElementModel(source) or getElementModel(source)
 	local x, y, z = getElementPosition(source)
 	local rx, ry, rz = getElementRotation(source)
 	local odometer = tonumber(getElementData(source, 'odometer')) * 1000

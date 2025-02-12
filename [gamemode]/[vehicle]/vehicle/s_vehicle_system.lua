@@ -119,7 +119,13 @@ function createPermanentVehicle(player, command, ...)
 		local plate = letter1 .. letter2 .. math.random(0, 9) .. " " .. math.random(1000, 9999)
 
 		-- create a vehicle temporarily so we can get its name, colors and validate that it is an actual vehicle.
-		local veh = exports["newmodels_reborn"]:createVehicle(id, x, y, z, 0, 0, r, plate)
+		local veh
+		if id > 611 and getResourceFromName("newmodels_reborn") and getResourceState(getResourceFromName("newmodels_reborn")) == "running" then
+			veh = createVehicle(562, x, y, z, 0, 0, r, plate)
+			exports["newmodels_reborn"]:setElementModel(veh, id)
+		else
+			veh = createVehicle(id, x, y, z, 0, 0, r, plate)
+		end
 		if not veh then
 			outputChatBox("Invalid MTA vehicle model specified in vehlib.", player, 255, 100, 100)
 			return

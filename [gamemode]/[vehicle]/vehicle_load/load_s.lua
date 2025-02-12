@@ -91,7 +91,13 @@ function loadOneVehicle(data, loadDeletedOne)
 		end
 
 		-- Spawn the vehicle
-		veh = exports["newmodels_reborn"]:createVehicle(data.model, data.currx, data.curry, data.currz, data.currrx, data.currry, data.currrz, data.plate, false, var1, var2)
+		local veh
+		if data.model > 611 and getResourceFromName("newmodels_reborn") and getResourceState(getResourceFromName("newmodels_reborn")) == "running" then
+			veh = createVehicle(562, data.currx, data.curry, data.currz, data.currrx, data.currry, data.currrz, data.plate, false, var1, var2)
+			exports["newmodels_reborn"]:setElementModel(veh, data.model)
+		else
+			veh = createVehicle(data.model, data.currx, data.curry, data.currz, data.currrx, data.currry, data.currrz, data.plate, false, var1, var2)
+		end
 		if veh then
 			-- pool allocation.
 			exports.anticheat:setEld( veh, "dbid", data.id, 'all' )
