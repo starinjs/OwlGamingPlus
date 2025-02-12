@@ -44,12 +44,6 @@ local function updateLibraryGrid(vehs)
 		local row = guiGridListAddRow(VehLibGrid)
 		guiGridListSetItemText(VehLibGrid, row, col.id, vehs[i].id or "", false, true)
 		guiGridListSetItemText(VehLibGrid, row, col.enabled, ((vehs[i].enabled == "1") and "Yes" or "No"), false, true)
-		
-		if tonumber(vehs[i].vehmtamodel) > 89999 then
-			local data = exports["newmodels_reborn"]:getModDataFromID(tonumber(vehs[i].vehmtamodel))
-            if not data then outputChatBox("VEHLIB ERROR: Newmodels can't unsync.", 200, 0, 0) return end
-			vehs[i].vehmtamodel = data.base_id
-		end
 
 		guiGridListSetItemText(VehLibGrid, row, col.mtamodel, getVehicleNameFromModel(tonumber(vehs[i].vehmtamodel)).." ("..vehs[i].vehmtamodel..")", false, false)
 		guiGridListSetItemText(VehLibGrid, row, col.brand, vehs[i].vehbrand, false, false)
