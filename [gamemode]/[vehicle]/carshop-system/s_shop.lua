@@ -304,7 +304,7 @@ function carshop_buyVehicle(paymentMethod)
 	end
 
 	local dbid = getElementData(client, "account:character:id")
-	local modelID = getElementModel(source)
+	local modelID = exports["newmodels_reborn"]:getElementModel(source)
 	local x, y, z = getElementPosition(source)
 	local rx, ry, rz = getElementRotation(source)
 	local odometer = tonumber(getElementData(source, 'odometer')) * 1000
@@ -327,7 +327,7 @@ function carshop_buyVehicle(paymentMethod)
 		return false
 	end
 
-	exports.logs:dbLog(client, 6, "ve"..tostring(insertid), "BOUGHTNEWCAR "..getVehicleNameFromModel(modelID).." (Custom Model ID #"..vehShopID..", Price: $"..exports.global:formatMoney(costCar)..")")
+	exports.logs:dbLog(client, 6, "ve"..tostring(insertid), "BOUGHTNEWCAR (Model: "..modelID..") (Custom Model ID #"..vehShopID..", Price: $"..exports.global:formatMoney(costCar)..")")
 	call( getResourceFromName( "item-system" ), "deleteAll", 3, insertid )
 	exports.global:giveItem( client, 3, insertid )
 	local tempPickup = getElementData(source,"carshop:childPickup")
