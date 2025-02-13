@@ -79,21 +79,6 @@ end
 
 function acceptDeath(victimDropItem)
 	if isPedDead(client) then
-		if victimDropItem then
-			local x, y, z = getElementPosition(client)
-			for key, item in pairs(exports["item-system"]:getItems(client)) do
-				itemID = tonumber(item[1])
-				local ammo = false
-				if itemID == 116 then
-					ammo = exports.global:explode( ":", item[2]  )[2]
-				end
-				local keepammo = false
-				if itemID == 116 or itemID == 115 or itemID == 134 then
-					triggerEvent("dropItemOnDead", client, itemID, item[2], x, y, z, ammo, false)
-				end
-			end
-		end
-
 		fadeCamera(client, true)
 		outputChatBox("Respawning...", client)
 		if isTimer(changeDeathViewTimer) == true then

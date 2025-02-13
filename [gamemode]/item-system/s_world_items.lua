@@ -64,6 +64,7 @@ function protectItem(faction, item, slot)
 	--[[if getElementParent(getElementParent(source)) ~= getResourceRootElement(getResourceFromName("item-world")) then
 		return
 	end]]
+	if client then source = client end
 	if getElementData(source, "itemID") then
 		local itemID = getElementData(source, "itemID")
 		local index = getElementData( source, "id" )
@@ -110,12 +111,6 @@ addEventHandler("protectItem", root, protectItem)
 local badges = getBadges()
 local masks = getMasks()
 
-function dropItemOnDead(itemID,itemValue, x, y, z, ammo, keepammo)
-
-end
-addEvent("dropItemOnDead", true)
-addEventHandler("dropItemOnDead", getRootElement(), dropItemOnDead)
-
 disableCanDropPick = false
 function toggleDropPick(player, cmd, state)
 	if exports.integration:isPlayerScripter(player) then
@@ -126,6 +121,8 @@ end
 addCommandHandler("togpick" ,toggleDropPick)
 
 function dropItem(itemID, x, y, z, ammo, keepammo, cancelAnim)
+	if client then source = client end
+
 	if disableCanDropPick then
 		outputChatBox("Item dropping is currently disabled. While our scripters are investigating the issue.", source, 255, 0, 0)
 		triggerClientEvent( source, "finishItemDrop", source )
@@ -142,7 +139,7 @@ function dropItem(itemID, x, y, z, ammo, keepammo, cancelAnim)
 	local interior = getElementInterior(source)
 	local dimension = getElementDimension(source)
 
-	local rz2 = getPedRotation(source)
+	local _, _, rz2 = getElementRotation(source)
 
 	if not ammo then
 		local itemSlot = itemID
@@ -161,10 +158,6 @@ function dropItem(itemID, x, y, z, ammo, keepammo, cancelAnim)
 		end
 
 		local weaponBlock = false
-
-		if itemID == 2 then
-			--triggerClientEvent(source,"phone:clearAllCaches", source, itemValue)
-		end
 
 		-- armors
 		if itemID == 220 or itemID == 221 or itemID == 219 or itemID == 162 then
@@ -340,10 +333,7 @@ function dropItem(itemID, x, y, z, ammo, keepammo, cancelAnim)
 					exports.global:applyAnimation(source, "CARRY", "putdwn", 500, false, false, true)
 				end
 
-				if getPedOccupiedVehicle(source) then
-					if getElementModel(getPedOccupiedVehicle(source)) == 490 then
-					end
-				else
+				if not getPedOccupiedVehicle(source) then
 					toggleAllControls( source, true, true, true )
 				end
 
@@ -627,6 +617,8 @@ function doItemGivenChecks(player, itemID, itemValue)
 end
 
 local function moveItem(item, x, y, z)
+	if client then source = client end
+
 	if false then
 		return outputDebugString("[ITEM] moveItem / Disabled ")
 	end
@@ -766,6 +758,8 @@ addEventHandler('item:move:save', root,
 	end)
 
 local function rotateItem(item, rz)
+	if client then source = client end
+
 	if not exports.integration:isPlayerTrialAdmin(source) then
 		return
 	end
@@ -788,6 +782,8 @@ addEvent("rotateItem", true)
 addEventHandler("rotateItem", getRootElement(), rotateItem)
 
 function pickupItem(object, leftammo)
+	if client then source = client end
+
 	if disableCanDropPick then
 		outputChatBox("Item picking up is currently disabled. While our scripters are investigating the issue.", source, 255, 0, 0)
 		return outputDebugString("[ITEM] pickupItem / disabled ")
