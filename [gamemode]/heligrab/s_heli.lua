@@ -138,7 +138,7 @@ end)
 
 -- setting the camera target clientside frequently doesnt work (possible problem with getVehicleOccupant clientside), so do it serverside instead
 function PlayerGrabVehicle(vehicle)
-	SetCameraToHeliPilot(source,vehicle)
+	SetCameraToHeliPilot(client,vehicle)
 --	outputChatBox("Grabbed vehicle: "..getPlayerName(source))
 end
 addEvent("PlayerGrabVehicle",true)
@@ -147,11 +147,11 @@ addEventHandler("PlayerGrabVehicle",root,PlayerGrabVehicle)
 
 
 function PlayerDropFromHeli(vehicle,reason,force)
-	setCameraTarget(source,source)
+	setCameraTarget(client,client)
 --	outputChatBox("Dropped from heli: "..getPlayerName(source).." ["..reason.."]")
 	for _,player in ipairs(getElementsByType("player")) do
-		if (player ~= source) or (force) then
-			triggerClientEvent(player,"PlayerDrop",source,reason,vehicle)
+		if (player ~= client) or (force) then
+			triggerClientEvent(player,"PlayerDrop",client,reason,vehicle)
 		end
 	end
 end
@@ -199,7 +199,7 @@ end)
 
 addEvent("RemoveHangingPedFromVehicle",true)
 addEventHandler("RemoveHangingPedFromVehicle",root,function()
-	removePedFromVehicle(source)
+	removePedFromVehicle(client)
 end)
 
 
