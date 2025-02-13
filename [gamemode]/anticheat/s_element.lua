@@ -10,32 +10,22 @@
 local secretHandle = 'DwcbeZdBsd432Hcw2SvySv5FcW'
 
 addEventHandler("onElementDataChange", getRootElement(),
-	function(index, oldValue)
-		if not client then
-			return
-		end
-		local theElement = source
+	function(index, oldValue, newValue)
+		if not client then return end
 		if (index ~= "interiormarker") then
-			local isProtected = getElementData(theElement, secretHandle .. "p:" .. index)
+			local isProtected = getElementData(source, secretHandle .. "p:" .. index)
 			if (isProtected) then
-				local sourceClient = client
-				if (sourceClient) then
-					if (getElementType(sourceClient) == "player") then
-						local newData = getElementData(source, index)
-						local playername = getPlayerName(source) or "Somethings"
-						local msg = "[AdmWarn] " .. getPlayerName(sourceClient) .. " sent illegal data. "
-						local msg2 = " (victim: " ..
-						playername ..
-						" index: " ..
-						index .. " newvalue:" .. tostring(newData) .. " oldvalue:" .. tostring(oldValue) .. ")"
-						exports.global:sendMessageToAdmins(msg)
-						exports.global:sendMessageToAdmins(msg2)
-						--exports.logs:dbLog(sourceClient, 5, sourceClient, msg..msg2 )
+				local playername = getPlayerName(source) or inspect(source)
+				local msg = "[AdmWarn] " .. getPlayerName(client) .. " sent illegal data. "
+				local msg2 = " (victim: " ..
+					playername ..
+					" index: " ..
+					index .. " newvalue:" .. tostring(newValue) .. " oldvalue:" .. tostring(oldValue) .. ")"
+				exports.global:sendMessageToAdmins(msg)
+				exports.global:sendMessageToAdmins(msg2)
 
-						changeProtectedElementDataEx(source, index, oldValue, true)
-						exports.bans:ban("[ANTICHEAT]", sourceClient, 0, "Hacked Client.")
-					end
-				end
+				changeProtectedElementDataEx(source, index, oldValue, true)
+				exports.bans:ban("[ANTICHEAT]", client, 0, "Hacked Client.")
 			end
 		end
 	end
@@ -68,43 +58,38 @@ function changeProtectedElementData(thePlayer, index, newvalue)
 end
 
 function changeProtectedElementDataEx(thePlayer, index, newvalue, sync)
-    if (thePlayer) and (index) then
-        if not newvalue then
-            newvalue = nil
-        end
+	if (thePlayer) and (index) then
+		if not newvalue then
+			newvalue = nil
+		end
 
-        if allowElementData(thePlayer, index) then
-            local set = setElementData(thePlayer, index, newvalue, sync)
-			
-            if protectElementData(thePlayer, index) then
-                return set
-            end
-        end
-        return false
-    end
-    return false
+		if allowElementData(thePlayer, index) then
+			local set = setElementData(thePlayer, index, newvalue, sync)
+
+			if protectElementData(thePlayer, index) then
+				return set
+			end
+		end
+		return false
+	end
+	return false
 end
-
 
 function setEld(thePlayer, index, newvalue, sync)
 	local sync2 = false
-	local nosyncatall = true
 	if sync == "one" then
 		sync2 = false
-		nosyncatall = false
 	elseif sync == "all" then
 		sync2 = true
-		nosyncatall = false
 	else
 		sync2 = false
-		nosyncatall = true
 	end
-	return changeProtectedElementDataEx(thePlayer, index, newvalue, sync2, nosyncatall)
+	return changeProtectedElementDataEx(thePlayer, index, newvalue, sync2)
 end
 
 function genHandle()
 	local hash = ''
-	for Loop = 1, math.random(5, 16) do
+	for i = 1, math.random(5, 16) do
 		hash = hash .. string.char(math.random(65, 122))
 	end
 	return hash
