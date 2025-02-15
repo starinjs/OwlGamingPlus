@@ -256,79 +256,112 @@ function SpecialclearItems( element, onlyifnosqlones )
 	end
 	return true
 end
+function giveItem(element, itemID, itemValue, itemIndex, isThisFromSplittingOrAdminCmd, metadata)
+    -- Prevent nil element type errors by adding safety checks
+    if not element then
+        return false, "Invalid element"
+    end
+    
+    -- ATM cards logic (itemID 150)
+    if itemID == 150 then
+        local targetType = getElementType(element)
+        
+        -- If source is ped and target is player, allow the transfer
+        if source and getElementType(source) == "ped" and targetType == "player" then
+            outputChatBox("A pedestrian hands you an ATM card.", element, 0, 255, 0)
+        
+        -- If target is ATM machine, allow the transfer
+        elseif targetType == "object" and getElementModel(element) == 2942 then
+            -- Allow transfer to ATM
+            
+        -- If target is another player, block the transfer
+        elseif targetType == "player" and source and getElementType(source) == "player" then
+            outputChatBox("Players cannot give ATM cards to other players.", source, 255, 0, 0)
+            return false, "Item move cancelled, ATM card cannot be given to another player."
+            
+        -- If trying to pick up (source is same as element)
+        elseif source == element then
+            outputChatBox("ATM cards cannot be picked up.", source, 255, 0, 0)
+            return false, "ATM cards cannot be picked up"
+            
+        -- For any other invalid transfers
+        elseif source and getElementType(source) == "player" then
+            outputChatBox("ATM cards can only be used at ATM machines.", source, 255, 0, 0)
+            return false, "Item move cancelled, ATM cards can only be given to ATM machines."
+        end
+    end
 
--- gives an item to an element
-function giveItem( element, itemID, itemValue, itemIndex, isThisFromSplittingOrAdminCmd, metadata )
-	local success, error = loadItems( element )
-	if success then
-		if not metadata then
-			if(detailedDebug and sourceResource) then
-				local theSource = getResourceName(sourceResource)
-				outputDebugString("giveItem: metadata missing (source: "..tostring(theSource)..")", 2)
-			end
-			metadata = {}
-		elseif type(metadata) ~= "table" then
-			if detailedDebug then
-				local theSource
-				if(sourceResource) then
-					theSource = getResourceName(sourceResource)
-				else
-					theSource = "unknown"
-				end
-				outputDebugString("giveItem: metadata:"..tostring(metadata).." (source: "..tostring(theSource)..")", 2)
-			end
-			metadata = {}
-		end		
+    -- Proceed with the rest of the item giving logic
+    local success, error = loadItems(element)
+    if success then
+        if not metadata then
+            if detailedDebug and sourceResource then
+                local theSource = getResourceName(sourceResource)
+                outputDebugString("giveItem: metadata missing (source: "..tostring(theSource)..")", 2)
+            end
+            metadata = {}
+        elseif type(metadata) ~= "table" then
+            if detailedDebug then
+                local theSource
+                if sourceResource then
+                    theSource = getResourceName(sourceResource)
+                else
+                    theSource = "unknown"
+                end
+                outputDebugString("giveItem: metadata:"..tostring(metadata).." (source: "..tostring(theSource)..")", 2)
+            end
+            metadata = {}
+        end
 
-		if not hasSpaceForItem( element, itemID, itemValue, metadata ) then
-			return false, "Inventory is Full."
-		end
+        if not hasSpaceForItem(element, itemID, itemValue, metadata) then
+            return false, "Inventory is Full."
+        end
 
-		if isThisFromSplittingOrAdminCmd then
-			if drugList[itemID] then
-				if not tonumber(itemValue) or tonumber(itemValue) < 1 then
-					return false, "Drug value must be numberic and meant to be in grams."
-				else
-					itemValue = tostring(itemValue)..drugList[itemID]
-				end
-			end
-		end
+        if isThisFromSplittingOrAdminCmd then
+            if drugList[itemID] then
+                if not tonumber(itemValue) or tonumber(itemValue) < 1 then
+                    return false, "Drug value must be numeric and meant to be in grams."
+                else
+                    itemValue = tostring(itemValue)..drugList[itemID]
+                end
+            end
+        end
 
-		if not itemIndex then
-			local result = mysql:query("INSERT INTO items (type, owner, itemID, itemValue, metadata) VALUES (" .. getType( element ) .. "," .. getID( element ) .. "," .. itemID .. ",'" .. mysql:escape_string(itemValue) .. "', " .. (metadata and ("'" .. mysql:escape_string(toJSON(metadata)) .. "'") or 'NULL') .. ")")
-			if result then
-				itemIndex = mysql:insert_id( )
-				if itemID == 178 then
-					local bInfo = split(tostring(itemValue), ':')
-					local bID = bInfo[3]
-					if not bID then
-						mysql:free_result(mysql:query("INSERT INTO books SET title='".. mysql:escape_string(itemValue) .."', author='Unknown', book='The begining of something great...'"))
-						bookIndex = mysql:insert_id( )
-						itemValue = itemValue .. ":" .. "Unknown" .. ":" .. tostring(bookIndex)
-						mysql:query_free("UPDATE items SET `itemValue`='".. mysql:escape_string(itemValue) .. "' WHERE `index`=".. tonumber(itemIndex) .."")
-					end
-				end
-			else
-				return false, "MySQL Error"
-			end
-		end
+        if not itemIndex then
+            local result = mysql:query("INSERT INTO items (type, owner, itemID, itemValue, metadata) VALUES (" .. getType(element) .. "," .. getID(element) .. "," .. itemID .. ",'" .. mysql:escape_string(itemValue) .. "', " .. (metadata and ("'" .. mysql:escape_string(toJSON(metadata)) .. "'") or 'NULL') .. ")")
+            if result then
+                itemIndex = mysql:insert_id()
+                if itemID == 178 then
+                    local bInfo = split(tostring(itemValue), ':')
+                    local bID = bInfo[3]
+                    if not bID then
+                        mysql:free_result(mysql:query("INSERT INTO books SET title='".. mysql:escape_string(itemValue) .."', author='Unknown', book='The beginning of something great...'"))
+                        bookIndex = mysql:insert_id()
+                        itemValue = itemValue .. ":" .. "Unknown" .. ":" .. tostring(bookIndex)
+                        mysql:query_free("UPDATE items SET `itemValue`='".. mysql:escape_string(itemValue) .. "' WHERE `index`=".. tonumber(itemIndex) .."")
+                    end
+                end
+            else
+                return false, "MySQL Error"
+            end
+        end
 
-		saveditems[element][ #saveditems[element] + 1 ] = { itemID, itemValue, itemIndex, 0, metadata }
-		notify( element, true )
-		if (getElementType(element) == 'player') then
-			if (tonumber(itemID) == 115 or tonumber(itemID) == 116) and (getElementType(element) == 'player') then
-				triggerEvent("updateLocalGuns", element)
-			end
+        saveditems[element][ #saveditems[element] + 1 ] = { itemID, itemValue, itemIndex, 0, metadata }
+        notify(element, true)
 
-			doItemGivenChecks(element, tonumber(itemID))
-		end
-		return true
-	else
-		outputDebugString("loadItems error: " .. error)
-		return false, "loadItems error: " .. error
-	end
+        if getElementType(element) == 'player' then
+            if tonumber(itemID) == 115 or tonumber(itemID) == 116 then
+                triggerEvent("updateLocalGuns", element)
+            end
+
+            doItemGivenChecks(element, tonumber(itemID))
+        end
+        return true
+    else
+        outputDebugString("loadItems error: " .. error)
+        return false, "loadItems error: " .. error
+    end
 end
-
 -- takes an item from the element
 function takeItem(element, itemID, itemValue)
 	local success, error = loadItems( element )
@@ -481,98 +514,97 @@ function moveItem2(from, to, slot)
 end
 
 function moveItem(from, to, slot)
-	local success, error = loadItems( from )
-	if success then
-		local success, error = loadItems( to )
-		if success then
-			if saveditems[from] and saveditems[from][slot] then
-				if hasSpaceForItem(to, saveditems[from][slot][1], saveditems[from][slot][2], saveditems[from][slot][5]) then
-					local itemIndex = saveditems[from][slot][3]
-					if itemIndex then
-						local itemID = saveditems[from][slot][1]
-						if itemID == 48 or itemID == 126 or itemID == 60 or itemID == 103 or itemID == 163 then
-							return false, "This Item cannot be moved"
-						else
-							local query = mysql:query_free( "UPDATE items SET type = " .. getType(to) .. ", owner = " .. getID(to) .. " WHERE `index` = " .. itemIndex )
-							if query then
+    local success, error = loadItems(from)
+    if success then
+        local success, error = loadItems(to)
+        if success then
+            if saveditems[from] and saveditems[from][slot] then
+                local itemID = saveditems[from][slot][1]
+                local itemValue = saveditems[from][slot][2]
+                local metadata = saveditems[from][slot][5]
 
-								local itemValue = saveditems[from][slot][2]
-								local metadata = saveditems[from][slot][5]
-								--CHECK FOR DUPLICATED WEAPONS
-								if itemID == 115 or itemID == 116 then
-									local target = from
-									if getElementType(to) == "player" then
-										target = to
-									end
-									if isThisGunDuplicated(itemID, itemValue, target) then
-										takeItemFromSlot(from, slot, false)
-										outputChatBox("This weapon was duplicated by bug abuser and can not be used anymore. We're sorry to delete it now.", target, 255,0,0)
-										return false, "Weapon ID#"..itemIndex.." duplicate detected and deleted."
-									end
-								end
+                local isATM = getElementType(to) == "object" and getElementModel(to) == 2942
 
-								-- ANTI ALT-ALT FOR NON AMMO ITEMS, CHECK THIS FUNCTION FOR AMMO ITEM BELOW AND FOR WORLD ITEM CHECK s_world_items.lua/ MAXIME
-								--31 -> 43  = DRUGS
-								if ( (itemID >= 31) and (itemID <= 43) ) or itemBannedByAltAltChecker[itemID] then
-									if itemID == 150 then
-										if getElementModel(from) == 2942 or getElementModel(to) == 2942 then
-											takeItemFromSlot(from, slot, true)
-											giveItem(to, itemID, itemValue, itemIndex, nil, metadata)
-											return true
-										end
-									end
+                -- Prevent ATM cards (itemID 150) from being dropped or transferred to players, but allow to ATMs
+                if itemID == 150 and not isATM then
+                    outputChatBox("ATM cards can only be used inside an ATM.", from, 255, 0, 0)
+                    return false, "Item move cancelled, ATM card is undroppable"
+                end
 
-									local hoursPlayedFrom = getElementData( from, "hoursplayed" ) or 99
-									local hoursPlayedTo = getElementData( to, "hoursplayed" ) or 99
+                if hasSpaceForItem(to, itemID, itemValue, metadata) then
+                    local itemIndex = saveditems[from][slot][3]
+                    if itemIndex then
+                        if itemID == 48 or itemID == 126 or itemID == 60 or itemID == 103 or itemID == 163 then
+                            return false, "This item cannot be moved"
+                        else
+                            local query = mysql:query_free("UPDATE items SET type = " .. getType(to) .. ", owner = " .. getID(to) .. " WHERE `index` = " .. itemIndex)
+                            if query then
+                                -- Check for duplicated weapons
+                                if itemID == 115 or itemID == 116 then
+                                    local target = from
+                                    if getElementType(to) == "player" then
+                                        target = to
+                                    end
+                                    if isThisGunDuplicated(itemID, itemValue, target) then
+                                        takeItemFromSlot(from, slot, false)
+                                        outputChatBox("This weapon was duplicated by bug abuser and cannot be used anymore. We're sorry to delete it now.", target, 255, 0, 0)
+                                        return false, "Weapon ID#"..itemIndex.." duplicate detected and deleted."
+                                    end
+                                end
 
-									if not exports.global:isStaffOnDuty(to) and not exports.global:isStaffOnDuty(from) then
-										if hoursPlayedFrom < 10 then
-											outputChatBox("You require 10 hours of playing time to move a "..getItemName( itemID ).." to a "..getName(to)..".", from, 255, 0, 0)
-											return false, "Item move cancelled, < 10 hours"
-										end
+                                -- ANTI ALT-ALT CHECK
+                                if ((itemID >= 31) and (itemID <= 43)) or itemBannedByAltAltChecker[itemID] then
+                                    local hoursPlayedFrom = getElementData(from, "hoursplayed") or 99
+                                    local hoursPlayedTo = getElementData(to, "hoursplayed") or 99
 
-										if hoursPlayedTo < 10 then
-											if not (itemID == 3 and getElementData(exports.pool:getElement("vehicle", itemValue), "owner") == getElementData(source, "dbid")) then -- Checks if they own the vehicle for the key
-												outputChatBox("You require 10 hours of playing time to receive a "..getItemName( itemID ).." from a "..getName(from)..".", to, 255, 0, 0)
-												return false, "Item move cancelled, < 10 hours"
-											end
-										end
-									end
-								end
+                                    if not exports.global:isStaffOnDuty(to) and not exports.global:isStaffOnDuty(from) then
+                                        if hoursPlayedFrom < 10 then
+                                            outputChatBox("You require 10 hours of playing time to move a "..getItemName(itemID).." to a "..getName(to)..".", from, 255, 0, 0)
+                                            return false, "Item move cancelled, < 10 hours"
+                                        end
+                                        if hoursPlayedTo < 10 then
+                                            if not (itemID == 3 and getElementData(exports.pool:getElement("vehicle", itemValue), "owner") == getElementData(from, "dbid")) then
+                                                -- Checks if they own the vehicle for the key
+                                                outputChatBox("You require 10 hours of playing time to receive a "..getItemName(itemID).." from a "..getName(from)..".", to, 255, 0, 0)
+                                                return false, "Item move cancelled, < 10 hours"
+                                            end
+                                        end
+                                    end
+                                end
 
-
-								if itemID == 134 then -- MONEY
-									if takeItemFromSlot(from, slot, true) then
-										if exports.global:giveMoney(to, tonumber(itemValue)) then
-											return true
-										end
-									end
-								else
-									if takeItemFromSlot(from, slot, true) then
-										if giveItem(to, itemID, itemValue, itemIndex, nil, metadata) then
-											return true
-										end
-									end
-								end
-							else
-								return false, "MySQL-Query failed."
-							end
-						end
-					else
-						return false, "Item does not exist."
-					end
-				else
-					return false, "Target does not have Space for Item."
-				end
-			else
-				return false, "Slot does not exist."
-			end
-		else
-			return false, "loadItems(to) error: " .. error
-		end
-	else
-		return false, "loadItems(from) error: " .. error
-	end
+                                -- Handling Money
+                                if itemID == 134 then
+                                    if takeItemFromSlot(from, slot, true) then
+                                        if exports.global:giveMoney(to, tonumber(itemValue)) then
+                                            return true
+                                        end
+                                    end
+                                else
+                                    if takeItemFromSlot(from, slot, true) then
+                                        if giveItem(to, itemID, itemValue, itemIndex, nil, metadata) then
+                                            return true
+                                        end
+                                    end
+                                end
+                            else
+                                return false, "MySQL-Query failed."
+                            end
+                        end
+                    else
+                        return false, "Item does not exist."
+                    end
+                else
+                    return false, "Target does not have space for item."
+                end
+            else
+                return false, "Slot does not exist."
+            end
+        else
+            return false, "loadItems(to) error: " .. error
+        end
+    else
+        return false, "loadItems(from) error: " .. error
+    end
 end
 
 -- checks if the element has that specific item

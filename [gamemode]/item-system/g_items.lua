@@ -167,7 +167,7 @@ g_items = {
 	[147] = { "Wallpaper", "For retexturing your interior.", 4, 2894, 0, 0, 0, -0.01, weight = 0.01 }, --147
 	[148] = { "Open Carry Weapon License", "A firearm permit which allows a person to openly carry a firearm.", 10, 1581, 270, 270, 0, 0, weight = 0.3 },
 	[149] = { "Concealed Carry Weapon License - LSPD", "A firearm permit which allows the concealment of a firearm, issued by LSPD.", 10, 1581, 270, 270, 0, 0, weight = 0.3 },
-	[150] = { "ATM Card", "A plastic card used to make transactions with a very limited amount per day from an automatic teller machine (ATM).", 10, 1581, 270, 270, 0, 0, weight = 0.1 },
+	[150] = { "ATM Card", "A plastic card used to make transactions with a very limited amount per day from an automatic teller machine (ATM).", 10, 1581, 270, 270, 0, 0, weight = 0.1, preventSpawn = true},
 	[151] = { "Lift Remote", "A remote device for a vehicle lift.", 2, 364, 0, 0, 0, 0.05, weight = 0.3 },
 	[152] = { "San Andreas Identification Card", "A sleek plastic Identification Card.", 10, 1581, 270, 270, 0, 0, weight = 0.1 },
 	[153] = { "Driver's License - Motorbike", "A Los Santos driving license.", 10, 1581, 270, 270, 0, 0, weight = 0.1 },
