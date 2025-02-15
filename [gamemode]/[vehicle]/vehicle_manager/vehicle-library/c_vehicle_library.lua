@@ -46,7 +46,7 @@ local function updateLibraryGrid(vehs)
 		guiGridListSetItemText(VehLibGrid, row, col.enabled, ((vehs[i].enabled == "1") and "Yes" or "No"), false, true)
 		local vehMtaModel = "-"
 		if tonumber(vehs[i].vehmtamodel) > 611 then
-			vehMtaModel = "Newmodels"
+			vehMtaModel = "newmodels_azul"
 		else
 			vehMtaModel = getVehicleNameFromModel(tonumber(vehs[i].vehmtamodel))
 		end
@@ -693,7 +693,7 @@ function validateCreateVehicle(data)
 		local allGood = true
 		--VALIDATE MTA MODEL
 		local input = guiGetText(edits[1])
-		local vehName = getVehicleNameFromModel(input) or "Newmodels"
+		local vehName = getVehicleNameFromModel(input) or "newmodels_azul"
 		local vehModel = getVehicleModelFromName(input) or "No Brand"
 		if input == "584" or input == "611" or input == "606" or input == "607" or input == "608" or input == "450" then
 			guiSetText(labels[1], "MTA Vehicle Model (OK!):")

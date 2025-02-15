@@ -372,9 +372,9 @@ function createTempVehicle(thePlayer, commandName, vehShopID)
 
 
 		local veh
-		if vehicleID > 611 and getResourceFromName("newmodels_reborn") and getResourceState(getResourceFromName("newmodels_reborn")) == "running" then
+		if vehicleID > 611 and getResourceFromName("newmodels_azul") and getResourceState(getResourceFromName("newmodels_azul")) == "running" then
 			veh = createVehicle(562, x, y, z, 0, 0, r, plate)
-			exports["newmodels_reborn"]:setElementModel(veh, vehicleID)
+			exports["newmodels_azul"]:setElementModel(veh, vehicleID)
 		else
 			veh = createVehicle(vehicleID, x, y, z, 0, 0, r, plate)
 		end

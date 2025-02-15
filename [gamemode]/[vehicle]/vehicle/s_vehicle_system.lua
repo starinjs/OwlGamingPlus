@@ -120,9 +120,9 @@ function createPermanentVehicle(player, command, ...)
 
 		-- create a vehicle temporarily so we can get its name, colors and validate that it is an actual vehicle.
 		local veh
-		if id > 611 and getResourceFromName("newmodels_reborn") and getResourceState(getResourceFromName("newmodels_reborn")) == "running" then
+		if id > 611 and getResourceFromName("newmodels_azul") and getResourceState(getResourceFromName("newmodels_azul")) == "running" then
 			veh = createVehicle(562, x, y, z, 0, 0, r, plate)
-			exports["newmodels_reborn"]:setElementModel(veh, id)
+			exports["newmodels_azul"]:setElementModel(veh, id)
 		else
 			veh = createVehicle(id, x, y, z, 0, 0, r, plate)
 		end
@@ -252,7 +252,7 @@ function createCivilianPermVehicle(thePlayer, commandName, ...)
 			local letter2 = string.char(math.random(65,90))
 			local plate = letter1 .. letter2 .. math.random(0, 9) .. " " .. math.random(1000, 9999)
 
-			local veh = exports["newmodels_reborn"]:createVehicle(id, x, y, z, 0, 0, r, plate)
+			local veh = exports["newmodels_azul"]:createVehicle(id, x, y, z, 0, 0, r, plate)
 			if not (veh) then
 				outputChatBox("Invalid Vehicle ID.", thePlayer, 255, 0, 0)
 			else

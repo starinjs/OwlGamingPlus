@@ -99,9 +99,9 @@ function carshop_updateVehicles( forceUpdate )
 					local model = tonumber(vehicleData.vehmtamodel)
 					--getVehicleModelFromName(data[1]) or tonumber(data[1])
 					local vehicle
-					if model > 611 and getResourceFromName("newmodels_reborn") and getResourceState(getResourceFromName("newmodels_reborn")) == "running" then
+					if model > 611 and getResourceFromName("newmodels_azul") and getResourceState(getResourceFromName("newmodels_azul")) == "running" then
 						vehicle = createVehicle( 562 , v[1], v[2], v[3], v[4], v[5], v[6], plate  )
-						exports["newmodels_reborn"]:setElementModel(vehicle, model)
+						exports["newmodels_azul"]:setElementModel(vehicle, model)
 					else
 						vehicle = createVehicle( model , v[1], v[2], v[3], v[4], v[5], v[6], plate  )
 					end
@@ -128,7 +128,11 @@ function carshop_updateVehicles( forceUpdate )
 						setElementInterior(vehicle, v[4])
 						setElementDimension(vehicle, v[5])
 						setVehicleLocked( vehicle, true )
-						setTimer(setElementFrozen, 180, 1, vehicle, true )
+						setTimer(function()
+							if isElement(vehicle) then
+								setElementFrozen(vehicle, true)
+							end
+						end, 500, 1)
 						setVehicleDamageProof( vehicle, true )
 						setVehicleVariant(vehicle, exports.vehicle:getRandomVariant(getElementModel(vehicle)))
 						v["vehicle"] = vehicle
@@ -309,7 +313,7 @@ function carshop_buyVehicle(paymentMethod)
 	end
 
 	local dbid = getElementData(client, "account:character:id")
-	local modelID = exports["newmodels_reborn"]:getElementModel(source) or getElementModel(source)
+	local modelID = exports["newmodels_azul"]:getElementModel(source) or getElementModel(source)
 	local x, y, z = getElementPosition(source)
 	local rx, ry, rz = getElementRotation(source)
 	local odometer = tonumber(getElementData(source, 'odometer')) * 1000
