@@ -691,10 +691,11 @@ function showGeneralshopUI(shop_type, race, gender, discount, products1)
 						local row = guiGridListAddRow( grid )
 						guiGridListSetItemText( grid, row, cName, item.name, false, false )
 						guiGridListSetItemData( grid, row, cName, tostring( counter ) )
-
-						if item.minimum_age and getElementData(localPlayer, "age") < item.minimum_age then
-							guiGridListSetItemText( grid, row, cPrice, "◊ " .. item.minimum_age .. " or older", false, false )
-						else
+                        if tonumber(item.minimum_age) and tonumber(getElementData(localPlayer, "age")) then
+                        if tonumber(getElementData(localPlayer, "age")) < tonumber(item.minimum_age) then
+                            guiGridListSetItemText(grid, row, cPrice, "Age " .. item.minimum_age .. "+", false, false)
+                        end
+                        else
 							if shop_type == 5 and category.name ~= 'Bandanas' then
 								guiGridListSetItemText( grid, row, cPrice, 'Vary', false, false )
 							else
