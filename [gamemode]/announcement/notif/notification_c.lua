@@ -39,7 +39,7 @@ function drawPmThump()
 		local posxIcon = globalOffSetX
 		local posxBG = imgw+globalOffSetX
 		local posxText = posxIcon+5
-		dxDrawImage ( posxIcon+thumpOffsetX, 5+globalOffSetY, imgw, imgh, "owl_noti.png")
+		dxDrawImage ( posxIcon+thumpOffsetX, 5+globalOffSetY, imgw, imgh, ":resources/hud/images/opm.png")
 		--dxDrawRectangle(posxBG+thumpOffsetX, 10+globalOffSetY, bgw, bgh, tocolor(0, 0, 0, 100), false)
 		if not font then
 			font = dxCreateFont (":resources/fonts/Anton.ttf" , 10 )

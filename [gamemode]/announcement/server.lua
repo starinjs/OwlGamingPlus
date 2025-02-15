@@ -24,7 +24,7 @@ addCommandHandler("ann",
 
 			for _, arrayPlayer in ipairs(players) do
 				if integration:isPlayerTrialAdmin(player) then
-					triggerClientEvent(arrayPlayer, "announcement:post", arrayPlayer, "Admin Announcement: " .. message, 255, 194, 14, 1)
+					triggerClientEvent(arrayPlayer, "announcement:post", arrayPlayer, "Admin Announcement: " .. message, 0, 170, 255, 1)
 				elseif integration:isPlayerSupporter(player) then
 					triggerClientEvent(arrayPlayer, "announcement:post", arrayPlayer, "SUP Announcement: " .. message, 255, 100, 150, 1)
 				end

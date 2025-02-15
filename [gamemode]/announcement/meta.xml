@@ -1,33 +1,32 @@
 <meta>
-	<info author="OwlGaming MTA Scripting Team"/>
-	<script src="server.lua" type="server"/>
-	<script src="client.lua" type="client"/>
+    <info author="OwlGaming MTA Scripting Team"/>
 
-	<script src="motd_s.lua" type="server"/>
-	<script src="motd_c.lua" type="client"/>
+    <!-- Core Scripts -->
+    <script src="server.lua" type="server"/>
+    <script src="client.lua" type="client"/>
 
-	<script src="motd_frontend_s.lua" type="server"/>
-	<script src="motd_frontend_c.lua" type="client"/>
+    <!-- MOTD System -->
+    <script src="motd/motd_s.lua" type="server"/>
+    <script src="motd/motd_c.lua" type="client"/>
+    <script src="motd/motd_frontend_s.lua" type="server"/>
+    <script src="motd/motd_frontend_c.lua" type="client"/>
+    <script src="motd/motd_g.lua" type="shared"/>
 
-	<script src="motd_g.lua" type="shared"/>
+    <!-- OPM System -->
+    <script src="opm/opm_s.lua" type="server"/>
+    <script src="opm/opm_c.lua" type="client"/>
 
-	<script src="opm_s.lua" type="server"/>
-	<script src="opm_c.lua" type="client"/>
+    <!-- Notification System -->
+    <script src="notif/notification_s.lua" type="server"/>
+    <script src="notif/notification_c.lua" type="client"/>
 
-	<file src="OwlAnnLogo.png"/>
-	<file src="1.mp3"/>
+    <!-- Assets -->
+    <file src="announcement.mp3"/>
+    <file src="opm/opm.png"/>
 
-	<export function="canPlayerAccessMotdManager" type="server"/>
-	<export function="canPlayerAccessMotdManager" type="client"/>
-
-	<script src="notification_s.lua" type="server"/>
-	<script src="notification_c.lua" type="client"/>
-
-	<!--
-		makePlayerNotification(player, title, details)
-	-->
-	<export function="makePlayerNotification" type="server" http="true"/>
-
-	<file src="owl_noti.png"/>
-	<file src="opm.png"/>
+    <!-- Exported Functions -->
+    <export function="canPlayerAccessMotdManager" type="server" http="true"/>
+    <export function="canPlayerAccessMotdManager" type="client"/>
+    <export function="makePlayerNotification" type="server" http="true"/>  <!--
+	    makePlayerNotification(player, title, details) -->
 </meta>

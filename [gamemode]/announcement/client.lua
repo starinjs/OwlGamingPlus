@@ -17,7 +17,7 @@ function drawAnnText()
 		setElementData(localPlayer, "annHeight", height, false)
 		if (getPedWeapon(localPlayer) ~= 43 or not getPedControlState(localPlayer, "aim_weapon")) then
 			dxDrawRectangle(0, 0, sx, height, tocolor(0, 0, 0, alphaBG), false)
-			dxDrawImage(posX, 0, 40, 25, "OwlAnnLogo.png")
+			dxDrawImage(posX, 0, 40, 25, ":resources/images/OwlGamingPlus.png")
 			dxDrawText(textString, posX + 45, 5, stringLegth, sy, tocolor(r, b, g, 255), 1, "default")
 		end
 
