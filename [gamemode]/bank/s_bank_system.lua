@@ -263,95 +263,79 @@ function tellTransfersBusiness(name)
 end
 
 function tellTransfers(source, dbid, event)
-	local where = ""
-	if type(dbid) == "table" then
-		where = "( ( `from` = (SELECT `card_owner` FROM `atm_cards` WHERE `card_number` = '" .. dbid[2] .. "' LIMIT 1) ) OR (`to` = (SELECT `card_owner` FROM `atm_cards` WHERE `card_number` = '" .. dbid[2] .. "' LIMIT 1) ) )"
-	else
-		where = "( `from` = " .. dbid .. " OR `to` = " .. dbid .. " )"
-	end
-	
-	if tonumber(dbid) and dbid < 0 then
-		where = where .. " AND type != 6" -- skip paydays for factions 
-	else
-		where = where .. " AND type != 4 AND type != 5" -- skip stuff that's not paid from bank money
-	end
-	
-	-- `w.time` - INTERVAL 1 hour as 'newtime'
-	-- hour correction
-	
-	local query = mysql:query("SELECT w.*, c.charactername as characterfrom, c2.charactername as characterto,w.`time` as 'newtime' FROM wiretransfers w LEFT JOIN characters c ON c.id = `from` LEFT JOIN characters c2 ON c2.id = `to` WHERE "..where.." ORDER BY id DESC LIMIT 40;")
-	if query then
-		local continue = true
-		while continue do
-			row = mysql:fetch_assoc(query)
-			if not row then break end
-			
-			local id = tonumber(row["id"])
-			local amount = tonumber(row["amount"])
-			local time = row["newtime"]
-			local type = tonumber(row["type"])
-			local reason = row["reason"]
-			if reason == nil then
-				reason = ""
-			end
-			
-			local from, to = "-", "-"
-			if row["characterfrom"] ~= nil then
-				from = row["characterfrom"]:gsub("_", " ")
-				if row["from_card"] ~= nil then
-					from = from.." ("..row["from_card"]..")"
-				end
-			elseif tonumber(row["from"]) then
-				num = tonumber(row["from"]) 
-				if num < 0 then
-					local theTeam = exports.pool:getElement("team", -num)
-					from = theTeam and getTeamName(exports.pool:getElement("team", -num)) or "-"
-				elseif num == 0 and ( type == 6 or type == 7 ) then
-					from = "Government"
-				end
-			end
-			if row["characterto"] ~= nil then
-				to = row["characterto"]:gsub("_", " ")
-				if row["to_card"] ~= nil then
-					to = to.." ("..row["to_card"]..")"
-				end
-			elseif tonumber(row["to"]) and tonumber(row["to"]) < 0 then
-				local theTeam = exports.pool:getElement("team", -tonumber(row["to"]))
-				if theTeam then
-					to = getTeamName(theTeam)
-				end
-			end
-				
-			if amount > 0 then
-				if tonumber(dbid) then  -- Not ATM
-					if tostring(row["from"]) == tostring(dbid) then
-						amount = -amount
-					end
-				elseif tostring(row["from_card"]) == tostring(dbid[2]) or tostring(row["from"]) == tostring(dbid[4])  then
-					amount = -amount
-				end 
-			end
-			
-			
-			--if type >= 2 and type <= 5 and tonumber(row['from']) == dbid then
-			--	amount = -amount
-			--end
-			
-			--[[if amount < 0 then
-				amount = "-$" .. -amount
-			else
-				amount = "$" .. amount
-			end]]
-			local details = "-"
-			if row["details"] ~= nil then
-				details = row["details"]
-			end
-			triggerClientEvent(source, event, source, id, amount, time, type, from, to, reason, details, dbid)
-		end
-		mysql:free_result(query)
-	else
-		outputDebugString("Mysql error @ s_bank_system.lua\tellTransfers", 2)
-	end
+    local where = ""
+    if type(dbid) == "table" then
+        where = "( ( `from` = (SELECT `card_owner` FROM `atm_cards` WHERE `card_number` = '" .. dbid[2] .. "' LIMIT 1) ) OR (`to` = (SELECT `card_owner` FROM `atm_cards` WHERE `card_number` = '" .. dbid[2] .. "' LIMIT 1) ) )"
+    else
+        where = "( `from` = " .. dbid .. " OR `to` = " .. dbid .. " )"
+    end
+
+    if tonumber(dbid) and dbid < 0 then
+        where = where .. " AND type != 6" -- skip paydays for factions
+    else
+        where = where .. " AND type != 4 AND type != 5" -- skip stuff that's not paid from bank money
+    end
+
+    local query = mysql:query("SELECT w.*, c.charactername as characterfrom, c2.charactername as characterto, w.`time` as 'newtime' FROM wiretransfers w LEFT JOIN characters c ON c.id = `from` LEFT JOIN characters c2 ON c2.id = `to` WHERE " .. where .. " ORDER BY id DESC LIMIT 40;")
+
+    if query then
+        while true do
+            local row = mysql:fetch_assoc(query)
+            if not row then break end
+
+            local id = tonumber(row["id"])
+            local amount = tonumber(row["amount"])
+            local time = row["newtime"]
+            local transactionType = tonumber(row["type"]) -- Renamed `type` to `transactionType`
+            local reason = row["reason"] or ""
+
+            local from, to = "-", "-"
+
+            if row["characterfrom"] and type(row["characterfrom"]) == "string" then
+                from = row["characterfrom"]:gsub("_", " ")
+                if row["from_card"] and type(row["from_card"]) ~= "boolean" then
+                    from = from .. " (" .. tostring(row["from_card"]) .. ")"
+                end
+            elseif tonumber(row["from"]) then
+                local num = tonumber(row["from"])
+                if num < 0 then
+                    local theTeam = exports.pool:getElement("team", -num)
+                    from = theTeam and getTeamName(theTeam) or "-"
+                elseif num == 0 and (transactionType == 6 or transactionType == 7) then
+                    from = "Government"
+                end
+            end
+
+            if row["characterto"] and type(row["characterto"]) == "string" then
+                to = row["characterto"]:gsub("_", " ")
+                if row["to_card"] and type(row["to_card"]) ~= "boolean" then
+                    to = to .. " (" .. tostring(row["to_card"]) .. ")"
+                end
+            elseif tonumber(row["to"]) and tonumber(row["to"]) < 0 then
+                local theTeam = exports.pool:getElement("team", -tonumber(row["to"]))
+                if theTeam then
+                    to = getTeamName(theTeam)
+                end
+            end
+
+            if amount > 0 then
+                if tonumber(dbid) then
+                    if tostring(row["from"]) == tostring(dbid) then
+                        amount = -amount
+                    end
+                elseif tostring(row["from_card"]) == tostring(dbid[2]) or tostring(row["from"]) == tostring(dbid[4]) then
+                    amount = -amount
+                end
+            end
+
+            local details = row["details"] or "-"
+
+            triggerClientEvent(source, event, source, id, amount, time, transactionType, from, to, reason, details, dbid)
+        end
+        mysql:free_result(query)
+    else
+        outputDebugString("Mysql error @ s_bank_system.lua tellTransfers", 2)
+    end
 end
 
 addEvent("tellTransfersPersonal", true)
