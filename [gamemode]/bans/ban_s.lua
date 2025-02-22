@@ -60,14 +60,12 @@ function ban(title, targetPlayer, hours, ...)
 
 			for _, value in pairs(getElementsByType("player")) do
 				if getPlayerSerial(value) == targetPlayerSerial then
-					kickPlayer(value, thePlayer, reason)
+					kickPlayer(value, "Console", reason)
 				end
 			end
 			for _, player in pairs( getElementsByType("player")) do
-				if tonumber( getElementData( player, "punishment_notification_selector") ) ~= 1 or player == thePlayer or player == targetPlayer then
-					outputChatBox("[BAN] ".. title .." banned " .. targetPlayerName .. ". (" .. hours .. ")", player, 255,0,0)
-					outputChatBox("[BAN] Reason: " .. reason .. ".", player, 255,0,0)
-				end
+				outputChatBox("[BAN] ".. title .." banned " .. targetPlayerName .. ". (" .. hours .. ")", player, 255,0,0)
+				outputChatBox("[BAN] Reason: " .. reason .. ".", player, 255,0,0)
 			end
 			exports.global:sendMessageToAdmins("/showban for details.")
 		end
