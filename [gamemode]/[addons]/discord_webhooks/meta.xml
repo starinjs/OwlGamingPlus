@@ -1,0 +1,22 @@
+<meta>
+    <info version="2.0.2" author="Fernando" name="mta-discord-webhooks" description="simple scripts to use Discord Webhooks in your MTA server" type="script"/>
+    <!-- DOCUMENTATION:
+        https://github.com/Fernando-A-Rocha/mta-discord-webhooks
+    -->
+    <min_mta_version server="1.5.7-9.20307"/>
+    
+    <!-- Core scripts -->
+    <script src="embeds.lua" type="server"/>
+    <script src="system.lua" type="server"/>
+
+    <!-- Configurable settings script -->
+    <script src="custom/config.lua" type="server"/>
+    
+    <!-- (Optional: Example implementations) -->
+    <script src="custom/examples.lua" type="server"/>
+    
+    <!-- Exported functions -->
+    <export function="send" type="server"/>
+    <export function="sendToURL" type="server"/>
+    <export function="validateMessage" type="server"/>
+</meta>
