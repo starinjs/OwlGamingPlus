@@ -108,30 +108,30 @@ function showSupplySpot()
 	if not isElement(staticBlips["loadupBlip"]) then
 		staticBlips["loadupBlip"] = createBlip(staticPoints["loadupBlip"][1], staticPoints["loadupBlip"][2], staticPoints["loadupBlip"][3], 0, 2, 0, 255, 0)
 		-- Entrance 1
-		staticMarkers["loadupEntrance1"] = createMarker(staticPoints["loadupEntrance1"][1], staticPoints["loadupEntrance1"][2], staticPoints["loadupEntrance1"][3], "cylinder", 3, 255, 255, 255, 100, localPlayer)
+		staticMarkers["loadupEntrance1"] = createMarker(staticPoints["loadupEntrance1"][1], staticPoints["loadupEntrance1"][2], staticPoints["loadupEntrance1"][3], "cylinder", 3, 255, 255, 255, 100, true)
 		addEventHandler("onClientMarkerHit", staticMarkers["loadupEntrance1"], enteringRSHaulWarehouse1)
 		-- Entrance 2
-		staticMarkers["loadupEntrance2"] = createMarker(staticPoints["loadupEntrance2"][1], staticPoints["loadupEntrance2"][2], staticPoints["loadupEntrance2"][3], "cylinder", 3, 255, 255, 255, 100,localPlayer)
+		staticMarkers["loadupEntrance2"] = createMarker(staticPoints["loadupEntrance2"][1], staticPoints["loadupEntrance2"][2], staticPoints["loadupEntrance2"][3], "cylinder", 3, 255, 255, 255, 100,true)
 		addEventHandler("onClientMarkerHit", staticMarkers["loadupEntrance2"], enteringRSHaulWarehouse2)
 		-- Loadup 1
-		staticMarkers["loadup1"] = createMarker(staticPoints["loadup1"][1], staticPoints["loadup1"][2], staticPoints["loadup1"][3], "cylinder", 3, 0, 255, 0, 100,localPlayer)
+		staticMarkers["loadup1"] = createMarker(staticPoints["loadup1"][1], staticPoints["loadup1"][2], staticPoints["loadup1"][3], "cylinder", 3, 0, 255, 0, 100,true)
 		setElementInterior(staticMarkers["loadup1"], staticPoints["loadup1"][4])
 		setElementDimension(staticMarkers["loadup1"], staticPoints["loadup1"][5])
 		addEventHandler("onClientMarkerHit", staticMarkers["loadup1"], waitAtStationLoadup)
 		addEventHandler("onClientMarkerLeave", staticMarkers["loadup1"], leaveStationLoadup)
 		-- Loadup 2
-		staticMarkers["loadup2"] = createMarker(staticPoints["loadup2"][1], staticPoints["loadup2"][2], staticPoints["loadup2"][3], "cylinder", 3, 0, 255, 0, 100,localPlayer)
+		staticMarkers["loadup2"] = createMarker(staticPoints["loadup2"][1], staticPoints["loadup2"][2], staticPoints["loadup2"][3], "cylinder", 3, 0, 255, 0, 100,true)
 		setElementInterior(staticMarkers["loadup2"], staticPoints["loadup2"][4])
 		setElementDimension(staticMarkers["loadup2"], staticPoints["loadup2"][5])
 		addEventHandler("onClientMarkerHit", staticMarkers["loadup2"], waitAtStationLoadup)
 		addEventHandler("onClientMarkerLeave", staticMarkers["loadup2"], leaveStationLoadup)
 		-- Exit 1
-		staticMarkers["loadupExit1"] = createMarker(staticPoints["loadupExit1"][1], staticPoints["loadupExit1"][2], staticPoints["loadupExit1"][3], "cylinder", 3, 255, 255, 255, 100, localPlayer)
+		staticMarkers["loadupExit1"] = createMarker(staticPoints["loadupExit1"][1], staticPoints["loadupExit1"][2], staticPoints["loadupExit1"][3], "cylinder", 3, 255, 255, 255, 100, true)
 		setElementInterior(staticMarkers["loadupExit1"], staticPoints["loadupExit1"][4])
 		setElementDimension(staticMarkers["loadupExit1"], staticPoints["loadupExit1"][5])
 		addEventHandler("onClientMarkerHit", staticMarkers["loadupExit1"], exitingRSHaulWarehouse1)
 		-- Exit 2
-		staticMarkers["loadupExit2"] = createMarker(staticPoints["loadupExit2"][1], staticPoints["loadupExit2"][2], staticPoints["loadupExit2"][3], "cylinder", 3, 255, 255, 255, 100,localPlayer)
+		staticMarkers["loadupExit2"] = createMarker(staticPoints["loadupExit2"][1], staticPoints["loadupExit2"][2], staticPoints["loadupExit2"][3], "cylinder", 3, 255, 255, 255, 100,true)
 		setElementInterior(staticMarkers["loadupExit2"], staticPoints["loadupExit2"][4])
 		setElementDimension(staticMarkers["loadupExit2"], staticPoints["loadupExit2"][5])
 		addEventHandler("onClientMarkerHit", staticMarkers["loadupExit2"], exitingRSHaulWarehouse2)
