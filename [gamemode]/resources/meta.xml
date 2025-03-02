@@ -2,28 +2,15 @@
 	<info author="OwlGamingPlus" type="script" description="Resources required for other systems to run."/>
 
 	<!-- Fonts-->
-	<file src="fonts/clbold.ttf"/>
-	<file src="fonts/segoeuil.ttf"/>
-	<file src="fonts/cartwheel.otf"/>
-	<file src="fonts/Anton.ttf"/>
-	<file src="fonts/BizNote.ttf"/>
-	<file src="fonts/helveticastrong.ttf"/>
-	<file src="fonts/digital.ttf"/>
+	<file src="fonts/*.ttf"/>
+	<file src="fonts/*.otf"/>
 	
 	<!-- Images -->
-	<file src="images/loading.jpg"/>
-	<file src="images/window_body.png"/>
-	<file src="images/OGLogo.png"/>
-	<file src="images/OwlGamingPlus.png"/>
-	<file src="images/selectionScreenID24.jpg"/>
-	<file src="images/selectionScreenID25.jpg"/>
-	<file src="images/selectionScreenID26.jpg"/>
+	<file src="images/*.jpg"/>
+	
+	<!-- Interiors -->
+	<file src="interiors/*.jpg"/>
 
 	<!-- Sounds -->
-	<file src="sounds/inv_close.mp3"/>
-	<file src="sounds/inv_open.mp3"/>
-	<file src="sounds/inv_toggle.mp3"/>
-	<file src="sounds/hb_on.mp3"/>
-	<file src="sounds/hb_off.mp3"/>
-	<file src="sounds/toggle.mp3"/>
+	<file src="sounds/*.mp3"/>
 </meta>
