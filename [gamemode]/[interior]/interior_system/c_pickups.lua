@@ -103,22 +103,22 @@ local margin = 3
 local textShadowDistance = 3
 local intNameFont, BizNoteFont
 local function makeFonts()
-    intNameFont = intNameFont or dxCreateFont("intNameFont.ttf", 30 ) or "default-bold"
-    BizNoteFont = BizNoteFont or dxCreateFont(":resources/fonts/BizNote.ttf", 21 ) or "default-bold"
+    intNameFont = "default-bold"
+    BizNoteFont = "default-bold"
 end
 
 function renderInteriorName()
     if hitPickup and isElement(hitPickup) then
         local theInterior = hitPickup
         makeFonts()
-        local intInst = "Press F to enter"
+        local intInst = "Enter elevator"
         local intStatus = getElementData(theInterior, "status")
         --Draw int name
         local intName = "Elevator"
         if isLastSourceInterior then
             intName = getElementData(theInterior, "name")
         end
-        local intName_width = dxGetTextWidth ( intName, 1, intNameFont )+textShadowDistance*2
+        local intName_width = dxGetTextWidth ( intName, 1, intNameFont )+textShadowDistance*2+50
         local intName_left = (scrWidth-intName_width)/2
         local intName_height = dxGetFontHeight ( 1, intNameFont )
         local intName_top = (yOffset-intName_height)
@@ -166,8 +166,7 @@ function renderInteriorName()
                 intName_top = intName_top - margin
                 local bizNote_right = bizNote_left + bizNote_width
                 local bizNote_bottom = intName_top + bizNote_height
-                dxDrawText ( bizNote , bizNote_left , intName_top , bizNote_right, bizNote_bottom, textColor,
-                        1, BizNoteFont, "center", "center", false, true )
+				exports.script_notification:insertClientMessage(bizNote, {0, 170, 255})
                 intName_top = intName_top + bizNote_height
             end
 
@@ -181,45 +180,43 @@ function renderInteriorName()
                 intName_top = intName_top + margin
                 local intAddress_right = intAddress_left + intAddress_width
                 local intAddress_bottom = intName_top + intAddress_height
-                dxDrawText ( intAddress , intAddress_left , intName_top , intAddress_right, intAddress_bottom, textColor,
-                        1, "default", "center", "center", false, true )
+				exports.script_notification:insertClientMessage(intAddress, {100, 100, 100})
                 intName_top = intName_top + intAddress_height
 			end
 
             --Draw owner
-            if canPlayerKnowInteriorOwner(theInterior) then -- House or Biz
                 local intOwner = ""
                 if intStatus.owner > 0 then
                     local ownerName = exports.cache:getCharacterNameFromID(intStatus.owner)
                     if intType == 3 then
                         intOwner = "Rented by "..(ownerName or "..Loading..")
-                        intInst = "Press F to enter"
+                        intInst = "Enter interior"
                     elseif intType ~= 2 then
                         intOwner = "Owned by "..(ownerName or "..Loading..")
-                        intInst = "Press F to enter"
+                        intInst = "Enter interior"
                     end
                 elseif intStatus.faction > 0 then
                     local ownerName = exports.cache:getFactionNameFromId(intStatus.faction)
                     if intType ~= 2 then
                         intOwner = "Owned by "..(ownerName or "..Loading..")
-                        intInst = "Press F to enter"
+                        intInst = "Enter interior"
                     end
                 else
                     if intType == 2 then
                         intOwner = "Owned by no-one"
-                        intInst = "Press F to enter"
+                        intInst = "Enter interior"
                     elseif intType == 3 then
                         local intPrice = exports.global:formatMoney(intStatus.cost)
                         intOwner = "For rent: $"..intPrice
-                        intInst = "Press F to rent"
+                        intInst = "Rent interior"
                     else
                         local intPrice = exports.global:formatMoney(intStatus.cost)
                         intOwner = "For sale: $"..intPrice
-                        intInst = "Press F to purchase"
-                        local url = getElementData(theInterior, 'interior_id') and exports.cache:getImage(-tonumber(getElementData(theInterior, 'interior_id')))
-                        dxDrawImage (img_l, img_t, img_w, img_h, url and url.tex or ":resources/images/loading.jpg")
+                        intInst = "Purchase interior"
+                        local interiorID = getElementData(theInterior, 'interior_id')
+                        local url = interiorID and string.format(":resources/interiors/%d.jpg", tonumber(interiorID)) or ":resources/images/loading.jpg"
+                        dxDrawImage(img_l, img_t, img_w, img_h, url)
                     end
-                end
                 local intOwner_width = dxGetTextWidth ( intOwner, 1, "default" )
                 local intOwner_left = (scrWidth-intOwner_width)/2
                 local intOwner_height = dxGetFontHeight ( 1, "default" )
@@ -257,9 +254,9 @@ function renderInteriorName()
         end
 
         dxDrawText ( intName or "Unknown Interior", n_l+textShadowDistance , n_t+textShadowDistance , n_r+textShadowDistance, n_b+textShadowDistance, tocolor(0,0,0,255),
-                    1, intNameFont, "center", "center", false, true )
+                    1.5, intNameFont, "center", "center", false, true )
         dxDrawText ( intName or "Unknown Interior", n_l , n_t , n_r, n_b, textColor,
-                    1, intNameFont, "center", "center", false, true )
+                    1.5, intNameFont, "center", "center", false, true )
 
         --Draw instructions
         local intInst_width = dxGetTextWidth ( intInst, 1, "default" )
@@ -268,8 +265,7 @@ function renderInteriorName()
         intName_top = intName_top + margin
         local intInst_right = intInst_left + intInst_width
         local intInst_bottom = intName_top + intInst_height
-        dxDrawText ( intInst , intInst_left , intName_top , intInst_right, intInst_bottom, textColor,
-                1, "default", "center", "center", false, true )
+		exports.script_notification:insertClientMessage(intInst, {30, 30, 30}, "F")
         intName_top = intName_top + intInst_height
 
         -- Interior ID for admins/factions with MDC access to interior information
@@ -281,8 +277,7 @@ function renderInteriorName()
             intName_top = intName_top + margin
             local intId_right = intId_left + intId_width
             local intId_bottom = intName_top + intId_height
-            dxDrawText ( intId , intId_left , intName_top , intId_right, intId_bottom, textColor,
-                    1, "default", "center", "center", false, true )
+			exports.script_notification:insertClientMessage(intId, {255, 255, 255})
             intName_top = intName_top + intId_height
         end
     else
