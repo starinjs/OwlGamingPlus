@@ -1,0 +1,12 @@
+<meta>
+    <file src = "files/message.mp3"/>
+    <file src = "files/prompt.mp3"/>
+    <file src = "files/gradient.png"/>
+
+    <script src = "client.lua" type = "client"/>
+    <script src = "server.lua" type = "server"/>
+
+    <export function = "insertClientMessage" type = "client"/>
+    <export function = "insertClientMessage" type = "server"/>
+    <min_mta_version server="1.6.0-9.21695" client="1.6.0-9.21695" />
+</meta>
