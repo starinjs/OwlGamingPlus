@@ -1,584 +1,780 @@
 --
--- vgScoreboard v1.0
+-- Enhanced Scoreboard v2.0
 -- Client-side script.
--- By Alberto "ryden" Alonso
+-- Based on original by Alberto "ryden" Alonso
+-- Modernized design and animations
 --
 
---[[ Configuration ]]--
-local SCOREBOARD_WIDTH				= 400				-- The scoreboard window width
-local SCOREBOARD_HEIGHT				= 600				-- The scoreboard window height
-local SCOREBOARD_HEADER_HEIGHT		= 30				-- Height for the header in what you can see the server info
-local SCOREBOARD_TOGGLE_CONTROL		= "tab"				-- Control/Key to toggle the scoreboard visibility
-local SCOREBOARD_PGUP_CONTROL		= "mouse_wheel_up"	-- Control/Key to move one page up
-local SCOREBOARD_PGDN_CONTROL		= "mouse_wheel_down"-- Control/Key to move one page down
-local SCOREBOARD_DISABLED_CONTROLS	= { "next_weapon",	-- Controls that are disabled when the scoreboard is showing
-										"previous_weapon",
-										"aim_weapon",
-										"radio_next",
-										"radio_previous" }
-local SCOREBOARD_TOGGLE_TIME		= 200				-- Time in miliseconds to make the scoreboard (dis)appear
-local SCOREBOARD_POSTGUI			= true				-- Set to true if it must be drawn over the GUI
-local SCOREBOARD_INFO_BACKGROUND	= { 0, 0, 0, 150 }			-- RGBA color for the info header background
-local SCOREBOARD_SERVER_NAME_COLOR	= { 255, 255, 255, 255 }		-- RGBA color for the server name text
-local SCOREBOARD_PLAYERCOUNT_COLOR	= { 255, 255, 255, 255 }	-- RGBA color for the server player count text
-local SCOREBOARD_BACKGROUND			= { 0, 0, 0, 140 }			-- RGBA color for the background
-local SCOREBOARD_BACKGROUND_IMAGE	= { 255, 255, 255, 40 }		-- RGBA color for the background image
-local SCOREBOARD_HEADERS_COLOR		= { 255, 255, 255, 180 }	-- RGBA color for the headers
-local SCOREBOARD_SEPARATOR_COLOR	= { 82, 82, 82, 140 }		-- RGBA color for the separator line between headers and body content
-local SCOREBOARD_SCROLL_BACKGROUND	= { 0, 10, 20, 100 }		-- RGBA color for the scroll background
-local SCOREBOARD_SCROLL_BACKGROUND	= { 0, 10, 20, 100 }		-- RGBA color for the scroll background
-local SCOREBOARD_SCROLL_FOREGROUND	= { 255, 255, 255, 255 }		-- RGBA color for the scroll foreground
-local SCOREBOARD_SCROLL_HEIGHT		= 40						-- Size for the scroll marker
-local SCOREBOARD_COLUMNS_WIDTH		= { 0.08, 0.59, 0.15, 0.14, 0.04 }	-- Relative width for each column: id, player name, hours, ping and scroll position
-local SCOREBOARD_ROW_GAP			= 1							-- Gap between rows
+--[[ MAIN CONFIGURATION - Edit these values to customize your scoreboard ]]--
+local CONFIG = {
+    -- Server Display
+    SERVER_NAME                 = nil,               -- Set to override server name (nil = use server data)
+    
+    -- Dimensions
+    WIDTH                       = 500,               -- The scoreboard window width
+    HEIGHT                      = 600,               -- The scoreboard window height
+    HEADER_HEIGHT               = 50,                -- Height for the header
+    ROW_HEIGHT                  = 30,                -- Height for each player row
+    ROW_GAP                     = 1,                 -- Gap between rows
+    CORNER_RADIUS               = 8,                 -- Radius for rounded corners
+    AVATAR_SIZE                 = 24,                -- Size of player avatar icons
+    
+    -- Controls
+    TOGGLE_KEY                  = "tab",             -- Control/Key to toggle the scoreboard visibility
+    PGUP_CONTROL                = "mouse_wheel_up",  -- Control/Key to move one page up
+    PGDN_CONTROL                = "mouse_wheel_down",-- Control/Key to move one page down
+    DISABLED_CONTROLS           = { "next_weapon",   -- Controls that are disabled when the scoreboard is showing
+                                    "previous_weapon",
+                                    "aim_weapon",
+                                    "radio_next",
+                                    "radio_previous" },
+    
+    -- Animation
+    TOGGLE_TIME                 = 350,               -- Time in milliseconds for animations
+    
+    -- Layout
+    COLUMNS_WIDTH               = {0.10, 0.45, 0.15, 0.15, 0.15}, -- Column widths: id, name, hours, ping, fps
+    POSTGUI                     = true,              -- Draw over the GUI
+    
+    -- Colors (RGBA format)
+    BACKGROUND                  = {0, 0, 0, 200},   -- Background color
+    HEADER_COLOR                = {30, 105, 170, 230},-- Header background color
+    SERVER_NAME_COLOR           = {255, 255, 255, 255},-- Server name text color
+    SERVER_INFO_COLOR           = {220, 220, 220, 255},-- Server info text color
+    HEADERS_COLOR               = {200, 200, 200, 255},-- Column headers color
+    SEPARATOR_COLOR             = {40, 120, 180, 255},-- Separator lines color
+    SCROLL_COLOR                = {40, 120, 180, 180},-- Scroll bar color
+    SCROLL_HOVER_COLOR          = {60, 140, 200, 230},-- Scroll bar hover color
+    ROW_HIGHLIGHT               = {40, 120, 180, 50},-- Row highlight color
+    
+    -- Player Colors (for different ranks)
+    ADMIN_COLOR                 = {220, 180, 60},    -- Admin name color
+    REGULAR_COLOR               = {255, 255, 255},   -- Regular player color
+    LOGGED_OUT_COLOR            = {127, 127, 127},   -- Logged out player color
+    DONATOR_COLOR               = {167, 133, 63},    -- Donator name color
+    OWNER_COLOR                 = {255, 255, 255},   -- Owner name color (admin level 10)
+}
 
---[[ Uncomment to test with dummies ]]--
---[[
-local _getPlayerName = getPlayerName
-local _getPlayerPing = getPlayerPing
-local _getPlayerNametagColor = getPlayerNametagColor
+--[[ Global variables - Do not modify unless you know what you're doing ]]--
+local g_isShowing = false       -- Marks if the scoreboard is showing
+local g_animationProgress = 0   -- Animation progress (0-1)
+local g_currentWidth = 0        -- Current window width
+local g_currentHeight = 0       -- Current window height
+local g_scoreboardDummy         -- The scoreboard element
+local g_windowSize = {guiGetScreenSize()}    -- Screen size
+local g_localPlayer = getLocalPlayer()       -- The local player
+local g_currentPage = 0         -- The current scroll page
+local g_hoveredRow = -1         -- Currently hovered row
+local g_players                 -- Player cache
+local g_oldControlStates        -- Old control states
+local g_mouseX, g_mouseY = 0, 0 -- Current mouse position
+local g_scrollbarHovered = false-- Scrollbar hover state
+local g_scrollDragging = false  -- Scrollbar dragging state
+local g_lastClickTime = 0       -- For double-click detection
+local SCOREBOARD_ALPHA_MULT = 1 -- For fade animations
+local g_fpsList = {}            -- To store FPS data for each player
 
-function getPlayerName ( player )
-	if getElementType ( player ) == "player" then return _getPlayerName ( player ) end
-	return getElementData ( player, "name" )
+-- Font definitions
+local fonts = {
+    roboto_bold = nil,
+    roboto_regular = nil,
+    roboto_light = nil,
+    awesome = nil
+}
+
+-- Pre-calculate scoreboard position
+local SCOREBOARD_X = math.floor((g_windowSize[1] - CONFIG.WIDTH) / 2)
+local SCOREBOARD_Y = math.floor((g_windowSize[2] - CONFIG.HEIGHT) / 2)
+
+-- Convert color tables to color values
+local function toColorAlpha(color, alpha)
+    local a = alpha or color[4] or 255
+    return tocolor(color[1], color[2], color[3], a * SCOREBOARD_ALPHA_MULT)
 end
 
-function getPlayerPing ( player )
-	if getElementType ( player ) == "player" then return _getPlayerPing ( player ) end
-	return getElementData ( player, "ping" )
+-- Pre-calculate colors
+local BACKGROUND_COLOR = toColorAlpha(CONFIG.BACKGROUND)
+local HEADER_BG_COLOR = toColorAlpha(CONFIG.HEADER_COLOR)
+local SERVER_NAME_COLOR = toColorAlpha(CONFIG.SERVER_NAME_COLOR)
+local SERVER_INFO_COLOR = toColorAlpha(CONFIG.SERVER_INFO_COLOR)
+local HEADERS_COLOR = toColorAlpha(CONFIG.HEADERS_COLOR)
+local SEPARATOR_COLOR = toColorAlpha(CONFIG.SEPARATOR_COLOR)
+local SCROLL_COLOR = toColorAlpha(CONFIG.SCROLL_COLOR)
+local SCROLL_HOVER_COLOR = toColorAlpha(CONFIG.SCROLL_HOVER_COLOR)
+local ROW_HIGHLIGHT_COLOR = toColorAlpha(CONFIG.ROW_HIGHLIGHT)
+
+-- Column positions
+local columnPositions = {}
+local totalWidth = 0
+
+-- FPS counter variables
+local frameCounter = 0
+local lastFPSUpdate = 0
+local currentFPS = 0
+
+-- Function to recalculate column positions
+local function calculateColumnPositions()
+    local currentX = SCOREBOARD_X
+    totalWidth = 0
+    for k=1, #CONFIG.COLUMNS_WIDTH do
+        local width = math.floor(CONFIG.COLUMNS_WIDTH[k] * CONFIG.WIDTH)
+        columnPositions[k] = {currentX, currentX + width}
+        currentX = currentX + width
+        totalWidth = totalWidth + width
+    end
 end
 
-function getPlayerNametagColor ( player )
-	if getElementType ( player ) == "player" then return _getPlayerNametagColor ( player )
-	else return unpack(getElementData(player, "color")) end
-end
---]]
-
-
---[[ Global variables to this context ]]--
-local g_isShowing = false		-- Marks if the scoreboard is showing
-local g_currentWidth = 0		-- Current window width. Used for the fade in/out effect.
-local g_currentHeight = 0		-- Current window height. Used for the fade in/out effect.
-local g_scoreboardDummy			-- Will contain the scoreboard dummy element to gather info from.
-local g_windowSize = { guiGetScreenSize () }	-- The window size
-local g_localPlayer = getLocalPlayer ()			-- The local player...
-local g_currentPage = 0			-- The current scroll page
-local g_players					-- We will keep a cache of the conected player list
-local g_oldControlStates		-- To save the old control states before disabling them for scrolling
-
---[[ Pre-calculate some stuff ]]--
--- Scoreboard position
-local SCOREBOARD_X = math.floor ( ( g_windowSize[1] - SCOREBOARD_WIDTH ) / 2 )
-local SCOREBOARD_Y = math.floor ( ( g_windowSize[2] - SCOREBOARD_HEIGHT ) / 2 )
--- Scoreboard colors
-SCOREBOARD_INFO_BACKGROUND = tocolor ( unpack ( SCOREBOARD_INFO_BACKGROUND ) )
-SCOREBOARD_SERVER_NAME_COLOR = tocolor ( unpack ( SCOREBOARD_SERVER_NAME_COLOR ) )
-SCOREBOARD_PLAYERCOUNT_COLOR = tocolor ( unpack ( SCOREBOARD_PLAYERCOUNT_COLOR ) )
-SCOREBOARD_BACKGROUND = tocolor ( unpack ( SCOREBOARD_BACKGROUND ) )
-SCOREBOARD_BACKGROUND_IMAGE = tocolor ( unpack ( SCOREBOARD_BACKGROUND_IMAGE ) )
-SCOREBOARD_HEADERS_COLOR = tocolor ( unpack ( SCOREBOARD_HEADERS_COLOR ) )
-SCOREBOARD_SCROLL_BACKGROUND = tocolor ( unpack ( SCOREBOARD_SCROLL_BACKGROUND ) )
-SCOREBOARD_SCROLL_FOREGROUND = tocolor ( unpack ( SCOREBOARD_SCROLL_FOREGROUND ) )
-SCOREBOARD_SEPARATOR_COLOR = tocolor ( unpack ( SCOREBOARD_SEPARATOR_COLOR ) )
--- Columns width in absolute units
-for k=1,#SCOREBOARD_COLUMNS_WIDTH do
-	SCOREBOARD_COLUMNS_WIDTH[k] = math.floor ( SCOREBOARD_COLUMNS_WIDTH[k] * SCOREBOARD_WIDTH )
-end
--- Pre-calculate each row horizontal bounding box.
-local rowsBoundingBox = { { SCOREBOARD_X, -1 }, { -1, -1 }, { -1, -1 }, { -1, -1 }, { -1, -1 } }
--- ID
-rowsBoundingBox[1][2] = SCOREBOARD_X + SCOREBOARD_COLUMNS_WIDTH[1]
--- Name
-rowsBoundingBox[2][1] = rowsBoundingBox[1][2]
-rowsBoundingBox[2][2] = rowsBoundingBox[2][1] + SCOREBOARD_COLUMNS_WIDTH[2]
--- Hours
-rowsBoundingBox[3][1] = rowsBoundingBox[2][2]
-rowsBoundingBox[3][2] = rowsBoundingBox[3][1] + SCOREBOARD_COLUMNS_WIDTH[3]
--- Ping
-rowsBoundingBox[4][1] = rowsBoundingBox[3][2]
-rowsBoundingBox[4][2] = rowsBoundingBox[4][1] + SCOREBOARD_COLUMNS_WIDTH[4]
--- Scrollbar
-rowsBoundingBox[5][1] = rowsBoundingBox[4][2]
-rowsBoundingBox[5][2] = SCOREBOARD_X + SCOREBOARD_WIDTH
-
-
---[[ Pre-declare some functions ]]--
+--[[ Function declarations ]]--
 local onRender
-local fadeScoreboard
-local drawBackground
+local animateScoreboard
 local drawScoreboard
+local drawRoundedRectangle
 
+--[[
+* initFonts
+Create or load font objects
+--]]
+local function initFonts()
+    -- Try to load custom fonts, fall back to defaults if not available
+    fonts.roboto_bold = dxCreateFont(":resources/fonts/Roboto-Bold.ttf", 12) or "default-bold"
+    fonts.roboto_regular = dxCreateFont(":resources/fonts/Roboto-Regular.ttf", 10) or "default"
+    fonts.roboto_light = dxCreateFont(":resources/fonts/Roboto-Light.ttf", 8) or "default"
+    fonts.awesome = dxCreateFont(":resources/fonts/FontAwesome.otf", 10) or "default-bold"
+end
+
+--[[
+* getFont
+Gets the appropriate font with fallback
+--]]
+local function getFont(fontName)
+    return fonts[fontName] or "default"
+end
+
+--[[
+* drawRoundedRectangle
+Draws a rectangle with rounded corners
+--]]
+function drawRoundedRectangle(x, y, width, height, color, radius)
+    local radius = radius or CONFIG.CORNER_RADIUS
+    
+    -- Draw the main rectangle (slightly smaller to accommodate corners)
+    dxDrawRectangle(x + radius, y, width - (radius * 2), height, color, CONFIG.POSTGUI)
+    dxDrawRectangle(x, y + radius, width, height - (radius * 2), color, CONFIG.POSTGUI)
+    
+    -- Draw the four corner circles
+    dxDrawCircle(x + radius, y + radius, radius, 180, 270, color, color, 8, 1, CONFIG.POSTGUI)
+    dxDrawCircle(x + width - radius, y + radius, radius, 270, 360, color, color, 8, 1, CONFIG.POSTGUI)
+    dxDrawCircle(x + radius, y + height - radius, radius, 90, 180, color, color, 8, 1, CONFIG.POSTGUI)
+    dxDrawCircle(x + width - radius, y + height - radius, radius, 0, 90, color, color, 8, 1, CONFIG.POSTGUI)
+end
 
 --[[
 * clamp
-Clamps a value into a range.
+Clamps a value into a range
 --]]
-local function clamp ( valueMin, current, valueMax )
-	if current < valueMin then
-		return valueMin
-	elseif current > valueMax then
-		return valueMax
-	else
-		return current
-	end
+local function clamp(valueMin, current, valueMax)
+    if current < valueMin then
+        return valueMin
+    elseif current > valueMax then
+        return valueMax
+    else
+        return current
+    end
 end
 
 --[[
 * createPlayerCache
-Generates a new player cache.
+Generates a new player cache
 --]]
-local function createPlayerCache ( ignorePlayer )
-	-- Optimize the function in case of not having to ignore a player
-	if ignorePlayer then
-		-- Clear the gloal table
-		g_players = {}
+local function createPlayerCache(ignorePlayer)
+    -- Clear the global table
+    g_players = {}
 
-		-- Get the list of connected players
-		local players = getElementsByType ( "player" )
+    -- Get the list of connected players
+    local players = getElementsByType("player")
 
-		-- Dump them to the global table
-		for k, player in ipairs(players) do
-			if ignorePlayer ~= player then
-				table.insert ( g_players, player )
-			end
-		end
-	else
-		g_players = getElementsByType ( "player" )
-	end
+    -- Dump them to the global table
+    for k, player in ipairs(players) do
+        if ignorePlayer ~= player then
+            table.insert(g_players, player)
+        end
+    end
 
-	--[[ Uncomment to test with dummies ]]--
-	--[[
-	for k,v in ipairs(getElementsByType("playerDummy")) do
-		table.insert(g_players, v)
-	end
-	--]]
+    -- Sort the player list by their ID, giving priority to the local player
+    table.sort(g_players, function(a, b)
+        local idA = getElementData(a, "playerid") or 0
+        local idB = getElementData(b, "playerid") or 0
 
-	-- Sort the player list by their ID, giving priority to the local player
-	table.sort ( g_players, function ( a, b )
-		local idA = getElementData ( a, "playerid" ) or 0
-		local idB = getElementData ( b, "playerid" ) or 0
+        -- Perform the checks to always set the local player at the beginning
+        if a == g_localPlayer then
+            idA = -1
+        elseif b == g_localPlayer then
+            idB = -1
+        end
 
-		-- Perform the checks to always set the local player at the beggining
-		if a == g_localPlayer then
-			idA = -1
-		elseif b == g_localPlayer then
-			idB = -1
-		end
+        return tonumber(idA) < tonumber(idB)
+    end)
+end
 
-		return tonumber(idA) < tonumber(idB)
-	end )
+--[[
+* updateLocalFPS
+Updates the local FPS counter
+--]]
+local function updateLocalFPS()
+    frameCounter = frameCounter + 1
+    local currentTime = getTickCount()
+    
+    -- Update FPS count every 1000ms
+    if currentTime - lastFPSUpdate >= 1000 then
+        currentFPS = frameCounter
+        frameCounter = 0
+        lastFPSUpdate = currentTime
+        
+        -- Set local player's FPS to element data so it can be synced
+        setElementData(localPlayer, "playerFPS", currentFPS)
+    end
+    
+    -- Store FPS data for each player
+    for _, player in ipairs(getElementsByType("player")) do
+        local fps = getElementData(player, "playerFPS") or 0
+        g_fpsList[player] = fps
+    end
 end
 
 --[[
 * onClientResourceStart
-Handles the resource start event to create the initial player cache
+Handles the resource start event
 --]]
-addEventHandler ( "onClientResourceStart", getResourceRootElement(getThisResource()), function ()
-	createPlayerCache ()
-end, false )
+addEventHandler("onClientResourceStart", getResourceRootElement(getThisResource()), function()
+    createPlayerCache()
+    initFonts()
+    calculateColumnPositions()
+    
+    -- Add event handler to update FPS continuously
+    addEventHandler("onClientRender", root, updateLocalFPS)
+end, false)
 
 --[[
 * onClientElementDataChange
-Handles the element data changes event to update the player cache
-if the playerid was changed.
+Updates player cache when playerid changes
 --]]
-addEventHandler ( "onClientElementDataChange", root, function ( dataName, dataValue )
-	if dataName == "playerid" then
-		createPlayerCache ()
-	end
-end )
+addEventHandler("onClientElementDataChange", root, function(dataName)
+    if dataName == "playerid" then
+        createPlayerCache()
+    end
+end)
 
 --[[
 * onClientPlayerQuit
-Handles the player quit event to update the player cache.
+Updates the player cache when a player quits
 --]]
-addEventHandler ( "onClientPlayerQuit", root, function ()
-	createPlayerCache ( source )
-end )
+addEventHandler("onClientPlayerQuit", root, function()
+    createPlayerCache(source)
+    g_fpsList[source] = nil
+end)
+
+--[[
+* onClientCursorMove
+Tracks mouse position for hover effects
+--]]
+addEventHandler("onClientCursorMove", root, function(_, _, x, y)
+    g_mouseX, g_mouseY = x, y
+end)
 
 --[[
 * toggleScoreboard
-Toggles the visibility of the scoreboard.
+Toggles the visibility of the scoreboard
 --]]
-local function toggleScoreboard ( show )
-	if not getPedControlState( localPlayer, 'aim_weapon' ) then
-		-- Force the parameter to be a boolean
-		local show = show == true
+local function toggleScoreboard(show)
+    if not getPedControlState(localPlayer, 'aim_weapon') then
+        -- Force the parameter to be a boolean
+        local show = show == true
 
-		-- Check if the status has changed
-		if show ~= g_isShowing then
-			g_isShowing = show
+        -- Check if the status has changed
+        if show ~= g_isShowing then
+            g_isShowing = show
 
-			if g_isShowing and g_currentWidth == 0 and g_currentHeight == 0 then
-				-- Handle the onClientRender event to start drawing the scoreboard.
-				addEventHandler ( "onClientPreRender", root, onRender, false )
-			end
+            if g_isShowing and g_animationProgress == 0 then
+                -- Start drawing the scoreboard
+                addEventHandler("onClientRender", root, onRender, false)
+            end
 
-			-- Little hack to avoid switching weapons while moving through the scoreboard pages.
-			if g_isShowing then
-				g_oldControlStates = {}
-				for k, control in ipairs ( SCOREBOARD_DISABLED_CONTROLS ) do
-					g_oldControlStates[k] = isControlEnabled ( control )
-					toggleControl ( control, false )
-				end
-			else
-				for k, control in ipairs ( SCOREBOARD_DISABLED_CONTROLS ) do
-					toggleControl ( control, g_oldControlStates[k] )
-				end
-				g_oldControlStates = nil
-			end
-		end
-	end
+            -- Disable controls while scoreboard is showing
+            if g_isShowing then
+                g_oldControlStates = {}
+                for k, control in ipairs(CONFIG.DISABLED_CONTROLS) do
+                    g_oldControlStates[k] = isControlEnabled(control)
+                    toggleControl(control, false)
+                end
+            else
+                for k, control in ipairs(CONFIG.DISABLED_CONTROLS) do
+                    toggleControl(control, g_oldControlStates[k])
+                end
+                g_oldControlStates = nil
+            end
+        end
+    end
 end
 
 --[[
 * onToggleKey
-Function to bind to the appropiate key the function to toggle the scoreboard visibility.
+Function to toggle the scoreboard visibility
 --]]
-local function onToggleKey ( key, keyState )
-	-- Check if the scoreboard element has been created
-	if not g_scoreboardDummy then
-		local elementTable = getElementsByType ( "scoreboard" )
-		if #elementTable > 0 then
-			g_scoreboardDummy = elementTable[1]
-		else
-			return
-		end
-	end
+local function onToggleKey(key, keyState)
+    -- Check if the scoreboard element has been created
+    if not g_scoreboardDummy then
+        local elementTable = getElementsByType("scoreboard")
+        if #elementTable > 0 then
+            g_scoreboardDummy = elementTable[1]
+        else
+            return
+        end
+    end
 
-	-- Toggle the scoreboard, and check that it's allowed.
-	toggleScoreboard ( keyState == "down" and getElementData ( g_scoreboardDummy, "allow" ) )
+    -- Toggle the scoreboard, and check that it's allowed
+    toggleScoreboard(keyState == "down" and getElementData(g_scoreboardDummy, "allow"))
 end
-bindKey ( SCOREBOARD_TOGGLE_CONTROL, "both", onToggleKey )
+bindKey(CONFIG.TOGGLE_KEY, "both", onToggleKey)
 
 --[[
 * onScrollKey
-Function to bind to the appropiate key the function to change the current page.
+Function to change the current page
 --]]
-local function onScrollKey ( direction )
-	if g_isShowing then
-		if direction then
-			g_currentPage = g_currentPage + 1
-		else
-			g_currentPage = g_currentPage - 1
-			if g_currentPage < 0 then
-				g_currentPage = 0
-			end
-		end
-	end
+local function onScrollKey(direction)
+    if g_isShowing then
+        if direction then
+            g_currentPage = g_currentPage + 1
+        else
+            g_currentPage = g_currentPage - 1
+            if g_currentPage < 0 then
+                g_currentPage = 0
+            end
+        end
+    end
 end
-bindKey ( SCOREBOARD_PGUP_CONTROL, "down", function () onScrollKey ( false ) end )
-bindKey ( SCOREBOARD_PGDN_CONTROL, "down", function () onScrollKey ( true ) end )
+bindKey(CONFIG.PGUP_CONTROL, "down", function() onScrollKey(false) end)
+bindKey(CONFIG.PGDN_CONTROL, "down", function() onScrollKey(true) end)
 
 --[[
 * onRender
-Event handler for onClientPreRender. It will forward the flow to the most appropiate
-function: fading-in, fading-out or drawScoreboard.
+Event handler for onClientRender
 --]]
-onRender = function ( timeshift )
-	-- Boolean to check if we must draw the scoreboard.
-	local drawIt = false
-
-	if g_isShowing then
-		-- Check if the scoreboard has been disallowed
-		if not getElementData ( g_scoreboardDummy, "allow" ) then
-			toggleScoreboard ( false )
-		-- If it's showing, check if it got fully faded in. Else, draw it normally.
-		elseif g_currentWidth < SCOREBOARD_WIDTH or g_currentHeight < SCOREBOARD_HEIGHT then
-			drawIt = fadeScoreboard ( timeshift, 1 )
-		else
-			-- Allow drawing the full scoreboard
-			drawIt = true
-		end
-	else
-		-- If it shouldn't be showing, make another step to fade it out.
-		drawIt = fadeScoreboard ( timeshift, -1 )
-	end
-
-	-- Draw the scoreboard if allowed.
-	if drawIt then
-		drawScoreboard ()
-	end
+onRender = function()
+    -- Update animation if needed
+    animateScoreboard()
+    
+    -- Draw the scoreboard if animation progress is > 0
+    if g_animationProgress > 0 then
+        drawScoreboard()
+    else if not g_isShowing then
+        removeEventHandler("onClientRender", root, onRender)
+        end
+    end
 end
 
 --[[
-* fadeScoreboard
-Makes a step of the fade effect. Gets a multiplier to make it either fading in or out.
+* animateScoreboard
+Animate the scoreboard appearance/disappearance
 --]]
-fadeScoreboard = function ( timeshift, multiplier )
-	-- Get the percentage of the final size that it should grow for this step.
-	local growth = ( timeshift / SCOREBOARD_TOGGLE_TIME ) * multiplier
-
-	-- Apply the growth to the scoreboard size
-	g_currentWidth = clamp ( 0, g_currentWidth + ( SCOREBOARD_WIDTH * growth ), SCOREBOARD_WIDTH )
-	g_currentHeight = clamp ( 0, g_currentHeight + ( SCOREBOARD_HEIGHT * growth ), SCOREBOARD_HEIGHT )
-
-	-- Check if the scoreboard has collapsed. If so, unregister the onClientRender event.
-	if g_currentWidth == 0 or g_currentHeight == 0 then
-		g_currentWidth = 0
-		g_currentHeight = 0
-		removeEventHandler ( "onClientPreRender", root, onRender )
-		return false
-	else
-		return true
-	end
+function animateScoreboard()
+    local targetValue = g_isShowing and 1 or 0
+    local currentTime = getTickCount()
+    
+    -- Smoothly animate between 0 and 1
+    if g_animationProgress ~= targetValue then
+        local direction = g_isShowing and 1 or -1
+        local change = (direction * (currentTime - (g_lastAnimTime or (currentTime - 50))) / CONFIG.TOGGLE_TIME) * 2
+        g_animationProgress = clamp(0, g_animationProgress + change, 1)
+        SCOREBOARD_ALPHA_MULT = g_animationProgress
+        
+        -- Update current dimensions
+        g_currentWidth = CONFIG.WIDTH * g_animationProgress
+        g_currentHeight = CONFIG.HEIGHT * g_animationProgress
+    end
+    
+    g_lastAnimTime = currentTime
 end
 
 --[[
-* drawBackground
-Draws the scoreboard background.
+* drawServerInfo
+Draws the server header information
 --]]
-drawBackground = function ()
-	-- Draw the header
-	local headerHeight = clamp ( 0, SCOREBOARD_HEADER_HEIGHT, g_currentHeight )
-	dxDrawRectangle ( SCOREBOARD_X, SCOREBOARD_Y,
-					  g_currentWidth, headerHeight,
-					  SCOREBOARD_INFO_BACKGROUND, SCOREBOARD_POSTGUI )
-
-	-- Draw the body background
-	if g_currentHeight > SCOREBOARD_HEADER_HEIGHT then
-		-- Draw the background image
-		--[[
-		dxDrawImage ( SCOREBOARD_X+120, SCOREBOARD_Y + 150,
-					  SCOREBOARD_WIDTH - 220, SCOREBOARD_HEIGHT - 357,
-					  ":resources/images/OGLogo.png", 0, 0, 0, SCOREBOARD_BACKGROUND_IMAGE, SCOREBOARD_POSTGUI ) -- Maxime on 31/3/2013, Removed logo in tab
-		]]
-		-- Overlay
-		dxDrawRectangle ( SCOREBOARD_X, SCOREBOARD_Y + SCOREBOARD_HEADER_HEIGHT,
-						  g_currentWidth, g_currentHeight - SCOREBOARD_HEADER_HEIGHT,
-						  SCOREBOARD_BACKGROUND, SCOREBOARD_POSTGUI )
-	end
+local function drawServerInfo()
+    -- Get the server information
+    local serverName = CONFIG.SERVER_NAME or getElementData(g_scoreboardDummy, "serverName") or "MTA Server"
+    local maxPlayers = getElementData(root, "server:Slots") or 1024
+    local usagePercent = (#g_players / maxPlayers) * 100
+    local playerCountStr = "Players: " .. tostring(#g_players) .. "/" .. tostring(maxPlayers) .. " (" .. math.floor(usagePercent + 0.5) .. "%)"
+    
+    -- Draw header background
+    drawRoundedRectangle(
+        SCOREBOARD_X, 
+        SCOREBOARD_Y, 
+        g_currentWidth, 
+        CONFIG.HEADER_HEIGHT, 
+        HEADER_BG_COLOR
+    )
+    
+    -- Draw server name
+    dxDrawText(
+        serverName, 
+        SCOREBOARD_X + 10, 
+        SCOREBOARD_Y + 5, 
+        SCOREBOARD_X + g_currentWidth - 15, 
+        SCOREBOARD_Y + 30,
+        SERVER_NAME_COLOR, 
+        1, 
+        getFont("roboto_bold"), 
+        "left", 
+        "top",
+        true, 
+        false, 
+        CONFIG.POSTGUI,
+        true
+    )
+    
+    -- Draw player count
+    dxDrawText(
+        playerCountStr, 
+        SCOREBOARD_X + 15, 
+        SCOREBOARD_Y + 28, 
+        SCOREBOARD_X + g_currentWidth - 15, 
+        SCOREBOARD_Y + CONFIG.HEADER_HEIGHT,
+        SERVER_INFO_COLOR, 
+        0.9, 
+        getFont("roboto_regular"), 
+        "left", 
+        "top",
+        true, 
+        false, 
+        CONFIG.POSTGUI,
+        true
+    )
+    
+    -- Draw current time on the right
+    local timeStr = os.date("%H:%M:%S")
+    dxDrawText(
+        timeStr, 
+        SCOREBOARD_X + 15, 
+        SCOREBOARD_Y + 10, 
+        SCOREBOARD_X + g_currentWidth - 15, 
+        SCOREBOARD_Y + CONFIG.HEADER_HEIGHT - 10,
+        SERVER_INFO_COLOR, 
+        1, 
+        getFont("roboto_regular"), 
+        "right", 
+        "center",
+        true, 
+        false, 
+        CONFIG.POSTGUI,
+        true
+    )
 end
 
 --[[
-* drawRowBounded
-Draws a scoreboard body row with the pre-calculated row bounding boxes.
+* drawColumn
+Draws a single column of the scoreboard
 --]]
-local function drawRowBounded ( id, name, hours, ping, colors, font, top )
-	-- Precalculate some constants
-	local bottom = clamp ( 0, top + dxGetFontHeight ( 1, font ), SCOREBOARD_Y + g_currentHeight )
-	local maxWidth = SCOREBOARD_X + g_currentWidth
+local function drawColumn(index, text, y, width, height, color, font, align)
+    local x = columnPositions[index][1]
+    local maxWidth = columnPositions[index][2] - columnPositions[index][1]
+    
+    dxDrawText(
+        text,
+        x + 5, 
+        y,
+        x + maxWidth - 5, 
+        y + height,
+        color, 
+        1, 
+        font, 
+        align or "left", 
+        "center",
+        true, 
+        false, 
+        CONFIG.POSTGUI,
+        false
+    )
+end
 
-	-- If the row doesn't fit, just avoid any further calculations.
-	if bottom < top then return end
+--[[
+* drawColumnHeaders
+Draws the column headers
+--]]
+local function drawColumnHeaders(y)
+    local headerY = y
+    local headerFont = getFont("roboto_bold")
+    
+    -- Draw the headers background
+    dxDrawRectangle(
+        SCOREBOARD_X, 
+        headerY, 
+        g_currentWidth, 
+        CONFIG.ROW_HEIGHT,
+        toColorAlpha({40, 40, 40, 220}), 
+        CONFIG.POSTGUI
+    )
+    
+    -- Draw each header
+    drawColumn(1, "ID", headerY, CONFIG.COLUMNS_WIDTH[1], CONFIG.ROW_HEIGHT, HEADERS_COLOR, headerFont, "center")
+    drawColumn(2, "Player Name", headerY, CONFIG.COLUMNS_WIDTH[2], CONFIG.ROW_HEIGHT, HEADERS_COLOR, headerFont, "left")
+    drawColumn(3, "Hours", headerY, CONFIG.COLUMNS_WIDTH[3], CONFIG.ROW_HEIGHT, HEADERS_COLOR, headerFont, "center")
+    drawColumn(4, "Ping", headerY, CONFIG.COLUMNS_WIDTH[4], CONFIG.ROW_HEIGHT, HEADERS_COLOR, headerFont, "center")
+    drawColumn(5, "FPS", headerY, CONFIG.COLUMNS_WIDTH[5], CONFIG.ROW_HEIGHT, HEADERS_COLOR, headerFont, "center")
+    
+    -- Draw separator line
+    dxDrawRectangle(
+        SCOREBOARD_X, 
+        headerY + CONFIG.ROW_HEIGHT, 
+        g_currentWidth, 
+        2,
+        SEPARATOR_COLOR, 
+        CONFIG.POSTGUI
+    )
+    
+    return headerY + CONFIG.ROW_HEIGHT + 2
+end
 
-	-- ID
-	local left = rowsBoundingBox[1][1]
-	local right = clamp ( 0, rowsBoundingBox[1][2], maxWidth )
-	if left < right then
-		dxDrawText ( id, left, top, right, bottom,
-					 colors[1], 1, font, "right", "top",
-					 true, false, SCOREBOARD_POSTGUI )
+--[[
+* getPlayerNameColor
+Gets the player's name color based on their status
+--]]
+local function getPlayerNameColor(player)
+    local isLoggedIn = getElementData(player, "loggedin") == 1
+    
+    if not isLoggedIn then
+        return CONFIG.LOGGED_OUT_COLOR
+    elseif getElementData(player, "donation:nametag") and getElementData(player, "nametag_on") then
+        return CONFIG.DONATOR_COLOR
+    elseif getElementData(player, "admin_level") and tonumber(getElementData(player, "admin_level")) > 0 then
+        return CONFIG.ADMIN_COLOR
+    elseif tonumber(getElementData(player, "admin_level")) == 10 then
+        return CONFIG.OWNER_COLOR
+    end
+    
+    return CONFIG.REGULAR_COLOR
+end
 
-		-- Name
-		left = rowsBoundingBox[2][1] + 17 -- Grant some padding to the name column
-		right = clamp ( 0, rowsBoundingBox[2][2], maxWidth )
-		if left < right then
-			dxDrawText ( name, left, top, right, bottom,
-						 colors[2], 1, font, "left", "top",
-						 true, false, SCOREBOARD_POSTGUI )
-
-			-- Hours
-			left = rowsBoundingBox[3][1]
-			right = clamp ( 0, rowsBoundingBox[3][2], maxWidth )
-			if left < right then
-				dxDrawText ( hours, left, top, right, bottom,
-							 colors[3], 1, font, "left", "top",
-							 true, false, SCOREBOARD_POSTGUI )
-
-				-- Ping
-				left = rowsBoundingBox[4][1]
-				right = clamp ( 0, rowsBoundingBox[4][2], maxWidth )
-				if left < right then
-					dxDrawText ( ping, left, top, right, bottom,
-								colors[3], 1, font, "left", "top",
-								true, false, SCOREBOARD_POSTGUI )
-				end
-			end
-		end
-	end
+--[[
+* drawPlayerRow
+Draws a player row in the scoreboard
+--]]
+local function drawPlayerRow(player, rowIndex, y, isHighlighted)
+    local rowY = y
+    local rowFont = getFont("roboto_regular")
+    local isLoggedIn = getElementData(player, "loggedin") == 1
+    
+    -- Get player data
+    local playerID = getElementData(player, "playerid") or 0
+    local playerName = exports.global and exports.global:getPlayerName(player) or getPlayerName(player)
+    local playerHours = getElementData(player, "hoursplayed") or 0
+    local playerPing = getPlayerPing(player) or 0
+    local playerFPS = g_fpsList[player] or 0
+    
+    -- Get player color
+    local playerColor = getPlayerNameColor(player)
+    
+    -- Draw row background (alternating colors + highlight)
+    local bgColor = isHighlighted and ROW_HIGHLIGHT_COLOR or 
+                    (rowIndex % 2 == 0 and toColorAlpha({30, 30, 30, 180}) or toColorAlpha({25, 25, 25, 160}))
+    
+    dxDrawRectangle(
+        SCOREBOARD_X, 
+        rowY, 
+        g_currentWidth, 
+        CONFIG.ROW_HEIGHT,
+        bgColor, 
+        CONFIG.POSTGUI
+    )
+    
+    -- If this is the local player, highlight with a side indicator
+    if player == localPlayer then
+        dxDrawRectangle(
+            SCOREBOARD_X, 
+            rowY, 
+            3, 
+            CONFIG.ROW_HEIGHT,
+            toColorAlpha({60, 180, 240, 255}), 
+            CONFIG.POSTGUI
+        )
+    end
+    
+    -- Player text color
+    local textColor = tocolor(playerColor[1], playerColor[2], playerColor[3], 255 * SCOREBOARD_ALPHA_MULT)
+    local grayTextColor = tocolor(180, 180, 180, 255 * SCOREBOARD_ALPHA_MULT)
+    
+    -- Draw player columns
+    drawColumn(1, tostring(playerID), rowY, CONFIG.COLUMNS_WIDTH[1], CONFIG.ROW_HEIGHT, textColor, rowFont, "center")
+    
+    -- Draw player name (directly using the player's color)
+    drawColumn(2, playerName, rowY, CONFIG.COLUMNS_WIDTH[2], CONFIG.ROW_HEIGHT, textColor, rowFont, "left")
+    
+    -- Draw hours and ping
+    drawColumn(3, tostring(playerHours), rowY, CONFIG.COLUMNS_WIDTH[3], CONFIG.ROW_HEIGHT, grayTextColor, rowFont, "center")
+    
+    -- Color ping based on value
+    local pingColor
+    if playerPing < 80 then
+        pingColor = tocolor(100, 220, 100, 255 * SCOREBOARD_ALPHA_MULT)
+    elseif playerPing < 150 then
+        pingColor = tocolor(220, 220, 100, 255 * SCOREBOARD_ALPHA_MULT)
+    else
+        pingColor = tocolor(220, 100, 100, 255 * SCOREBOARD_ALPHA_MULT)
+    end
+    
+    drawColumn(4, tostring(playerPing), rowY, CONFIG.COLUMNS_WIDTH[4], CONFIG.ROW_HEIGHT, pingColor, rowFont, "center")
+    
+    -- Color FPS based on value
+    local fpsColor
+    if playerFPS > 40 then
+        fpsColor = tocolor(100, 220, 100, 255 * SCOREBOARD_ALPHA_MULT)
+    elseif playerFPS > 25 then
+        fpsColor = tocolor(220, 220, 100, 255 * SCOREBOARD_ALPHA_MULT)
+    else
+        fpsColor = tocolor(220, 100, 100, 255 * SCOREBOARD_ALPHA_MULT)
+    end
+    
+    drawColumn(5, tostring(playerFPS), rowY, CONFIG.COLUMNS_WIDTH[5], CONFIG.ROW_HEIGHT, fpsColor, rowFont, "center")
+    
+    return rowY + CONFIG.ROW_HEIGHT + CONFIG.ROW_GAP
 end
 
 --[[
 * drawScrollBar
-Draws the scroll bar. Position ranges from 0 to 1.
+Draws the scrollbar
 --]]
-local function drawScrollBar ( top, position )
-	-- Get the bounding box
-	local left = rowsBoundingBox[5][1]
-	local right = clamp ( 0, rowsBoundingBox[5][2], SCOREBOARD_X + g_currentWidth )
-	local bottom = clamp ( 0, SCOREBOARD_Y + SCOREBOARD_HEIGHT, SCOREBOARD_Y + g_currentHeight )
-
-	-- Make sure that it'd be visible.
-	if left < right and top < bottom then
-		-- Draw the background
-		dxDrawRectangle ( left, top, right - left, bottom - top, SCOREBOARD_SCROLL_BACKGROUND, SCOREBOARD_POSTGUI )
-
-		-- Get the current Y position for the scroll marker
-		local top = top + position * ( SCOREBOARD_Y + SCOREBOARD_HEIGHT - SCOREBOARD_SCROLL_HEIGHT - top )
-		bottom = clamp ( 0, top + SCOREBOARD_SCROLL_HEIGHT, SCOREBOARD_Y + g_currentHeight )
-
-		-- Make sure that it'd be visible
-		if top < bottom then
-			dxDrawRectangle ( left, top, right - left, bottom - top, SCOREBOARD_SCROLL_FOREGROUND, SCOREBOARD_POSTGUI )
-		end
-	end
+local function drawScrollBar(startY, endY, position, maxPosition)
+    -- Use the full width instead of the 6th column
+    local scrollX = SCOREBOARD_X + g_currentWidth - 20 -- 20px width for scrollbar
+    local scrollWidth = 20
+    local height = endY - startY
+    
+    -- Draw scrollbar background
+    dxDrawRectangle(
+        scrollX, 
+        startY, 
+        scrollWidth, 
+        height,
+        toColorAlpha({0, 0, 0, 100}), 
+        CONFIG.POSTGUI
+    )
+    
+    -- Only draw scrollbar if necessary
+    if maxPosition > 0 then
+        local scrollHeight = math.max(40, height / (maxPosition + 1))
+        local scrollY = startY + (position / maxPosition) * (height - scrollHeight)
+        
+        -- Check if mouse is hovering over scrollbar
+        g_scrollbarHovered = isCursorShowing() and 
+                            g_mouseX >= scrollX and 
+                            g_mouseX <= scrollX + scrollWidth and
+                            g_mouseY >= scrollY and 
+                            g_mouseY <= scrollY + scrollHeight
+        
+        -- Draw scrollbar handle
+        dxDrawRectangle(
+            scrollX + 2, 
+            scrollY, 
+            scrollWidth - 4, 
+            scrollHeight,
+            g_scrollbarHovered and SCROLL_HOVER_COLOR or SCROLL_COLOR, 
+            CONFIG.POSTGUI
+        )
+    end
 end
-
-function makeFont()
-	if not theFont then
-		theFont = "default-bold"
-	end
-	return theFont
-end
-
 
 --[[
 * drawScoreboard
-Draws the scoreboard contents.
+Draws the complete scoreboard
 --]]
-drawScoreboard = function ()
-	-- Check that we got the list of players
-	if not g_players then return end
-
-	-- First draw the background
-	drawBackground ()
-
-	-- Get the server information
-	local serverName = getElementData ( g_scoreboardDummy, "serverName" ) or "MTA server"
-	local maxPlayers = getElementData ( root, "server:Slots" ) or 1024
-	serverName = tostring ( serverName )
-	maxPlayers = tonumber ( maxPlayers )
-
-	-- Render the header
-	-- Calculate the bounding box for the header texts
-	local left, top, right, bottom = SCOREBOARD_X + 2, SCOREBOARD_Y + 2, SCOREBOARD_X + g_currentWidth - 2, SCOREBOARD_Y + SCOREBOARD_HEADER_HEIGHT - 2
-
-	-- Render the server name
-	dxDrawText ( serverName, left, top, right, bottom,
-				 SCOREBOARD_SERVER_NAME_COLOR, 1, makeFont() or "default-bold", "left", "center",
-				 true, false, SCOREBOARD_POSTGUI )
-
-
-	-- Render the player count
-	local usagePercent = (#g_players / maxPlayers) * 100
-	local strPlayerCount = "Players: " .. tostring(#g_players) .. "/" .. tostring(maxPlayers) .. " (" .. math.floor(usagePercent + 0.5) .. "%)"
-
-	-- We need to recalculate the left position, to make it not move when fading.
-	local offset = SCOREBOARD_WIDTH - dxGetTextWidth ( strPlayerCount, 1, makeFont() or "default" ) - 4
-	left = left + offset
-	-- Make sure of that it needs to be rendered now
-	if left < right then
-		dxDrawText ( strPlayerCount, left, top, right, bottom,
-					SCOREBOARD_PLAYERCOUNT_COLOR, 1, makeFont() or "default", "left", "center",
-					true, false, SCOREBOARD_POSTGUI )
-	end
-
-	-- Draw the body.
-	-- Update the bounding box.
-	left, top, bottom = SCOREBOARD_X, SCOREBOARD_Y + SCOREBOARD_HEADER_HEIGHT + 2, SCOREBOARD_Y + g_currentHeight - 2
-
-	-- Pre-calculate how much height will each row have.
-	local rowHeight = dxGetFontHeight ( 1, "default-bold" )
-
-	-- Draw the headers
-	drawRowBounded ( "ID", "Player Name", "Hours", "Ping",
-					 { SCOREBOARD_HEADERS_COLOR, SCOREBOARD_HEADERS_COLOR, SCOREBOARD_HEADERS_COLOR },
-					 "default-bold", top )
-
-
-	-- Add the offset for a new row
-	top = top + rowHeight + 3
-
-	-- Draw the separator
-	right = clamp ( 0, rowsBoundingBox[4][2] - 5, SCOREBOARD_X + g_currentWidth )
-	if top < SCOREBOARD_Y + g_currentHeight then
-		dxDrawLine ( SCOREBOARD_X + 5, top, right, top, SCOREBOARD_SEPARATOR_COLOR, 1, SCOREBOARD_POSTGUI )
-	end
-	top = top + 3
-
-	-- Create a function to render a player entry
-	local renderEntry = function ( player, seeUsername )
-		-- Get the player data
-		local playerID = getElementData ( player, "playerid" ) or 0
-		playerID = tostring ( playerID )
-		local playerUsername = ""
-		if seeUsername then
-			local uname = getElementData( player, 'account:username' )
-			playerUsername = uname and (" ("..uname..")") or ""
-		end
-		local playerName = exports.global:getPlayerName( player )..playerUsername
-		local playerHours = getElementData( player, 'hoursplayed' ) or 0
-		local playerPing = getPlayerPing ( player )
-		playerPing = tostring ( playerPing )
-		--local r, g, b = getPlayerNametagColor ( player )
-		local r, g, b = 255, 255, 255
-		if getElementData(player, "loggedin") ~= 1 then -- Not logged in
-			r, g, b =  127, 127, 127
-		elseif getElementData(player, "donation:nametag") and getElementData(player, "nametag_on") then
-			r, g, b = 167, 133, 63
-		elseif tonumber(getElementData(player, "admin_level")) == 10 then
-			r, g, b = 255, 255, 255
-		end
-		local playerColor = tocolor ( r, g, b, 255 )
-
-		-- Create the table of colors
-		local colors = { playerColor, playerColor, playerColor }
-
-		-- Render it!
-		drawRowBounded ( playerID, playerName, playerHours, playerPing, colors, "default-bold", top )
-	end
-
-	-- Calculate how much players can fit in the body window.
-	local playersPerPage = math.floor ( ( SCOREBOARD_Y + SCOREBOARD_HEIGHT - top ) / ( rowHeight + SCOREBOARD_ROW_GAP ) )
-
-	-- Get the amount of shifted players per page
-	local playerShift = math.floor ( playersPerPage / 2 )
-
-	-- Get the number of players to skip
-	local playersToSkip = playerShift * g_currentPage
-	if (#g_players - playersToSkip) < playersPerPage then
-		-- Check that they didn't go to an invalid page
-		if (#g_players - playersToSkip) < playerShift then
-			g_currentPage = g_currentPage - 1
-			if g_currentPage < 0 then g_currentPage = 0 end
-		end
-
-		-- Try to always fill pages
-		playersToSkip = #g_players - playersPerPage + 1
-	end
-
-	-- Check for when there are too few players to fill one page.
-	if playersToSkip < 0 then
-		playersToSkip = 0
-	end
-
-	local isStaffOnDuty = exports.global:isStaffOnDuty( localPlayer )
-
-	-- For every player in the cache, render a new entry.
-	for k=playersToSkip + 1, #g_players do
-		local player = g_players [ k ]
-		local hasPerk, perkValue = exports.donators:hasPlayerPerk(player, 12)
-		if not (hasPerk and tonumber(perkValue) == 1) or isStaffOnDuty then
-			-- Check if it's gonna fit. If it doesn't stop rendering.
-			if top < bottom - rowHeight - SCOREBOARD_ROW_GAP then
-				renderEntry ( player, isStaffOnDuty )
-				-- Update the height for the next entry
-				top = top + rowHeight + SCOREBOARD_ROW_GAP
-			else break end
-		end
-	end
-
-	-- Draw the scrollbar. The maximum players to skip is #g_players - playersPerPage + 1, so when
-	-- the scoreboard is fully scrolled it will become 1, while when it's not scrolled it will be
-	-- 0 due to playersToSkip being 0.
-	drawScrollBar ( SCOREBOARD_Y + SCOREBOARD_HEADER_HEIGHT + rowHeight + 10, playersToSkip / ( #g_players - playersPerPage + 1 ) )
+drawScoreboard = function()
+    -- Check that we have player data
+    if not g_players then return end
+    
+    -- First draw the main background
+    drawRoundedRectangle(
+        SCOREBOARD_X, 
+        SCOREBOARD_Y + CONFIG.HEADER_HEIGHT, 
+        g_currentWidth, 
+        g_currentHeight - CONFIG.HEADER_HEIGHT, 
+        BACKGROUND_COLOR
+    )
+    
+    -- Draw server info header
+    drawServerInfo()
+    
+    -- Calculate content area
+    local contentY = SCOREBOARD_Y + CONFIG.HEADER_HEIGHT
+    local contentStartY = drawColumnHeaders(contentY)
+    local contentHeight = SCOREBOARD_Y + g_currentHeight - contentStartY
+    
+    -- Calculate how many players can fit in the view
+    local playersPerPage = math.floor(contentHeight / (CONFIG.ROW_HEIGHT + CONFIG.ROW_GAP))
+    
+    -- Calculate max pages based on player count
+    local maxPage = math.max(0, math.ceil(#g_players / playersPerPage) - 1)
+    
+    -- Clamp current page
+    g_currentPage = clamp(0, g_currentPage, maxPage)
+    
+    -- Calculate which players to display
+    local startIndex = g_currentPage * playersPerPage + 1
+    local endIndex = math.min(startIndex + playersPerPage - 1, #g_players)
+    
+    -- Draw player rows
+    local currentY = contentStartY
+    for i = startIndex, endIndex do
+        local player = g_players[i]
+        local rowIndex = i - startIndex
+        
+        -- Check if this row is being hovered
+        local isRowHovered = isCursorShowing() and 
+            g_mouseY >= currentY and 
+            g_mouseY <= currentY + CONFIG.ROW_HEIGHT and
+            g_mouseX >= SCOREBOARD_X and 
+            g_mouseX <= SCOREBOARD_X + g_currentWidth - 20 -- Account for scrollbar width
+        
+        if isRowHovered then
+            g_hoveredRow = i
+        end
+        
+        currentY = drawPlayerRow(player, rowIndex, currentY, isRowHovered or g_hoveredRow == i)
+    end
+    
+    -- Draw scrollbar
+    drawScrollBar(
+        contentStartY, 
+        SCOREBOARD_Y + g_currentHeight, 
+        g_currentPage, 
+        maxPage
+    )
 end
 
---[[
-* isVisible
-Returns wherever or not the scoreboard is visible
---]]
-function isVisible ( )
-	return g_isShowing
-end
+-- Add click handler for player selection
+addEventHandler("onClientClick", root, function(button, state)
+    if not g_isShowing or g_hoveredRow == -1 or not g_players[g_hoveredRow] then return end
+    
+    if button == "left" and state == "down" then
+        local currentTime = getTickCount()
+        local timeDiff = currentTime - g_lastClickTime
+        
+        if timeDiff < 500 then
+            -- Double click detected
+            local selectedPlayer = g_players[g_hoveredRow]
+            
+            -- Add your double-click action here (e.g. open player menu)
+            -- For example: triggerEvent("onPlayerMenuRequest", selectedPlayer)
+        end
+        
+        g_lastClickTime = currentTime
+    end
+end)
+
+-- Add mouse wheel handler when scoreboard is showing
+addEventHandler("onClientKey", root, function(button, press)
+    if not g_isShowing or not isCursorShowing() then return end
+    
+    if (button == "mouse_wheel_up" or button == "mouse_wheel_down") and press then
+        onScrollKey(button == "mouse_wheel_down")
+    end
+end)
