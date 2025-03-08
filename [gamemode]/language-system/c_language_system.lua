@@ -1,176 +1,544 @@
--- Displaying the increase in skill
-local sx, sy, text, count, addedEvent, alpha
-local langInc = 0
+-- Compact Language GUI System
+local screenW, screenH = guiGetScreenSize()
+local fonts = {
+    bold = dxCreateFont(":resources/fonts/Roboto-Bold.ttf", 12) or "default-bold",
+    regular = dxCreateFont(":resources/fonts/Roboto-Regular.ttf", 10) or "default",
+    light = dxCreateFont(":resources/fonts/Roboto-Light.ttf", 8) or "default",
+    awesome = dxCreateFont(":resources/fonts/FontAwesome.otf", 10) or "default-bold"
+}
 
-function increaseInSkill(language)
-	local localPlayer = getLocalPlayer()
-	
-	local x, y, z = getPedBonePosition(localPlayer, 6)
-	sx, sy = getScreenFromWorldPosition(x, y, z+0.2, 100, false)
-	
-	langInc = langInc + 1
-	
-	text = "+" .. langInc .. " " .. languages[language] .. " (" .. string.gsub(getPlayerName(source), "_", " ") .. ")"
-	
-	count = 0
-	alpha = 255
-	if not (addedEvent) then
-		addedEvent = true
-		addEventHandler("onClientRender", getRootElement(), renderText)
-	end
+-- Animation variables
+local isOpen = false
+local animProgress = 0
+local targetProgress = 0
+local lastTick = getTickCount()
+local fadeSpeed = 0.008
+
+-- Faster animations for confirmation window
+local confirmLastTick = getTickCount()
+local confirmFadeSpeed = 0.016 -- Increased speed even more for smoother animation
+
+-- Color settings
+local colors = {
+    background = tocolor(20, 20, 20, 220),
+    header = tocolor(16, 89, 138, 255),
+    buttonHover = tocolor(30, 30, 30, 255),
+    buttonNormal = tocolor(40, 40, 40, 255),
+    white = tocolor(255, 255, 255, 255),
+    progressBg = tocolor(40, 40, 40, 255),
+    progressFill = tocolor(16, 89, 138, 255),
+    highlight = tocolor(16, 89, 138, 255)
+}
+
+-- Language system variables
+local tlanguages = nil
+local currslot = nil
+local hoveredButton = nil
+local languageButtons = {}
+local closeButton = {}
+
+function drawLanguageGUI()
+    local now = getTickCount()
+    local elapsedTime = now - lastTick
+    lastTick = now
+    
+    -- Animation logic
+    local oldProgress = animProgress
+    if targetProgress > animProgress then
+        animProgress = math.min(targetProgress, animProgress + fadeSpeed * elapsedTime)
+    elseif targetProgress < animProgress then
+        animProgress = math.max(targetProgress, animProgress - fadeSpeed * elapsedTime)
+    end
+    
+    if oldProgress == 0 and animProgress > 0 then
+        addEventHandler("onClientClick", root, handleClick)
+    elseif animProgress == 0 and oldProgress > 0 then
+        removeEventHandler("onClientClick", root, handleClick)
+        isOpen = false
+        return
+    end
+    
+    -- More compact window size
+    local windowWidth = 550 * animProgress
+    local windowHeight = 300 * animProgress
+    local windowX = screenW/2 - windowWidth/2
+    local windowY = screenH/2 - windowHeight/2
+    
+    -- Draw the background
+    dxDrawRectangle(windowX, windowY, windowWidth, windowHeight, colors.background)
+    
+    -- Draw the header - smaller height
+    dxDrawRectangle(windowX, windowY, windowWidth, 35 * animProgress, colors.header)
+    dxDrawText("Languages: " .. string.gsub(getPlayerName(localPlayer), "_", " "), 
+        windowX + 15, 
+        windowY, 
+        windowX + windowWidth, 
+        windowY + 35 * animProgress, 
+        colors.white, 
+        0.9 * animProgress, 
+        fonts.bold, 
+        "left", 
+        "center")
+    
+    -- Reset button array
+    languageButtons = {}
+    
+    -- Draw language options
+    if tlanguages and animProgress > 0.9 then
+        local offset = 55 -- Start closer to header
+        
+        for i = 1, 3 do
+            local L = tlanguages[i]
+            if L then
+                local lang, skill = unpack(L)
+                
+                -- Draw language section background - reduced height
+                local sectionY = windowY + offset
+                local sectionHeight = 65 -- Reduced from 90
+                local isHovered = hoveredButton == "lang_use_"..i or hoveredButton == "lang_unlearn_"..i
+                local bgColor = isHovered and colors.buttonHover or colors.buttonNormal
+                
+                dxDrawRectangle(windowX + 15, sectionY, windowWidth - 30, sectionHeight, bgColor)
+                
+                -- Draw flag icon (placeholder) - smaller
+                local flagPath = ":social/images/flags/" .. (flags[lang] or 'zz') .. ".png"
+                if fileExists(flagPath) then
+                    dxDrawImage(windowX + 25, sectionY + 12, 18, 18, flagPath)
+                else
+                    dxDrawRectangle(windowX + 25, sectionY + 12, 18, 18, colors.highlight)
+                end
+                
+                -- Draw language name - smaller font
+                local langName = getLanguageName(lang)
+                if currslot == i then
+                    langName = langName .. " (Current)"
+                end
+                dxDrawText(langName, 
+                    windowX + 50, 
+                    sectionY + 12, 
+                    windowX + windowWidth - 80, 
+                    sectionY + 30, 
+                    colors.white, 
+                    0.9, 
+                    fonts.bold, 
+                    "left", 
+                    "center")
+                
+                -- Draw progress bar - smaller and thinner
+                if languages[lang] then
+                    -- Background
+                    dxDrawRectangle(windowX + 50, sectionY + 35, windowWidth - 200, 14, colors.progressBg)
+                    -- Fill
+                    dxDrawRectangle(windowX + 50, sectionY + 35, (windowWidth - 200) * (skill/100), 14, colors.progressFill)
+                    -- Percentage text - smaller font
+                    dxDrawText(skill .. "/100", 
+                        windowX + 50, 
+                        sectionY + 35, 
+                        windowX + windowWidth - 150, 
+                        sectionY + 49, 
+                        colors.white, 
+                        0.8, 
+                        fonts.regular, 
+                        "right", 
+                        "center")
+                    
+                    -- Draw use button - smaller
+                    if currslot ~= i then
+                        local useButtonX = windowX + windowWidth - 130
+                        local useButtonY = sectionY + 12
+                        local useButtonW = 80
+                        local useButtonH = 20
+                        
+                        local useHovered = (hoveredButton == "lang_use_"..i)
+                        local useButtonColor = useHovered and colors.highlight or colors.buttonNormal
+                        
+                        dxDrawRectangle(useButtonX, useButtonY, useButtonW, useButtonH, useButtonColor)
+                        dxDrawText("Use", 
+                            useButtonX, 
+                            useButtonY, 
+                            useButtonX + useButtonW, 
+                            useButtonY + useButtonH, 
+                            colors.white, 
+                            0.8, 
+                            fonts.regular, 
+                            "center", 
+                            "center")
+                        
+                        -- Store button data for click handling
+                        languageButtons["lang_use_"..i] = {useButtonX, useButtonY, useButtonW, useButtonH, lang}
+                    end
+                end
+                
+                -- Draw unlearn button - smaller
+                if currslot ~= i then
+                    local unlearnButtonX = windowX + windowWidth - 130
+                    local unlearnButtonY = sectionY + 36
+                    local unlearnButtonW = 80
+                    local unlearnButtonH = 20
+                    
+                    local unlearnHovered = (hoveredButton == "lang_unlearn_"..i)
+                    local unlearnButtonColor = unlearnHovered and colors.highlight or colors.buttonNormal
+                    
+                    dxDrawRectangle(unlearnButtonX, unlearnButtonY, unlearnButtonW, unlearnButtonH, unlearnButtonColor)
+                    dxDrawText("Un-learn", 
+                        unlearnButtonX, 
+                        unlearnButtonY, 
+                        unlearnButtonX + unlearnButtonW, 
+                        unlearnButtonY + unlearnButtonH, 
+                        colors.white, 
+                        0.8, 
+                        fonts.regular, 
+                        "center", 
+                        "center")
+                    
+                    -- Store button data for click handling
+                    languageButtons["lang_unlearn_"..i] = {unlearnButtonX, unlearnButtonY, unlearnButtonW, unlearnButtonH, lang}
+                end
+                
+                offset = offset + 75 -- Reduced spacing between sections
+            end
+        end
+        
+        -- Draw close button - smaller
+        local closeButtonX = windowX + 15
+        local closeButtonY = windowY + windowHeight - 45
+        local closeButtonW = windowWidth - 30
+        local closeButtonH = 30
+        
+        local closeHovered = (hoveredButton == "close")
+        local closeButtonColor = closeHovered and colors.highlight or colors.buttonNormal
+        
+        dxDrawRectangle(closeButtonX, closeButtonY, closeButtonW, closeButtonH, closeButtonColor)
+        dxDrawText("Close", 
+            closeButtonX, 
+            closeButtonY, 
+            closeButtonX + closeButtonW, 
+            closeButtonY + closeButtonH, 
+            colors.white, 
+            0.9, 
+            fonts.regular, 
+            "center", 
+            "center")
+        
+        -- Store close button data
+        closeButton = {closeButtonX, closeButtonY, closeButtonW, closeButtonH}
+    end
 end
-addEvent("increaseInSkill", true)
-addEventHandler("increaseInSkill", getRootElement(), increaseInSkill)
 
-function renderText()
-	if not sx or not sy then return end
-	count = count + 1
-	dxDrawText(text, sx-150, sy, sx+200, sy+50, tocolor(255, 255, 255, alpha), 1, "diploma", "center", "center")
-	
-	sy = sy - 3
-	alpha = alpha - 6
-	
-	if (alpha<0) then alpha = 0 end
-	
-	if (count>50) then
-		removeEventHandler("onClientRender", getRootElement(), renderText)
-		addedEvent = false
-		langInc = 0
-	end
+-- Confirmation window variables
+local wConfirmUnlearn = nil
+local confirmAnimProgress = 0
+local confirmTargetProgress = 0
+local confirmLang = nil
+local confirmButtons = {}
+
+function drawConfirmWindow()
+    local now = getTickCount()
+    local elapsedTime = now - confirmLastTick
+    confirmLastTick = now
+    
+    -- Animation logic - USING FASTER ANIMATION SPEED with separate lastTick
+    local oldProgress = confirmAnimProgress
+    if confirmTargetProgress > confirmAnimProgress then
+        confirmAnimProgress = math.min(confirmTargetProgress, confirmAnimProgress + confirmFadeSpeed * elapsedTime)
+    elseif confirmTargetProgress < confirmAnimProgress then
+        confirmAnimProgress = math.max(confirmTargetProgress, confirmAnimProgress - confirmFadeSpeed * elapsedTime)
+    end
+    
+    if oldProgress == 0 and confirmAnimProgress > 0 then
+        addEventHandler("onClientClick", root, handleConfirmClick)
+    elseif confirmAnimProgress == 0 and oldProgress > 0 then
+        removeEventHandler("onClientClick", root, handleConfirmClick)
+        wConfirmUnlearn = nil
+        confirmLang = nil
+        return
+    end
+    
+    -- Smaller confirmation window with smoother animation
+    local windowWidth = 350 * confirmAnimProgress
+    local windowHeight = 120 * confirmAnimProgress
+    local windowX = screenW/2 - windowWidth/2
+    local windowY = screenH/2 - windowHeight/2
+    
+    -- Draw the background
+    dxDrawRectangle(windowX, windowY, windowWidth, windowHeight, colors.background)
+    
+    -- Draw the header - smaller
+    dxDrawRectangle(windowX, windowY, windowWidth, 30 * confirmAnimProgress, colors.header)
+    dxDrawText("Confirmation", 
+        windowX, 
+        windowY, 
+        windowX + windowWidth, 
+        windowY + 30 * confirmAnimProgress, 
+        colors.white, 
+        0.9 * confirmAnimProgress, 
+        fonts.bold, 
+        "center", 
+        "center")
+    
+    -- Draw question
+    if confirmAnimProgress > 0.9 and confirmLang then
+        dxDrawText("Do you really want to forget all your knowledge of " .. getLanguageName(confirmLang) .. "?", 
+            windowX + 15, 
+            windowY + 40, 
+            windowX + windowWidth - 15, 
+            windowY + 70, 
+            colors.white, 
+            0.8, 
+            fonts.regular, 
+            "center", 
+            "center",
+            true, false)
+        
+        -- Draw Yes button - smaller
+        local yesButtonX = windowX + 25
+        local yesButtonY = windowY + 80
+        local yesButtonW = 80
+        local yesButtonH = 25
+        
+        local yesHovered = (hoveredButton == "confirm_yes")
+        local yesButtonColor = yesHovered and colors.highlight or colors.buttonNormal
+        
+        dxDrawRectangle(yesButtonX, yesButtonY, yesButtonW, yesButtonH, yesButtonColor)
+        dxDrawText("Yes", 
+            yesButtonX, 
+            yesButtonY, 
+            yesButtonX + yesButtonW, 
+            yesButtonY + yesButtonH, 
+            colors.white, 
+            0.8, 
+            fonts.regular, 
+            "center", 
+            "center")
+        
+        -- Store button data
+        confirmButtons["confirm_yes"] = {yesButtonX, yesButtonY, yesButtonW, yesButtonH}
+        
+        -- Draw No button - smaller
+        local noButtonX = windowX + windowWidth - 105
+        local noButtonY = windowY + 80
+        local noButtonW = 80
+        local noButtonH = 25
+        
+        local noHovered = (hoveredButton == "confirm_no")
+        local noButtonColor = noHovered and colors.highlight or colors.buttonNormal
+        
+        dxDrawRectangle(noButtonX, noButtonY, noButtonW, noButtonH, noButtonColor)
+        dxDrawText("No", 
+            noButtonX, 
+            noButtonY, 
+            noButtonX + noButtonW, 
+            noButtonY + noButtonH, 
+            colors.white, 
+            0.8, 
+            fonts.regular, 
+            "center", 
+            "center")
+        
+        -- Store button data
+        confirmButtons["confirm_no"] = {noButtonX, noButtonY, noButtonW, noButtonH}
+    end
 end
 
-tlanguages = nil
-currslot = nil
-wLanguages = nil
+-- Skill increase notification - smaller font and faster animation
+function renderSkillIncrease()
+    local now = getTickCount()
+    local toRemove = {}
+    
+    for i, data in ipairs(skillInc) do
+        local elapsed = now - data.tick
+        local alpha = 255 - (elapsed / 15) -- Faster fade
+        local y = data.y - (elapsed / 40) -- Slower rise
+        
+        if alpha > 0 then
+            dxDrawText(data.text, data.x, y, data.x, y, tocolor(255, 255, 255, alpha), 0.8, fonts.bold, "center", "center")
+        else
+            table.insert(toRemove, i)
+        end
+    end
+    
+    -- Remove expired notifications
+    for i = #toRemove, 1, -1 do
+        table.remove(skillInc, toRemove[i])
+    end
+    
+    if #skillInc == 0 then
+        removeEventHandler("onClientRender", root, renderSkillIncrease)
+    end
+end
+
+function handleClick(button, state)
+    if button ~= "left" or state ~= "down" then return end
+    
+    -- Handle language buttons
+    for id, data in pairs(languageButtons) do
+        local x, y, width, height, lang = unpack(data)
+        if isMouseInPosition(x, y, width, height) then
+            if string.find(id, "use") then
+                triggerServerEvent("useLanguage", localPlayer, lang)
+                hideLanguageGUI()
+                return
+            elseif string.find(id, "unlearn") then
+                unlearnLanguage(lang)
+                return
+            end
+        end
+    end
+    
+    -- Handle close button
+    if closeButton and #closeButton > 0 then
+        local x, y, width, height = unpack(closeButton)
+        if isMouseInPosition(x, y, width, height) then
+            hideLanguageGUI()
+            return
+        end
+    end
+end
+
+function handleMouseMovement()
+    if not isOpen then return end
+    
+    hoveredButton = nil
+    
+    -- Check language buttons
+    for id, data in pairs(languageButtons) do
+        local x, y, width, height = unpack(data)
+        if isMouseInPosition(x, y, width, height) then
+            hoveredButton = id
+            return
+        end
+    end
+    
+    -- Check close button
+    if closeButton and #closeButton > 0 then
+        local x, y, width, height = unpack(closeButton)
+        if isMouseInPosition(x, y, width, height) then
+            hoveredButton = "close"
+            return
+        end
+    end
+end
+
+function handleConfirmClick(button, state)
+    if button ~= "left" or state ~= "down" then return end
+    
+    -- Check confirm buttons
+    for id, data in pairs(confirmButtons) do
+        local x, y, width, height = unpack(data)
+        if isMouseInPosition(x, y, width, height) then
+            if id == "confirm_yes" and confirmLang then
+                triggerServerEvent("unlearnLanguage", localPlayer, confirmLang)
+                -- Hide both confirmation window AND main GUI
+                hideConfirmWindow()
+                hideLanguageGUI()
+                return
+            elseif id == "confirm_no" then
+                hideConfirmWindow()
+                return
+            end
+        end
+    end
+end
+
+function handleConfirmMouseMovement()
+    if not wConfirmUnlearn then return end
+    
+    hoveredButton = nil
+    
+    -- Check confirm buttons
+    for id, data in pairs(confirmButtons) do
+        local x, y, width, height = unpack(data)
+        if isMouseInPosition(x, y, width, height) then
+            hoveredButton = id
+            return
+        end
+    end
+end
+
+function isMouseInPosition(x, y, width, height)
+    if not isCursorShowing() then return false end
+    
+    local mouseX, mouseY = getCursorPosition()
+    mouseX, mouseY = mouseX * screenW, mouseY * screenH
+    
+    return (mouseX >= x and mouseX <= x + width and mouseY >= y and mouseY <= y + height)
+end
+
 function displayGUI(remotelanguages, rcurrslot)
-	local logged = getElementData(getLocalPlayer(), "loggedin")
-	if (logged == 1) then
-	if not (wLanguages) then
-		local width, height = 600, 400
-		local scrWidth, scrHeight = guiGetScreenSize()
-		local x = scrWidth/2 - (width/2)
-		local y = scrHeight/2 - (height/2)
-		
-		wLanguages = guiCreateWindow(x, y, width, height, "Languages: " .. string.gsub(getPlayerName(localPlayer), "_", " "), false)
-		
-		tlanguages = remotelanguages
-		currslot = tonumber(rcurrslot)
-
-		local offset = 0.06
-
-		for i = 1, 3 do
-			local L = tlanguages[i]
-			if L then
-				local lang, skill = unpack(L)
-				local imgLang = guiCreateStaticImage(0.05, 0.1+offset, 0.025, 0.025, ":social/images/flags/" .. (flags[lang] or 'zz') .. ".png", true, wLanguages)
-				local lLangName = guiCreateLabel(0.1, 0.092+offset, 0.9, 0.1, getLanguageName(lang), true, wLanguages)
-				guiSetFont(lLangName, "default-bold-small")
-				
-				if languages[lang] then
-					local pLangSkill = guiCreateProgressBar(0.1, 0.14+offset, 0.6, 0.05, true, wLanguages)
-					guiProgressBarSetProgress(pLangSkill, skill)
-					
-					local lLang1Skill = guiCreateLabel(0.73, 0.14+offset, 0.2, 0.1, skill .. "/100", true, wLanguages)
-					guiSetFont(lLang1Skill, "default-bold-small")
-					
-					if currslot == i then
-						guiSetText(lLangName, guiGetText(lLangName) .. " (Current)")
-					else
-						local bUse = guiCreateButton(0.83, 0.08+offset, 0.2, 0.05, "Use", true, wLanguages)
-						addEventHandler('onClientGUIClick', bUse,
-							function(button)
-								if button == 'left' then
-									triggerServerEvent("useLanguage", localPlayer, lang)
-								end
-							end, false)
-					end
-				end
-
-				if currslot ~= i then
-					local bUnlearnLang = guiCreateButton(0.83, 0.14+offset, 0.2, 0.05, "Un-learn", true, wLanguages)
-					addEventHandler('onClientGUIClick', bUnlearnLang,
-						function(button)
-							if button == 'left' then
-								unlearnLanguage(lang)
-							end
-						end, false)
-				end
-				offset = offset + 0.3
-			end
-		end
-		
-		showCursor(true)
-		local bClose = guiCreateButton(0.05, 0.92, 0.9, 0.07, "Close", true, wLanguages)
-		addEventHandler("onClientGUIClick", bClose, hideGUI, false)
-	else
-		guiSetInputEnabled(false)
-		hideGUI()
-	end
-end
+    local logged = getElementData(getLocalPlayer(), "loggedin")
+    if (logged ~= 1) then return end
+    
+    if not isOpen then
+        tlanguages = remotelanguages
+        currslot = tonumber(rcurrslot)
+        
+        showCursor(true)
+        targetProgress = 1
+        isOpen = true
+        
+        if not isEventHandlerAdded("onClientRender", root, drawLanguageGUI) then
+            addEventHandler("onClientRender", root, drawLanguageGUI)
+        end
+        
+        if not isEventHandlerAdded("onClientCursorMove", root, handleMouseMovement) then
+            addEventHandler("onClientCursorMove", root, handleMouseMovement)
+        end
+    else
+        hideLanguageGUI()
+    end
 end
 addEvent("showLanguages", true)
 addEventHandler("showLanguages", getLocalPlayer(), displayGUI)
 
-function useLanguage(button, state)
-	if (button=="left") then
-		local lang = 0
-		
-		if (source==bUse1) then lang = tlanguages[1][1] end
-		if (source==bUse2) then lang = tlanguages[2][1] end
-		if (source==bUse3) then lang = tlanguages[3][1] end
-
-		if (lang>0) then
-			hideGUI()
-			triggerServerEvent("useLanguage", localPlayer, lang)
-		end
-	end
-end
-
 function unlearnLanguage(lang)
-	if lang > 0 then
-		if not languages[lang] then
-			hideGUI()
-			triggerServerEvent("unlearnLanguage", localPlayer, lang)
-		else
-			local sx, sy = guiGetScreenSize() 
-			wConfirmUnlearn = guiCreateWindow(sx/2 - 125,sy/2 - 50,250,100,"Leaving Confirmation", false)
-			local lQuestion = guiCreateLabel(0.05,0.25,0.9,0.3,"Do you really want to forget all your knowledge of " .. getLanguageName( lang ) .. "?",true,wConfirmUnlearn)
-			guiLabelSetHorizontalAlign (lQuestion,"center",true)
-			local bYes = guiCreateButton(0.1,0.65,0.37,0.23,"Yes",true,wConfirmUnlearn)
-			local bNo = guiCreateButton(0.53,0.65,0.37,0.23,"No",true,wConfirmUnlearn)
-			addEventHandler("onClientGUIClick", getRootElement(), 
-				function(button)
-					if button=="left" and ( source == bYes or source == bNo ) then
-						if source == bYes then
-							hideGUI()
-							triggerServerEvent("unlearnLanguage", localPlayer, lang)
-						end
-						if wConfirmUnlearn then
-							destroyElement(wConfirmUnlearn)
-							wConfirmUnlearn = nil
-						end
-					end
-				end
-			)
-		end
-	end
+    if lang > 0 then
+        if not languages[lang] then
+            hideLanguageGUI()
+            triggerServerEvent("unlearnLanguage", localPlayer, lang)
+        else
+            showConfirmWindow(lang)
+        end
+    end
 end
 
-function hideGUI()
-	if (wLanguages) then
-		destroyElement(wLanguages)
-	end
-	wLanguages = nil
-	
-	if wConfirmUnlearn then
-		destroyElement(wConfirmUnlearn)
-	end
-	wConfirmUnlearn = nil
-	
-	bUnlearnLang1 = nil
-	bUnlearnLang2 = nil
-	bUnlearnLang3 = nil
-	
-	showCursor(false)
-	
+function showConfirmWindow(lang)
+    confirmLang = lang
+    wConfirmUnlearn = true
+    confirmTargetProgress = 1
+    confirmButtons = {}
+    confirmLastTick = getTickCount() -- Reset the confirm animation timer
+    
+    if not isEventHandlerAdded("onClientRender", root, drawConfirmWindow) then
+        addEventHandler("onClientRender", root, drawConfirmWindow)
+    end
+    
+    if not isEventHandlerAdded("onClientCursorMove", root, handleConfirmMouseMovement) then
+        addEventHandler("onClientCursorMove", root, handleConfirmMouseMovement)
+    end
+end
+
+function hideConfirmWindow()
+    confirmTargetProgress = 0
+    confirmButtons = {}
+end -- Fixed the missing "end" here
+
+function hideLanguageGUI()
+    targetProgress = 0
+    confirmTargetProgress = 0 -- Also make sure confirmation window is hidden
+    showCursor(false)
+end
+
+-- Utility function to check if event handler is already added
+function isEventHandlerAdded(eventName, attachedTo, functionToCall)
+    if type(eventName) == "string" and isElement(attachedTo) and type(functionToCall) == "function" then
+        local attachedFunctions = getEventHandlers(eventName, attachedTo)
+        if type(attachedFunctions) == "table" and #attachedFunctions > 0 then
+            for i, v in ipairs(attachedFunctions) do
+                if v == functionToCall then
+                    return true
+                end
+            end
+        end
+    end
+    return false
 end
