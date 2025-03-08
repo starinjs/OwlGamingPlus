@@ -218,6 +218,9 @@ addEventHandler('advertisements:push', root, function (id)
             end
 
             coolDown[id] = now()
+            -- Send to Discord webhook with the advertisement text
+            exports.discord_webhooks:send("ads-webhook", parseAdvertisementText(sender, result[1]))
+            
             for _, player in pairs(getElementsByType('player')) do
                 local hasTogAd, togAdState = exports.donators:hasPlayerPerk(player, 2)
                 if getElementData(player, 'loggedin') == 1 and (not hasTogAd or tonumber(togAdState) ~= 1) then

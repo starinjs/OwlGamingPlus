@@ -10,6 +10,7 @@ function clientReady()
 		if resourceName == "global" or resourceName == "mysql" or resourceNmae == "pool" then
 			if getResourceState(value) == "loaded" or getResourceState(value) == "stopping" or getResourceState(value) == "failed to load" then
 				missingResources = true
+				exports.discord_webhooks:send("manager-webhook","The server is missing dependent resource '"..getResourceName(value).."'.")
 				outputChatBox("The server is missing dependent resource '"..getResourceName(value).."'.", thePlayer, 255, 0, 0)
 				outputChatBox("Please try again shortly.", thePlayer, 255, 0, 0)
 				outputChatBox("       - The Owl Gaming Administration Team", thePlayer, 255, 0, 0)

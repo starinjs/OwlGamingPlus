@@ -55,6 +55,7 @@ function sendMessageToAdmins(message,showToOffDutyAdmins)
 						triggerClientEvent(thePlayer, "sendWrnMessage", thePlayer, message)
 					else
 						outputChatBox(message, thePlayer, 255, 0, 0)
+						exports.discord_webhooks:send("staff-webhook",message)
 					end
 				end
 			end
@@ -75,6 +76,7 @@ function sendMessageToSeniorAdmins(message,showToOffDutyAdmins)
 						triggerClientEvent(thePlayer, "sendWrnMessage", thePlayer, message)
 					else
 						outputChatBox(message, thePlayer, 255, 194, 14)
+						exports.discord_webhooks:send("staff-webhook",message)
 					end
 				end
 			end
@@ -95,6 +97,7 @@ function sendMessageToSupporters(message, showToOffDutyGMs)
 						triggerClientEvent(thePlayer, "sendWrnMessage", thePlayer, message)
 					else
 						outputChatBox(message, thePlayer, 255, 0, 0)
+						exports.discord_webhooks:send("staff-webhook",message)
 					end
 				end
 			end
@@ -115,6 +118,7 @@ function sendMessageToStaff(message,showToOffDutyStaff)
 						triggerClientEvent(thePlayer, "sendWrnMessage", thePlayer, message)
 					else
 						outputChatBox(message, thePlayer, 255,0,0)
+						exports.discord_webhooks:send("staff-webhook",message)
 					end
 				end
 			end
