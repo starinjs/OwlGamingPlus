@@ -16,7 +16,7 @@ local CONFIG = {
     HEADER_HEIGHT               = 50,                -- Height for the header
     ROW_HEIGHT                  = 30,                -- Height for each player row
     ROW_GAP                     = 1,                 -- Gap between rows
-    CORNER_RADIUS               = 8,                 -- Radius for rounded corners
+    CORNER_RADIUS               = 2,                 -- Radius for rounded corners
     AVATAR_SIZE                 = 24,                -- Size of player avatar icons
     
     -- Controls
@@ -482,7 +482,7 @@ local function drawColumn(index, text, y, width, height, color, font, align)
     dxDrawText(
         text,
         x + 5, 
-        y,
+        y+5,
         x + maxWidth - 5, 
         y + height,
         color, 
@@ -503,7 +503,7 @@ Draws the column headers
 --]]
 local function drawColumnHeaders(y)
     local headerY = y
-    local headerFont = getFont("roboto_bold")
+    local headerFont = getFont("roboto_regular")
     
     -- Draw the headers background
     dxDrawRectangle(
