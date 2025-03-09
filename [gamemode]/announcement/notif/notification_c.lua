@@ -39,7 +39,7 @@ function drawPmThump()
 		local posxIcon = globalOffSetX
 		local posxBG = imgw+globalOffSetX
 		local posxText = posxIcon+5
-		dxDrawImage ( posxIcon+thumpOffsetX, 5+globalOffSetY, imgw, imgh, ":resources/hud/images/opm.png")
+		dxDrawImage ( posxIcon+thumpOffsetX, 5+globalOffSetY, imgw, imgh, ":hud/images/hud/opm.png")
 		--dxDrawRectangle(posxBG+thumpOffsetX, 10+globalOffSetY, bgw, bgh, tocolor(0, 0, 0, 100), false)
 		if not font then
 			font = dxCreateFont (":resources/fonts/Anton.ttf" , 10 )
@@ -169,17 +169,11 @@ function drawPmPreviews()
 					bgColor = tocolor(0, 0, 0,alpha)
 				end
 				dxDrawRectangle(ax, ay, bgDetailsW, bgDetailsH, bgColor, false)
-				dxDrawRectangleBorder(ax, ay, bgDetailsW, bgDetailsH, 1, tocolor(255, 255, 255, 100), true)
+				--dxDrawRectangleBorder(ax, ay, bgDetailsW, bgDetailsH, 1, tocolor(0, 170, 255, 255), true)
 				dxDrawText(titleText, ax+margin, ay+margin, bgDetailsW-margin*2, lineH, tocolor(0, 0, 0, 150), 1, "default")
 				dxDrawText(titleText, ax+margin-1, ay+margin-1, bgDetailsW-margin*2, lineH, tocolor(255, 255, 255, 255), 1, "default")
-				dxDrawText(dateText, ax+margin, 10+bgh+bgDetailOffsetY+globalOffSetY+margin+lineH+count*(bgDetailsH+margin*2), bgDetailsW-margin*2, lineH, tocolor(255, 255, 255, 200), 1, "default-small")
-
+				dxDrawText(dateText, ax+margin, 10+bgh+bgDetailOffsetY+globalOffSetY+margin+lineH+count*(bgDetailsH+margin*2), bgDetailsW-margin*2, lineH, tocolor(0, 170, 255, 200), 1, "default-small")
 			else
-				--dxDrawImage ( sx-40, ay, 30, 30, ":phone/images/settings.png"  )
-				dxDrawRectangle(ax, ay, bgDetailsW, bgDetailsH, tocolor(100, 100, 100,alpha), false)
-				dxDrawRectangleBorder(ax, ay, bgDetailsW, bgDetailsH, 1, tocolor(255, 255, 255, 100), true)
-				dxDrawText("SETTINGS", ax+margin+20, ay+margin+7, bgDetailsW-margin*2, lineH, tocolor(255, 255, 255, 255), 1, "default-bold")
-				--dxDrawText(dateText, ax+margin, 10+bgh+bgDetailOffsetY+globalOffSetY+margin+lineH+count*(bgDetailsH+margin*2), bgDetailsW-margin*2, lineH, tocolor(255, 255, 255, 200), 1, "default-small")
 			end
 			count = count + 1
 		end
