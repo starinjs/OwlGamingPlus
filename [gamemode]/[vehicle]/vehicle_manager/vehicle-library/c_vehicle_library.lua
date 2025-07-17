@@ -43,7 +43,7 @@ local function updateLibraryGrid(vehs)
 	for i = 1, #vehs do
 		local row = guiGridListAddRow(VehLibGrid)
 		guiGridListSetItemText(VehLibGrid, row, col.id, vehs[i].id or "", false, true)
-		guiGridListSetItemText(VehLibGrid, row, col.enabled, ((vehs[i].enabled == "1") and "Yes" or "No"), false, true)
+		guiGridListSetItemText(VehLibGrid, row, col.enabled, ((vehs[i].enabled == 1) and "Yes" or "No"), false, true)
 		local vehMtaModel = "-"
 		if tonumber(vehs[i].vehmtamodel) > 611 then
 			vehMtaModel = "newmodels_azul"
