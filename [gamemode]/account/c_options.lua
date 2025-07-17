@@ -60,15 +60,10 @@ local maxPages = 1
 local fontCache = {}
 
 -- Function to get a font or create it if it doesn't exist
-local function getFont(size, bold)
-    local key = size .. (bold and "b" or "")
-    if not fontCache[key] then
-        fontCache[key] = bold and dxCreateFont("fonts/Roboto-Bold.ttf", size) or dxCreateFont("fonts/Roboto-Regular.ttf", size)
-        if not fontCache[key] then
-            fontCache[key] = bold and "default-bold" or "default"
-        end
-    end
-    return fontCache[key]
+function guiComboBoxAdjustHeight ( combobox, itemcount )
+	if getElementType ( combobox ) ~= "gui-combobox" or type ( itemcount ) ~= "number" then error ( "Invalid arguments @ 'guiComboBoxAdjustHeight'", 2 ) end
+	local width = guiGetSize ( combobox, false )
+	return guiSetSize ( combobox, width, ( itemcount * 20 ) + 20, false )
 end
 
 -- Settings menu variables
